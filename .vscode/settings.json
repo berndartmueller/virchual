@@ -1,0 +1,11 @@
+{
+  "auto-close-tag.activationOnLanguage": ["html", "xml"],
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.detectIndentation": false,
+  "autoimport.spaceBetweenBraces": true,
+  "editor.formatOnSave": true,
+  "prettier.singleQuote": true,
+  "codemetrics.basics.ComplexityLevelNormal": 5,
+  "codemetrics.nodeconfiguration.ReturnStatement": 0
+}
