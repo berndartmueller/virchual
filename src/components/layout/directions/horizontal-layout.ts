@@ -37,7 +37,7 @@ export class HorizontalLayout extends BaseLayout {
    */
   totalWidth(index: number): number {
     return this.virtual
-      .getSlides()
+      .getSlides(true)
       .filter(slide => slide.index <= index)
       .reduce((accumulator, slide) => {
         return accumulator + this.slideWidth(slide.index) + this.gap;

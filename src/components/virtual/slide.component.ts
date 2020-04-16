@@ -17,12 +17,12 @@ export class SlideComponent implements BaseComponent {
   /**
    * Container element if available.
    */
-  container: Element;
+  container: HTMLElement;
 
   /**
    * Whether this is a cloned slide or not.
    */
-  private isClone: boolean;
+  isClone: boolean;
 
   /**
    * Hold the original styles.

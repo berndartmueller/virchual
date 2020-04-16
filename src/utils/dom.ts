@@ -17,7 +17,7 @@ import { toArray } from './utils';
  *
  * @return {Element|null} - A found element or null.
  */
-export function find(elm, selector) {
+export function find(elm: HTMLElement | ParentNode, selector: string): HTMLElement {
   return elm ? elm.querySelector(selector.split(' ')[0]) : null;
 }
 
@@ -29,7 +29,7 @@ export function find(elm, selector) {
  *
  * @return {Element|null} - A found element on success. Null on failure.
  */
-export function child(parent, tagOrClassName) {
+export function child(parent: HTMLElement, tagOrClassName: string): HTMLElement | null {
   if (parent) {
     return (
       values(parent.children).filter(child => {
@@ -49,7 +49,7 @@ export function child(parent, tagOrClassName) {
  *
  * @return {Element} - A created element.
  */
-export function create(tag, attrs) {
+export function create(tag: string, attrs: object): HTMLElement {
   const elm = document.createElement(tag);
   each(attrs, (value, key) => setAttribute(elm, key, value));
 
@@ -63,11 +63,11 @@ export function create(tag, attrs) {
  *
  * @return {Node} - A created node.
  */
-export function domify(html) {
+export function domify(html: string): HTMLElement {
   const div = create('div', {});
   div.innerHTML = html;
 
-  return div.firstChild;
+  return div.firstChild as HTMLElement;
 }
 
 /**
@@ -75,7 +75,7 @@ export function domify(html) {
  *
  * @param {Element|Element[]} elms - Element(s) to be removed.
  */
-export function remove(elms) {
+export function remove(elms: HTMLElement | HTMLElement[]) {
   toArray(elms).forEach(elm => {
     if (elm && elm.parentElement) {
       elm.parentElement.removeChild(elm);
@@ -89,7 +89,7 @@ export function remove(elms) {
  * @param {Element} parent - A parent element.
  * @param {Element} child  - An element to be appended.
  */
-export function append(parent, child) {
+export function append(parent: HTMLElement, child: HTMLElement) {
   if (parent) {
     parent.appendChild(child);
   }
@@ -98,12 +98,12 @@ export function append(parent, child) {
 /**
  * Insert an element before the reference element.
  *
+ * @param {Element}      elemt- An element to be inserted.
  * @param {Element|Node} ref - A reference element.
- * @param {Element}      elm - An element to be inserted.
  */
-export function before(elm, ref) {
-  if (elm && ref && ref.parentElement) {
-    ref.parentElement.insertBefore(elm, ref);
+export function before(element: HTMLElement, ref: HTMLElement) {
+  if (element && ref && ref.parentElement) {
+    ref.parentElement.insertBefore(element, ref);
   }
 }
 
@@ -113,7 +113,7 @@ export function before(elm, ref) {
  * @param {Element} elm     - An element where styles are applied.
  * @param {Object}  styles  - Object containing styles.
  */
-export function applyStyle(elm, styles) {
+export function applyStyle(elm: HTMLElement, styles: any) {
   if (elm) {
     each(styles, (value, prop) => {
       if (value !== null) {
@@ -131,7 +131,7 @@ export function applyStyle(elm, styles) {
  * @param {string|string[]} classes - Class names being added.
  * @param {boolean}         remove  - Whether to remove or add classes.
  */
-function addOrRemoveClasses(elm, classes, remove) {
+function addOrRemoveClasses(elm: HTMLElement, classes: string | string[], remove: boolean) {
   if (elm) {
     toArray(classes).forEach(name => {
       if (name) {
@@ -147,7 +147,7 @@ function addOrRemoveClasses(elm, classes, remove) {
  * @param {Element}          elm     - An element where classes are added.
  * @param {string|string[]}  classes - Class names being added.
  */
-export function addClass(elm, classes) {
+export function addClass(elm: HTMLElement, classes: string | string[]) {
   addOrRemoveClasses(elm, classes, false);
 }
 
@@ -157,7 +157,7 @@ export function addClass(elm, classes) {
  * @param {Element}         elm     - An element where classes are removed.
  * @param {string|string[]} classes - A class name being removed.
  */
-export function removeClass(elm, classes) {
+export function removeClass(elm: HTMLElement, classes: string | string[]) {
   addOrRemoveClasses(elm, classes, true);
 }
 
@@ -169,7 +169,7 @@ export function removeClass(elm, classes) {
  *
  * @return {boolean} - True if the element has the class or false if not.
  */
-export function hasClass(elm, className) {
+export function hasClass(elm: HTMLElement, className: string): boolean {
   return !!elm && elm.classList.contains(className);
 }
 
@@ -180,9 +180,9 @@ export function hasClass(elm, className) {
  * @param {string}                  name  - Attribute name.
  * @param {string|number|boolean}   value - Attribute value.
  */
-export function setAttribute(elm, name, value) {
+export function setAttribute(elm: HTMLElement, name: string, value: string | number | boolean) {
   if (elm) {
-    elm.setAttribute(name, value);
+    elm.setAttribute(name, `${value}`);
   }
 }
 
@@ -194,7 +194,7 @@ export function setAttribute(elm, name, value) {
  *
  * @return {string} - The value of the given attribute if available. An empty string if not.
  */
-export function getAttribute(elm, name) {
+export function getAttribute(elm: HTMLElement, name: string): string {
   return elm ? elm.getAttribute(name) : '';
 }
 
@@ -204,7 +204,7 @@ export function getAttribute(elm, name) {
  * @param {Element|Element[]} elms  - An element where an attribute is removed.
  * @param {string|string[]}      names - Attribute name.
  */
-export function removeAttribute(elms, names) {
+export function removeAttribute(elms: HTMLElement | HTMLElement[], names: string | string[]) {
   toArray(names).forEach(name => {
     toArray(elms).forEach(elm => elm && elm.removeAttribute(name));
   });
@@ -216,7 +216,7 @@ export function removeAttribute(elms, names) {
  * @param {Element}  elm      - Element that may contain images.
  * @param {Function} callback - Callback function fired right after all images are loaded.
  */
-export function loaded(elm, callback) {
+export function loaded(elm: HTMLElement, callback: Function) {
   const images = elm.querySelectorAll('img');
   const length = images.length;
 

@@ -1,3 +1,4 @@
+import { Event } from './core/event';
 import './css/styles.css';
 
 import { BaseComponent } from './components/base-component';
@@ -6,12 +7,15 @@ import DragComponent from './components/drag/drag.component';
 import { HorizontalLayout } from './components/layout/directions/horizontal-layout';
 import TrackComponent from './components/track/track.component';
 import VirtualComponent from './components/virtual/virtual.component';
+import CloneComponent from './components/clone/clone.component';
 import { SlideTransition } from './transitions/slide/index';
-import { find } from './utils/dom';
+import { find, applyStyle } from './utils/dom';
 import { error, exist } from './utils/error';
 import { each } from './utils/object';
+import { ELEMENT_CLASSES as classes } from './constants/classes';
 
 export type VirtualSwiperOptions = {
+  type?: 'slide' | 'loop';
   slides?: VirtualSwiperSlides;
   rewindSpeed?: number;
   speed?: number;
@@ -19,6 +23,7 @@ export type VirtualSwiperOptions = {
   focus?: boolean | string | number;
   perPage?: number;
   isNavigation?: boolean;
+  drag?: boolean;
   easing?: string;
   gap?: number | string;
   padding?: { left: number | string; right: number | string };
@@ -35,6 +40,7 @@ export type VirtualSwiperOptions = {
   flickVelocityThreshold?: number;
   flickPower?: number;
   flickMaxPages?: number;
+  classes?: any;
 };
 
 type VirtualSwiperSlides = string[] | (() => string[]);
@@ -58,10 +64,12 @@ export default class VirtualSwiper {
     this._index = 0;
     this.options = {
       slides: [],
+      type: 'loop',
       speed: 400,
       rewind: false,
       focus: false,
       perPage: 1,
+      drag: true,
       isNavigation: false,
       trimSpace: false,
       autoWidth: false,
@@ -79,6 +87,7 @@ export default class VirtualSwiper {
       flickPower: 600,
       flickMaxPages: 1,
       easing: 'cubic-bezier(.42,.65,.27,.99)',
+      classes,
       ...options,
     };
 
@@ -89,6 +98,7 @@ export default class VirtualSwiper {
       Transition: new SlideTransition(this.options),
       Drag: new DragComponent(this.options),
       Layout: new HorizontalLayout(this.options),
+      Clone: new CloneComponent(this.options),
     };
 
     this.components = {
@@ -113,6 +123,27 @@ export default class VirtualSwiper {
     return virtual.length;
   }
 
+  /**
+   * Verify whether the slider type is the given one or not.
+   *
+   * @param type - A slider type.
+   *
+   * @return True if the slider type is the provided type or false if not.
+   */
+  is(type: string): boolean {
+    return type === this.options.type;
+  }
+
+  /**
+   * Return the class list.
+   * This is an alias of Splide.options.classList.
+   *
+   * @return An object containing all class list.
+   */
+  get classes() {
+    return this.options.classes;
+  }
+
   private mount() {
     try {
       each(this.components, (component: BaseComponent, key: string) => {
@@ -123,6 +154,16 @@ export default class VirtualSwiper {
 
       return null;
     }
+
+    each(this.components, component => {
+      component.mounted && component.mounted();
+    });
+
+    Event.emit('mounted');
+    // this.State.set( STATES.IDLE ); todo
+    Event.emit('ready');
+
+    applyStyle(this.root, { visibility: 'visible' });
   }
 }
 

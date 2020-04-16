@@ -36,12 +36,35 @@ export default class VirtualComponent implements BaseComponent {
     return this.virtualSlides.filter((slide, slideIndex) => slideIndex === index)[0];
   }
 
-  getSlides() {
-    return this.virtualSlides;
+  /**
+   * Return all Slide objects.
+   *
+   * @param includeClones - Whether to include cloned slides or not.
+   * @return Slide objects.
+   */
+  getSlides(includeClones: boolean = false): SlideComponent[] {
+    return includeClones ? this.virtualSlides : this.virtualSlides.filter(slide => !slide.isClone);
   }
 
   each(callback: (slide: SlideComponent) => void) {
     this.virtualSlides.forEach(callback);
+  }
+
+  /**
+   * Register a slide to create a Slide object and handle its behavior.
+   *
+   * @param slide     - A slide element.
+   * @param index     - A unique index. This can be negative.
+   * @param realIndex - A real index for clones. Set -1 for real slides.
+   */
+  register(slide: HTMLElement, index: number, realIndex: number) {
+    const slideInstance = new SlideComponent(this.options, index, realIndex, slide);
+
+    slideInstance.mount(this.swiperInstance, { Track: this.track });
+
+    this.virtualSlides.push(slideInstance);
+
+    return slideInstance;
   }
 
   private init() {
@@ -53,27 +76,12 @@ export default class VirtualComponent implements BaseComponent {
       this.slides = this.options.slides;
     }
 
-    this.slides.slice(0, 4).forEach((slide, index) => {
+    this.slides.slice(0, 2).forEach((slide, index) => {
       const node = domify(`<div class='vswiper-slide'>${slide}</div>`);
 
       append(this.track.list, node);
 
       this.register(node, index, -1);
     });
-  }
-
-  /**
-   * Register a slide to create a Slide object and handle its behavior.
-   *
-   * @param slide     - A slide element.
-   * @param index     - A unique index. This can be negative.
-   * @param realIndex - A real index for clones. Set -1 for real slides.
-   */
-  private register(slide: HTMLElement, index: number, realIndex: number) {
-    const slideInstance = new SlideComponent(this.options, index, realIndex, slide);
-
-    slideInstance.mount(this.swiperInstance, { Track: this.track });
-
-    this.virtualSlides.push(slideInstance);
   }
 }

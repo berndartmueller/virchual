@@ -50,7 +50,7 @@ export class HorizontalDirection {
       position = between(position, this.layout.totalWidth(this.virtual.total), 0);
     }
 
-    const slides = this.virtual.getSlides();
+    const slides = this.virtual.getSlides(true);
 
     for (const i in slides) {
       const slide = slides[i];
