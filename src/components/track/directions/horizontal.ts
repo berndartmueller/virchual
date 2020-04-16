@@ -29,20 +29,20 @@ export class HorizontalDirection {
   /**
    * Calculate position by index.
    *
-   * @param {number} index - Slide index.
+   * @param index - Slide index.
    *
-   * @return {Object} - Calculated position.
+   * @return Calculated position.
    */
-  toPosition(index) {
+  toPosition(index: number): number {
     return this.sign * (this.layout.totalWidth(index - 1) + this.offset(index));
   }
 
   /**
    * Calculate the closest slide index from the given position.
    *
-   * @return {number} - The closest slide position.
+   * @return The closest slide position.
    */
-  toIndex(position) {
+  toIndex(position: number): number {
     position *= this.sign;
 
     // if (this.instance.is(SLIDE)) {
@@ -55,7 +55,7 @@ export class HorizontalDirection {
     for (const i in slides) {
       const slide = slides[i];
 
-      const slideIndex = this.instance.index;
+      const slideIndex = slide.index;
       const slidePosition = this.sign * this.toPosition(slideIndex);
 
       if (slidePosition < position && position <= slidePosition + this.layout.slideWidth(slideIndex) + this.layout.gap) {
@@ -73,7 +73,7 @@ export class HorizontalDirection {
    *
    * @return {number} - Trimmed position.
    */
-  trim(position) {
+  trim(position: number): number {
     const edge = this.sign * (this.layout.totalWidth(this.virtual.total) - (this.layout.width + this.layout.gap));
 
     return between(position, edge, 0);
@@ -84,7 +84,7 @@ export class HorizontalDirection {
    *
    * @return {number} - Offset amount.
    */
-  offset(index) {
+  offset(index: number): number {
     const { focus } = this.options;
     const slideWidth = this.layout.slideWidth(index);
 

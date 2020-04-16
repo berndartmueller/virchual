@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="./../src/css/styles.css" />
+    <link rel="stylesheet" href="index.css" />
     <style>
       .image-swiper {
         border: 1px solid #ccc;
@@ -16,9 +16,11 @@
     <!-- Slider main container -->
     <div class="vswiper-container image-swiper">
       <!-- Additional required wrapper -->
-      <div class="vswiper-wrapper">
-        <!-- Slides -->
-        <!-- <div class="vswiper-slide"><span>Slide 1</span></div> -->
+      <div class="vswiper__track">
+        <div class="vswiper__list">
+          <!-- Slides -->
+          <!-- <div class="vswiper-slide"><span>Slide 1</span></div> -->
+        </div>
       </div>
       <!-- If we need pagination -->
       <div class="vswiper-pagination"></div>
@@ -28,6 +30,6 @@
       <div class="vswiper-button-next"></div>
     </div>
 
-    <script src="./../dist/index.bundle.js"></script>
+    <script src="index.bundle.js"></script>
   </body>
 </html>

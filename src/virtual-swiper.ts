@@ -1,3 +1,5 @@
+import './css/styles.css';
+
 import { BaseComponent } from './components/base-component';
 import ControllerComponent from './components/controller/controller.component';
 import DragComponent from './components/drag/drag.component';
@@ -60,7 +62,7 @@ export default class VirtualSwiper {
       rewind: false,
       focus: false,
       perPage: 1,
-      isNavigation: true,
+      isNavigation: false,
       trimSpace: false,
       autoWidth: false,
       padding: undefined,
@@ -82,9 +84,9 @@ export default class VirtualSwiper {
 
     const defaultComponents: VirtualSwiperComponents = {
       Controller: new ControllerComponent(this.options),
-      Transition: new SlideTransition(this.options),
       Track: new TrackComponent(this.options),
       Virtual: new VirtualComponent(this.options),
+      Transition: new SlideTransition(this.options),
       Drag: new DragComponent(this.options),
       Layout: new HorizontalLayout(this.options),
     };
@@ -106,7 +108,9 @@ export default class VirtualSwiper {
   }
 
   get length() {
-    return 0;
+    const virtual = this.components.Virtual as VirtualComponent;
+
+    return virtual.length;
   }
 
   private mount() {

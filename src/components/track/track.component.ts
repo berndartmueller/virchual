@@ -4,6 +4,7 @@ import { SlideTransition } from './../../transitions/slide/index';
 import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
 import { BaseComponent } from './../base-component';
 import { HorizontalDirection } from './directions/horizontal';
+import { Event } from './../../core/event';
 
 export default class TrackComponent implements BaseComponent {
   // Store the current position.
@@ -18,6 +19,8 @@ export default class TrackComponent implements BaseComponent {
   private swiperInstance: VirtualSwiper;
   private controller: ControllerComponent;
   private _direction: HorizontalDirection;
+  private _list: HTMLElement;
+  private _track: HTMLElement;
   private transition: SlideTransition;
 
   constructor(private options: VirtualSwiperOptions) {}
@@ -27,9 +30,11 @@ export default class TrackComponent implements BaseComponent {
   }
 
   get list() {
-    const list = document.querySelector('.vswiper-wrapper');
+    return this._list;
+  }
 
-    return list;
+  get track() {
+    return this._track;
   }
 
   mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
@@ -37,6 +42,9 @@ export default class TrackComponent implements BaseComponent {
     this.controller = components.Controller as ControllerComponent;
     this.transition = components.Transition as SlideTransition;
     this._direction = new HorizontalDirection(this.options, instance, components);
+
+    this._track = document.querySelector('.vswiper__track');
+    this._list = document.querySelector('.vswiper__list');
   }
   /**
    * Called after the component is mounted.
@@ -44,7 +52,9 @@ export default class TrackComponent implements BaseComponent {
    */
   mounted() {
     if (!this.isFade) {
-      // Splide.on( 'mounted resize updated', () => { this.jump( Splide.index ) } );
+      Event.on('mounted resize updated', () => {
+        this.jump(this.swiperInstance.index);
+      });
     }
   }
 
@@ -57,13 +67,12 @@ export default class TrackComponent implements BaseComponent {
    * @param {number}  newIndex  - An actual new index. They are always same in Slide and Rewind mode.
    * @param {boolean} silently  - If true, suppress emitting events.
    */
-  go(destIndex, newIndex, silently) {
+  go(destIndex, newIndex, silently: boolean = false) {
     const newPosition = this.getTrimmedPosition(destIndex);
-    // const prevIndex   = Splide.index;
-    const prevIndex = 0;
+    const prevIndex = this.swiperInstance.index;
 
     if (!silently) {
-      // Splide.emit( 'move', newIndex, prevIndex, destIndex );
+      Event.emit('move', newIndex, prevIndex, destIndex);
     }
 
     if (Math.abs(newPosition - this.currPosition) >= 1 || this.isFade) {
@@ -95,7 +104,7 @@ export default class TrackComponent implements BaseComponent {
     }
 
     if (!silently) {
-      // Splide.emit( 'moved', newIndex, prevIndex, destIndex );
+      Event.emit('moved', newIndex, prevIndex, destIndex);
     }
   }
 

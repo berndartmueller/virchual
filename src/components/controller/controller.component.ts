@@ -20,6 +20,8 @@ export default class ControllerComponent implements BaseComponent {
   mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
     this.swiperInstance = instance;
     this.track = components.Track as TrackComponent;
+
+    this.bind();
   }
 
   /**
@@ -34,7 +36,7 @@ export default class ControllerComponent implements BaseComponent {
    * @param {string|number} control  - A control pattern.
    * @param {boolean}       silently - Go to the destination without event emission.
    */
-  go(control, silently) {
+  go(control, silently: boolean = false) {
     const destIndex = this.trim(this.parse(control));
 
     this.track.go(destIndex, this.rewind(destIndex), silently);

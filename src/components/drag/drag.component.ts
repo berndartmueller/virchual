@@ -51,12 +51,14 @@ export default class DragComponent implements BaseComponent {
     Event.on('touchend touchcancel mouseleave mouseup dragend', this.onEnd.bind(this), this.track.list);
   }
 
+  /**
+   * Called when the track starts to be dragged.
+   */
   private onStart(event: MouseEvent & TouchEvent) {
     if (!this.isDisabled && !this.isDragging) {
       this.startCoord = this.track.toCoord(this.track.position);
-      this.startCoord = { x: 0, y: 0 };
-
       this.startInfo = this.analyze(event, {});
+
       this.currentInfo = this.startInfo;
     }
   }
@@ -86,9 +88,9 @@ export default class DragComponent implements BaseComponent {
   /**
    * Determine whether to start moving the track or not by drag angle.
    *
-   * @param {Object} info - An information object.
+   * @param info - An information object.
    *
-   * @return {boolean} - True if the track should be moved or false if not.
+   * @return True if the track should be moved or false if not.
    */
   private shouldMove({ offset }) {
     // if (Splide.State.is(IDLE)) {

@@ -20,7 +20,7 @@ export default class VirtualComponent implements BaseComponent {
   }
 
   get total() {
-    return this.slides.length;
+    return this.virtualSlides.length;
   }
 
   /**
@@ -29,7 +29,7 @@ export default class VirtualComponent implements BaseComponent {
    * @return Slide length.
    */
   get length() {
-    return this.slides.length;
+    return this.virtualSlides.length;
   }
 
   getSlide(index: number) {
@@ -53,7 +53,7 @@ export default class VirtualComponent implements BaseComponent {
       this.slides = this.options.slides;
     }
 
-    this.slides.slice(0, 3).forEach((slide, index) => {
+    this.slides.slice(0, 4).forEach((slide, index) => {
       const node = domify(`<div class='vswiper-slide'>${slide}</div>`);
 
       append(this.track.list, node);

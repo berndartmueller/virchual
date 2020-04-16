@@ -45,7 +45,7 @@ export class HorizontalLayout extends BaseLayout {
   }
 
   get width(): number {
-    return this.track.list.clientWidth - this.padding.left - this.padding.right;
+    return this.track.track.clientWidth - this.padding.left - this.padding.right;
   }
 
   /**

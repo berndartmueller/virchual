@@ -40,7 +40,7 @@ export class SlideComponent implements BaseComponent {
   private statusUpdateEvents: string;
 
   constructor(private options: VirtualSwiperOptions, public index: number, public realIndex: number, public slide: HTMLElement) {
-    this.container = find(this.slide, `.vswiper-wrapper`);
+    this.container = find(this.slide, `.vswiper__list`);
     this.isClone = realIndex > -1;
     this.styles = getAttribute(this.slide, 'style') || '';
     this.statusUpdateEvents = 'ready.slide updated.slide resize.slide ' + (this.options.updateOnMove ? 'move.slide' : 'moved.slide');

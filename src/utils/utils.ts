@@ -14,7 +14,7 @@ import { create, append, remove, applyStyle } from './dom';
  *
  * @return {*[]} - Array containing the given value.
  */
-export function toArray(value) {
+export function toArray(value: any): any[] {
   return Array.isArray(value) ? value : [value];
 }
 
@@ -22,25 +22,25 @@ export function toArray(value) {
  * Check if the given value is between min and max.
  * Min will be returned when the value is less than min or max will do when greater than max.
  *
- * @param {number} value - A number to be checked.
- * @param {number} m1    - Minimum or maximum number.
- * @param {number} m2    - Maximum or minimum number.
+ * @param value - A number to be checked.
+ * @param m1    - Minimum or maximum number.
+ * @param m2    - Maximum or minimum number.
  *
- * @return {number} - A value itself, min or max.
+ * @return A value itself, min or max.
  */
-export function between(value, m1, m2) {
+export function between(value: number, m1: number, m2: number): number {
   return Math.min(Math.max(value, m1 > m2 ? m2 : m1), m1 > m2 ? m1 : m2);
 }
 
 /**
  * The sprintf method with minimum functionality.
  *
- * @param {string}       format       - The string format.
- * @param {string|Array} replacements - Replacements accepting multiple arguments.
+ * @param format       - The string format.
+ * @param replacements - Replacements accepting multiple arguments.
  *
- * @returns {string} - Converted string.
+ * @returns Converted string.
  */
-export function sprintf(format, replacements) {
+export function sprintf(format: string, replacements: string | Array<any>): string {
   let i = 0;
   return format.replace(/%s/g, () => toArray(replacements)[i++]);
 }
@@ -53,14 +53,14 @@ export function sprintf(format, replacements) {
  * @return {string} - If the value is string, return itself.
  *                    If number, do value + "px". An empty string, otherwise.
  */
-export function unit(value) {
+export function unit(value: number | string): string {
   const type = typeof value;
 
   if (type === 'number' && value > 0) {
-    return parseFloat(value) + 'px';
+    return parseFloat(`${value}`) + 'px';
   }
 
-  return type === 'string' ? value : '';
+  return type === 'string' ? `${value}` : '';
 }
 
 /**
@@ -70,7 +70,7 @@ export function unit(value) {
  *
  * @return {string|number} - Padded number.
  */
-export function pad(number) {
+export function pad(number: number): string | number {
   return number < 10 ? '0' + number : number;
 }
 
