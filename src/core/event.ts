@@ -1,4 +1,4 @@
-export class EventClass {
+export class Event {
   /**
    * Store all event this.data.
    */
@@ -77,5 +77,3 @@ export class EventClass {
     }
   }
 }
-
-export const Event = new EventClass();

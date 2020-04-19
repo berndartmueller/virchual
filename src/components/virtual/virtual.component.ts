@@ -1,22 +1,62 @@
 import { SlideComponent } from './slide.component';
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from './../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents, VirtualSwiperSlide } from './../../virtual-swiper';
 import { BaseComponent } from './../base-component';
-import { domify, append } from '../../utils/dom';
+import { domify, append, applyStyle } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
+import { pad, unit } from '../../utils/utils';
+import { Event } from './../../core/event';
+import { exist } from '../../utils/error';
+import { values } from '../../utils/object';
+import { BaseLayout } from '../layout/index';
+
+type VirtualSlide = {
+  index: number;
+  key?: string;
+  html: string;
+};
+
+/**
+ * The property name for UID stored in a window object.
+ */
+const UID_NAME: string = 'uid';
 
 export default class VirtualComponent implements BaseComponent {
-  private slides: string[];
+  private hydratedSlides: HTMLElement[];
+  private _slides: VirtualSlide[];
   private virtualSlides: SlideComponent[];
   private track: TrackComponent;
+  private layout: BaseLayout;
   private swiperInstance: VirtualSwiper;
+  private previousFrom: number;
+  private previousTo: number;
 
-  constructor(private options: VirtualSwiperOptions) {}
+  constructor(private options: VirtualSwiperOptions) {
+    this.previousFrom = 0;
+    this.previousTo = 0;
+  }
 
   mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
     this.swiperInstance = instance;
     this.track = components.Track as TrackComponent;
+    this.layout = components.Layout as BaseLayout;
 
+    /*
+     * Assign unique ID to the root element if it doesn't have the one.
+     * Note that IE doesn't support padStart() to fill the uid by 0.
+     */
+    if (!this.swiperInstance.root.id) {
+      window['vswiper'] = window['vswiper'] || {};
+
+      const uid = window['vswiper'][UID_NAME] || 0;
+
+      window['vswiper'][UID_NAME] = uid + 1;
+
+      this.swiperInstance.root.id = `vswiper-${pad(uid)}`;
+    }
+
+    this.collect();
     this.init();
+    this.bind();
   }
 
   get total() {
@@ -29,11 +69,17 @@ export default class VirtualComponent implements BaseComponent {
    * @return Slide length.
    */
   get length() {
-    return this.virtualSlides.length;
+    return this.getSlides().length;
   }
 
-  getSlide(index: number) {
-    return this.virtualSlides.filter((slide, slideIndex) => slideIndex === index)[0];
+  get slides() {
+    return this._slides || [];
+  }
+
+  getSlide(index: number, includeClones: boolean = true) {
+    return this.virtualSlides
+      .filter(slide => slide.index === index)
+      .filter(slide => includeClones === true || (includeClones === false && !slide.isClone))[0];
   }
 
   /**
@@ -57,8 +103,8 @@ export default class VirtualComponent implements BaseComponent {
    * @param index     - A unique index. This can be negative.
    * @param realIndex - A real index for clones. Set -1 for real slides.
    */
-  register(slide: HTMLElement, index: number, realIndex: number) {
-    const slideInstance = new SlideComponent(this.options, index, realIndex, slide);
+  register(slide: HTMLElement, index: number, realIndex: number, key?: string) {
+    const slideInstance = new SlideComponent(this.options, index, realIndex, slide, key);
 
     slideInstance.mount(this.swiperInstance, { Track: this.track });
 
@@ -68,20 +114,118 @@ export default class VirtualComponent implements BaseComponent {
   }
 
   private init() {
+    let slides: VirtualSwiperSlide[] = [];
     this.virtualSlides = [];
 
     if (typeof this.options.slides === 'function') {
-      this.slides = this.options.slides();
+      slides = this.options.slides();
     } else {
-      this.slides = this.options.slides;
+      slides = this.options.slides;
     }
 
-    this.slides.slice(0, 2).forEach((slide, index) => {
-      const node = domify(`<div class='vswiper-slide'>${slide}</div>`);
+    slides = slides || [];
+
+    this._slides = slides.map((slide, index) => {
+      if (typeof slide === 'string') {
+        return {
+          index,
+          html: slide,
+        };
+      }
+
+      return {
+        index,
+        key: slide.key,
+        html: slide.html,
+      };
+    });
+
+    this._slides.slice(0, 2).forEach((slide, index) => {
+      const hydratedSlide = this.hydratedSlides.find(hydratedSlide => hydratedSlide.dataset.key === slide.key);
+      let element: HTMLElement;
+
+      // use already existig and hydrated DOM node
+      if (hydratedSlide) {
+        element = hydratedSlide;
+
+        // create new DOM node
+      } else {
+        element = domify(`<div class='vswiper-slide'>${slide.html}</div>`);
+
+        append(this.track.list, element);
+      }
+
+      this.register(element, index, -1, slide.key);
+    });
+  }
+
+  /**
+   * Collect elements.
+   */
+  private collect() {
+    exist(this.track.track && this.track.list, 'Track or list was not found.');
+
+    this.hydratedSlides = values(this.track.list.children);
+  }
+
+  private bind() {
+    this.swiperInstance.on('move', (newIndex, prevIndex) => {
+      const slide = this._slides[1 + newIndex];
+
+      if (slide == null) {
+        return;
+      }
+
+      const virtualSlide = this.getSlide(slide.index);
+
+      // slide already injected in DOM
+      if (virtualSlide) {
+        return;
+      }
+
+      const node = domify(`<div class='vswiper-slide'>${slide.html}</div>`);
 
       append(this.track.list, node);
 
-      this.register(node, index, -1);
+      this.register(node, 1 + newIndex, -1, slide.key);
+
+      this.swiperInstance.emit('add', 1 + newIndex);
+    });
+
+    this.swiperInstance.on('moved', () => {
+      const slidesBefore = 2;
+      const slidesAfter = 2;
+
+      const from = Math.max((this.swiperInstance.index || 0) - slidesBefore, 0);
+      const to = Math.min((this.swiperInstance.index || 0) + slidesAfter, this.length - 1);
+
+      for (let i = this.previousFrom; i <= this.previousTo; i += 1) {
+        if (i < from || i > to) {
+          const slide = this.getSlide(i, false);
+
+          slide.slide.parentNode.removeChild(slide.slide);
+        }
+      }
+
+      this.previousFrom = from;
+      this.previousTo = to;
+
+      this.offsetPositionSlides();
+    });
+  }
+
+  /**
+   * Position slides with offset to counteract removed slides
+   */
+  private offsetPositionSlides() {
+    const offsetProp: string = 'left';
+    const offset = this.layout.slideWidth() * this.previousFrom;
+
+    const styles = {};
+    styles[offsetProp] = this.options.autoWidth ? null : unit(offset);
+
+    this.each(slide => {
+      applyStyle(slide.slide, styles);
     });
   }
 }

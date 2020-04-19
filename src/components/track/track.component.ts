@@ -43,8 +43,8 @@ export default class TrackComponent implements BaseComponent {
     this.transition = components.Transition as SlideTransition;
     this._direction = new HorizontalDirection(this.options, instance, components);
 
-    this._track = document.querySelector('.vswiper__track');
-    this._list = document.querySelector('.vswiper__list');
+    this._track = this.swiperInstance.root.querySelector('.vswiper__track');
+    this._list = this.swiperInstance.root.querySelector('.vswiper__list');
   }
   /**
    * Called after the component is mounted.
@@ -52,7 +52,7 @@ export default class TrackComponent implements BaseComponent {
    */
   mounted() {
     if (!this.isFade) {
-      Event.on('mounted resize updated', () => {
+      this.swiperInstance.on('mounted resize updated', () => {
         this.jump(this.swiperInstance.index);
       });
     }
@@ -72,7 +72,7 @@ export default class TrackComponent implements BaseComponent {
     const prevIndex = this.swiperInstance.index;
 
     if (!silently) {
-      Event.emit('move', newIndex, prevIndex, destIndex);
+      this.swiperInstance.emit('move', newIndex, prevIndex, destIndex);
     }
 
     if (Math.abs(newPosition - this.currPosition) >= 1 || this.isFade) {
@@ -104,7 +104,7 @@ export default class TrackComponent implements BaseComponent {
     }
 
     if (!silently) {
-      Event.emit('moved', newIndex, prevIndex, destIndex);
+      this.swiperInstance.emit('moved', newIndex, prevIndex, destIndex);
     }
   }
 

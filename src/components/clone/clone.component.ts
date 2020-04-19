@@ -1,4 +1,4 @@
-import { addClass, append, before, remove, removeAttribute } from '../../utils/dom';
+import { addClass, append, before, remove, removeAttribute, domify } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';
 import { LOOP } from './../../constants/types';
@@ -28,12 +28,12 @@ export default class CloneComponent implements BaseComponent {
     if (this.swiperInstance.is(LOOP)) {
       this.generateClones();
 
-      Event.on('refresh', () => {
+      this.swiperInstance.on('refresh', () => {
         this.destroy();
         this.generateClones();
       });
 
-      Event.on('move', () => {
+      this.swiperInstance.on('move', () => {
         this.generateClones();
       });
     }
@@ -93,55 +93,46 @@ export default class CloneComponent implements BaseComponent {
     }
 
     const count = this.getCloneCount();
-    let slides = this.virtual.getSlides();
-
-    while (slides.length < count) {
-      slides = slides.concat(slides);
-    }
+    const slides = this.virtual.getSlides();
+    const firstSlide = slides[0];
+    const lastSlide = slides.slice(-1)[0];
 
     const currentIndex = this.swiperInstance.index;
+    const virtualSlidesLength = this.virtual.getSlides(false).length;
 
-    if (currentIndex > 0 && this.lengthAfter === 0) {
-      slides.slice(0, count).forEach((slide, index) => {
-        const clone = this.cloneDeeply(slide);
+    if (currentIndex > 0 && currentIndex >= virtualSlidesLength - 1 && this.lengthAfter === 0) {
+      this.virtual.slides.slice(0, count).forEach((slide, index) => {
+        const node = domify(`<div class='vswiper-slide'>${slide.html}</div>`) as HTMLElement;
+        const clone = this.cloneDeeply(node);
 
         append(this.track.list, clone);
 
         const slideClone = this.virtual.register(clone, index + length, index);
 
         this._clonesAfter.push(slideClone);
+
+        this.swiperInstance.emit('cloned');
       });
     }
 
     if (this.lengthBefore === 0) {
-      slides.slice(-count).forEach((elm, index) => {
-        const clone = this.cloneDeeply(elm);
+      this.virtual.slides.slice(-count).forEach((slide, index) => {
+        const node = domify(`<div class='vswiper-slide'>${slide.html}</div>`) as HTMLElement;
+        const clone = this.cloneDeeply(node);
 
-        before(clone, slides[0].slide);
+        before(clone, firstSlide.slide);
 
         const slideClone = this.virtual.register(clone, index - count, index);
 
         this._clonesBefore.push(slideClone);
+
+        this.swiperInstance.emit('cloned');
       });
     }
   }
 
-  /**
-   * Return half count of clones to be generated.
-   * Clone count is determined by:
-   * - Max pages a flick action can move.
-   * - Whether the slide length is enough for perPage.
-   *
-   * @return {number} - Count for clones.
-   */
-  private getCloneCount() {
-    const options = this.options;
-
-    if (options.autoWidth) {
-      return this.virtual.length;
-    }
-
-    return options.perPage * (options.drag ? options.flickMaxPages : 1);
+  private getCloneCount(): number {
+    return this.options.cloneCount;
   }
 
   /**
@@ -151,8 +142,8 @@ export default class CloneComponent implements BaseComponent {
    *
    * @return {Node} - A cloned node(element).
    */
-  private cloneDeeply(slide: SlideComponent): HTMLElement {
-    const clone = slide.slide.cloneNode(true) as HTMLElement;
+  private cloneDeeply(element: HTMLElement): HTMLElement {
+    const clone = element.cloneNode(true) as HTMLElement;
 
     addClass(clone, this.swiperInstance.classes.clone);
 

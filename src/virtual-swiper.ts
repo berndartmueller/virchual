@@ -8,6 +8,7 @@ import { HorizontalLayout } from './components/layout/directions/horizontal-layo
 import TrackComponent from './components/track/track.component';
 import VirtualComponent from './components/virtual/virtual.component';
 import CloneComponent from './components/clone/clone.component';
+import PaginationComponent from './components/pagination/pagination.component';
 import { SlideTransition } from './transitions/slide/index';
 import { find, applyStyle } from './utils/dom';
 import { error, exist } from './utils/error';
@@ -41,9 +42,12 @@ export type VirtualSwiperOptions = {
   flickPower?: number;
   flickMaxPages?: number;
   classes?: any;
+  cloneCount?: number;
+  pagination?: boolean;
 };
 
-type VirtualSwiperSlides = string[] | (() => string[]);
+export type VirtualSwiperSlide = string | { key: string; html: string };
+export type VirtualSwiperSlides = VirtualSwiperSlide[] | (() => VirtualSwiperSlide[]);
 
 export type VirtualSwiperComponents = { [key: string]: BaseComponent };
 
@@ -51,6 +55,7 @@ export default class VirtualSwiper {
   root: HTMLElement;
 
   private _index: number;
+  private event: Event;
 
   constructor(
     public selector: HTMLElement | string,
@@ -87,6 +92,8 @@ export default class VirtualSwiper {
       flickPower: 600,
       flickMaxPages: 1,
       easing: 'cubic-bezier(.42,.65,.27,.99)',
+      cloneCount: 1,
+      pagination: true,
       classes,
       ...options,
     };
@@ -99,6 +106,7 @@ export default class VirtualSwiper {
       Drag: new DragComponent(this.options),
       Layout: new HorizontalLayout(this.options),
       Clone: new CloneComponent(this.options),
+      Pagination: new PaginationComponent(this.options),
     };
 
     this.components = {
@@ -106,9 +114,14 @@ export default class VirtualSwiper {
       ...this.components,
     };
 
+    this.event = new Event();
+
     this.mount();
   }
 
+  /**
+   * Get current slide index.
+   */
   get index() {
     return this._index;
   }
@@ -132,6 +145,48 @@ export default class VirtualSwiper {
    */
   is(type: string): boolean {
     return type === this.options.type;
+  }
+
+  /**
+   * Register callback fired on the given event(s).
+   *
+   * @param events  - An event name. Use space to separate multiple events.
+   *                             Also, namespace is accepted by dot, such as 'resize.{namespace}'.
+   * @param handler - A callback function.
+   * @param elm     - Optional. Native event will be listened to when this arg is provided.
+   * @param options - Optional. Options for addEventListener.
+   *
+   * @return  - This instance.
+   */
+  on(events: string, handler: any, elm: (Window & typeof globalThis) | Element = null, options: object = {}): VirtualSwiper {
+    this.event.on(events, handler, elm, options);
+
+    return this;
+  }
+
+  /**
+   * Unsubscribe the given event.
+   *
+   * @param events - A event name.
+   * @param elm    - Optional. removeEventListener() will be called when this arg is provided.
+   *
+   * @return This instance.
+   */
+  off(events: string, elm: (Window & typeof globalThis) | Element = null): VirtualSwiper {
+    this.event.off(events, elm);
+
+    return this;
+  }
+
+  /**
+   * Emit an event.
+   *
+   * @param event - An event name.
+   * @param args  - Any number of arguments passed to handlers.
+   */
+  emit(event: string, ...args: any) {
+    this.event.emit(event, ...args);
+    return this;
   }
 
   /**
@@ -159,22 +214,27 @@ export default class VirtualSwiper {
       component.mounted && component.mounted();
     });
 
-    Event.emit('mounted');
+    this.emit('mounted');
     // this.State.set( STATES.IDLE ); todo
-    Event.emit('ready');
+    this.emit('ready');
 
     applyStyle(this.root, { visibility: 'visible' });
   }
 }
 
-const instance = new VirtualSwiper(window.document.body, {
-  slides: () => {
-    const slides = [];
+[].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
+  const instance = new VirtualSwiper(slider, {
+    slides: () => {
+      const slides: { key: string; html: string }[] = [];
 
-    for (let i = 0; i < 5; i++) {
-      slides.push(`<span>Slide ${i + 1}</span>`);
-    }
+      for (let i = 0; i < 10; i++) {
+        slides.push({
+          key: i + '',
+          html: `<span>Slide ${i + 1}</span>`,
+        });
+      }
 
-    return slides;
-  },
+      return slides;
+    },
+  });
 });

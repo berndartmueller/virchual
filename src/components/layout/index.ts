@@ -25,7 +25,7 @@ export abstract class BaseLayout implements BaseComponent {
   abstract get listWidth(): number;
   abstract get listHeight(): number;
   abstract get slideHeight(): number;
-  abstract slideWidth(index: number): number;
+  abstract slideWidth(index?: number): number;
   abstract get height(): number;
   abstract get margin(): string;
   abstract get gap(): number;
@@ -58,15 +58,16 @@ export abstract class BaseLayout implements BaseComponent {
    * Initialize when the component is mounted or options are updated.
    */
   private bind() {
-    Event.on(
+    this.swiperInstance.on(
       'resize load',
       throttle(() => {
-        Event.emit('resize');
+        this.swiperInstance.emit('resize');
       }, THROTTLE),
       window,
     );
-    Event.on('resize', this.onResize.bind(this));
-    Event.on('updated refresh', this.init.bind(this));
+    this.swiperInstance.on('resize', this.onResize.bind(this));
+    this.swiperInstance.on('updated refresh cloned', this.init.bind(this));
+    this.swiperInstance.on('add', this.onResizeSlide.bind(this));
   }
 
   /**
@@ -85,6 +86,26 @@ export abstract class BaseLayout implements BaseComponent {
         width: this.options.autoWidth ? null : unit(this.slideWidth(slide.index)),
         height: slide.container ? null : slideHeight,
       });
+    });
+  }
+
+  /**
+   * Resize slide
+   */
+  private onResizeSlide(index: number) {
+    const slide = this.virtual.getSlide(index, false);
+
+    if (slide == null) {
+      return;
+    }
+
+    applyStyle(this.track.list, { width: unit(this.listWidth), height: unit(this.listHeight) });
+
+    const slideHeight = unit(this.slideHeight);
+
+    applyStyle(slide.slide, {
+      width: this.options.autoWidth ? null : unit(this.slideWidth(slide.index)),
+      height: slide.container ? null : slideHeight,
     });
   }
 }

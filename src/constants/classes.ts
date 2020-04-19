@@ -30,6 +30,7 @@ export const ELEMENT_CLASSES = {
   prev: `${ROOT}__arrow--prev`,
   next: `${ROOT}__arrow--next`,
   pagination: `${ROOT}__pagination`,
+  paginationTrack: `${ROOT}__pagination-track`,
   page: `${ROOT}__pagination__page`,
   clone: `${ROOT}__slide--clone`,
   progress: `${ROOT}__progress`,

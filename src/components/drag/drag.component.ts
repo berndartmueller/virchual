@@ -46,9 +46,9 @@ export default class DragComponent implements BaseComponent {
     this.layout = components.Layout as BaseLayout;
     this.controller = components.Controller as ControllerComponent;
 
-    Event.on('touchstart mousedown', this.onStart.bind(this), this.track.list);
-    Event.on('touchmove mousemove', this.onMove.bind(this), this.track.list, { passive: false });
-    Event.on('touchend touchcancel mouseleave mouseup dragend', this.onEnd.bind(this), this.track.list);
+    this.swiperInstance.on('touchstart mousedown', this.onStart.bind(this), this.track.list);
+    this.swiperInstance.on('touchmove mousemove', this.onMove.bind(this), this.track.list, { passive: false });
+    this.swiperInstance.on('touchend touchcancel mouseleave mouseup dragend', this.onEnd.bind(this), this.track.list);
   }
 
   /**
@@ -77,7 +77,7 @@ export default class DragComponent implements BaseComponent {
         this.track.translate(this.resist(position));
       } else {
         if (this.shouldMove(this.currentInfo)) {
-          Event.emit('drag', this.startInfo);
+          this.swiperInstance.emit('drag', this.startInfo);
 
           this.isDragging = true;
         }
@@ -143,7 +143,7 @@ export default class DragComponent implements BaseComponent {
     this.startInfo = null;
 
     if (this.isDragging) {
-      Event.emit('dragged', this.currentInfo);
+      this.swiperInstance.emit('dragged', this.currentInfo);
 
       this.go(this.currentInfo);
 

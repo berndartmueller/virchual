@@ -39,7 +39,13 @@ export class SlideComponent implements BaseComponent {
    */
   private statusUpdateEvents: string;
 
-  constructor(private options: VirtualSwiperOptions, public index: number, public realIndex: number, public slide: HTMLElement) {
+  constructor(
+    private options: VirtualSwiperOptions,
+    public index: number,
+    public realIndex: number,
+    public slide: HTMLElement,
+    public key?: string,
+  ) {
     this.container = find(this.slide, `.vswiper__list`);
     this.isClone = realIndex > -1;
     this.styles = getAttribute(this.slide, 'style') || '';
@@ -54,16 +60,20 @@ export class SlideComponent implements BaseComponent {
       this.slide.id = `${this.swiperInstance.root.id}-slide${pad(this.index + 1)}`;
     }
 
-    Event.on(this.statusUpdateEvents, () => this.update());
-    Event.on(STYLE_RESTORE_EVENTS, this.restoreStyles);
+    if (this.key != null) {
+      this.slide.dataset.key = this.key;
+    }
+
+    this.swiperInstance.on(this.statusUpdateEvents, () => this.update());
+    this.swiperInstance.on(STYLE_RESTORE_EVENTS, this.restoreStyles);
   }
 
   /**
    * Destroy.
    */
   destroy() {
-    Event.off(this.statusUpdateEvents);
-    Event.off(STYLE_RESTORE_EVENTS);
+    this.swiperInstance.off(this.statusUpdateEvents);
+    this.swiperInstance.off(STYLE_RESTORE_EVENTS);
 
     removeClass(this.slide, values(STATUS_CLASSES));
 
@@ -143,12 +153,12 @@ export class SlideComponent implements BaseComponent {
     if (active) {
       addClass(this.slide, className);
 
-      Event.emit(`${type}`, this.slide);
+      this.swiperInstance.emit(`${type}`, this.slide);
     } else {
       if (hasClass(this.slide, className)) {
         removeClass(this.slide, className);
 
-        Event.emit(`${forVisibility ? 'hidden' : 'inactive'}`, this.slide);
+        this.swiperInstance.emit(`${forVisibility ? 'hidden' : 'inactive'}`, this.slide);
       }
     }
   }

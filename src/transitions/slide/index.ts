@@ -21,17 +21,19 @@ export class SlideTransition implements BaseComponent {
   private endCallback;
 
   private track: TrackComponent;
+  private swiperInstance: VirtualSwiper;
   private controller: ControllerComponent;
 
   constructor(private options: VirtualSwiperOptions) {}
 
   mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+    this.swiperInstance = instance;
     this.controller = components.Controller as ControllerComponent;
     this.track = components.Track as TrackComponent;
 
     this.list = this.track.list;
 
-    Event.on(
+    this.swiperInstance.on(
       'transitionend',
       e => {
         if (e.target === this.list && this.endCallback) {

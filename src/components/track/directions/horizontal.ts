@@ -52,9 +52,7 @@ export class HorizontalDirection {
 
     const slides = this.virtual.getSlides(true);
 
-    for (const i in slides) {
-      const slide = slides[i];
-
+    for (const slide of slides) {
       const slideIndex = slide.index;
       const slidePosition = this.sign * this.toPosition(slideIndex);
 

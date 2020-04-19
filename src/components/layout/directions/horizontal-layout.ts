@@ -81,7 +81,7 @@ export class HorizontalLayout extends BaseLayout {
    *
    * @return {number} - The slide width.
    */
-  slideWidth(index: number): number {
+  slideWidth(index?: number): number {
     if (this.options.autoWidth) {
       const slide = this.virtual.getSlide(index);
 

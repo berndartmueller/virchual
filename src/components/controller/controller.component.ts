@@ -246,11 +246,11 @@ export default class ControllerComponent implements BaseComponent {
    * Listen some events.
    */
   private bind() {
-    Event.on('move', newIndex => {
+    this.swiperInstance.on('move', newIndex => {
       this.swiperInstance.index = newIndex;
     });
 
-    Event.on('updated refresh', newOptions => {
+    this.swiperInstance.on('updated refresh', newOptions => {
       this.options = newOptions || this.options;
 
       this.swiperInstance.index = between(this.swiperInstance.index, 0, this.edgeIndex);
