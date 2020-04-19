@@ -74,7 +74,7 @@
   transform: scale(0.33);
   position: relative;
   margin: 0 4px;
-  transition: 0.2s transform, 0.2s left;
+  transition: 0.2s transform;
 }
 
 .splide__pagination__page.active-prev,

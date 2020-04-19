@@ -1,15 +1,13 @@
-import { Event } from './../../core/event';
-import { BaseComponent } from './../base-component';
+import { STATUS_CLASSES } from '../../constants/classes';
 /**
  * The component for handling pagination
  */
-
-import { create, remove, append, addClass, removeClass, applyStyle } from '../../utils/dom';
-import { STATUS_CLASSES } from '../../constants/classes';
-import VirtualComponent from '../virtual/virtual.component';
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from '../../virtual-swiper';
-import ControllerComponent from '../controller/controller.component';
+import { addClass, append, applyStyle, create, remove, removeClass } from '../../utils/dom';
 import { unit } from '../../utils/utils';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
+import ControllerComponent from '../controller/controller.component';
+import VirtualComponent from '../virtual/virtual.component';
+import { BaseComponent } from './../base-component';
 
 /**
  * The event name for updating some attributes of pagination nodes.
@@ -145,6 +143,24 @@ export default class TrackComponent implements BaseComponent {
 
     const active = STATUS_CLASSES.active;
 
+    if (index > 4) {
+      this.currentPosition = (index - 4) * 16 * -1;
+
+      // insert bullet if there are more slides to come
+      if (index < this.virtual.slides.length - 1) {
+        const button = this.createBullet(index, 'active-next');
+
+        append(trackElement, button);
+
+        this._data.items.push({ button });
+
+        // remove bullet from opposite end
+        const firstButton = this.getItem(Math.abs(4 - index - 1));
+        (firstButton.button as HTMLElement).parentNode.removeChild(firstButton.button);
+        // this._data.items.shift();
+      }
+    }
+
     if (prev) {
       removeClass(prev.button, 'active-next');
       removeClass(prev.button, active);
@@ -164,25 +180,8 @@ export default class TrackComponent implements BaseComponent {
     }
 
     if (index > 4) {
-      this.currentPosition = (index - 4) * 16 * -1;
-
-      // insert bullet if there are more slides to come
-      if (index < this.virtual.slides.length - 1) {
-        const button = this.createBullet(index, 'active-next');
-
-        append(trackElement, button);
-
-        this._data.items.push({ button });
-
-        // remove bullet from opposite end
-        const firstButton = this.getItem(Math.abs(4 - index - 1));
-        (firstButton.button as HTMLElement).parentNode.removeChild(firstButton.button);
-        // this._data.items.shift();
-      }
-
-      this.offsetPositionSlides();
-
       applyStyle(trackElement, { transform: `translateX(${this.currentPosition}px)` });
+      this.offsetPositionSlides();
     }
 
     this.swiperInstance.emit(`${name}:updated`, this.data, prev, curr);
