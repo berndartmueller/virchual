@@ -19,6 +19,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c && tsc",
+    "build:prod": "NODE_ENV=production rollup -c && tsc",
     "dev": "rollup -cw && tsc"
   },
   "repository": {

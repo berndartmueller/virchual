@@ -5,7 +5,7 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![twitter][twitter-shield]][twitter-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -17,7 +17,8 @@
   <h3 align="center">Virchual</h3>
 
   <p align="center">
-    YOUR_SHORT_DESCRIPTION
+    Super-fast, lightweight (6kB) slider and carousel, written in TypeScript without any dependencies.
+    <br />
     <br />
     <a href="https://github.com/berndartmueller/virchual"><strong>Explore the docs »</strong></a>
     <br />
@@ -149,6 +150,6 @@ Huge credits to [https://github.com/Splidejs/splide](https://github.com/Splidejs
 [issues-url]: https://github.com/berndartmueller/virchual/issues
 [license-shield]: https://img.shields.io/github/license/berndartmueller/virchual.svg?style=flat-square
 [license-url]: https://github.com/berndartmueller/virchual/blob/master/LICENSE
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/berndartmueller
+[twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=flat-square&logo=twitter&colorB=555
+[twitter-url]: https://www.twitter.com/berndartmueller
 [product-screenshot]: images/screenshot.png

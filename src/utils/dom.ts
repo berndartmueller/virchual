@@ -1,4 +1,4 @@
-import { each, values } from './object';
+import { each } from './object';
 import { toArray } from './utils';
 
 /**
@@ -12,26 +12,6 @@ import { toArray } from './utils';
  */
 export function find(elm: HTMLElement | ParentNode, selector: string): HTMLElement {
   return elm ? elm.querySelector(selector.split(' ')[0]) : null;
-}
-
-/**
- * Find a first child having the given tag or class name.
- *
- * @param parent         - A parent element.
- * @param tagOrClassName - A tag or class name.
- *
- * @return A found element on success. Null on failure.
- */
-export function child(parent: HTMLElement, tagOrClassName: string): HTMLElement | null {
-  if (parent) {
-    return (
-      values(parent.children).filter(child => {
-        return hasClass(child, tagOrClassName.split(' ')[0]) || child.tagName.toLowerCase() === tagOrClassName;
-      })[0] || null
-    );
-  }
-
-  return null;
 }
 
 /**
@@ -174,9 +154,7 @@ export function hasClass(elm: HTMLElement, className: string): boolean {
  * @param value - Attribute value.
  */
 export function setAttribute(elm: HTMLElement, name: string, value: string | number | boolean) {
-  if (elm) {
-    elm.setAttribute(name, `${value}`);
-  }
+  elm && elm.setAttribute(name, `${value}`);
 }
 
 /**
@@ -201,30 +179,4 @@ export function removeAttribute(elms: HTMLElement | HTMLElement[], names: string
   toArray(names).forEach(name => {
     toArray(elms).forEach(elm => elm && elm.removeAttribute(name));
   });
-}
-
-/**
- * Trigger the given callback after all images contained by the element are loaded.
- *
- * @param elm      - Element that may contain images.
- * @param callback - Callback function fired right after all images are loaded.
- */
-export function loaded(elm: HTMLElement, callback: Function) {
-  const images = elm.querySelectorAll('img');
-  const length = images.length;
-
-  if (length) {
-    let count = 0;
-
-    each(images, img => {
-      img.onload = img.onerror = () => {
-        if (++count === length) {
-          callback();
-        }
-      };
-    });
-  } else {
-    // Trigger the callback immediately if there is no image.
-    callback();
-  }
 }

@@ -26,19 +26,6 @@ export function between(value: number, m1: number, m2: number): number {
 }
 
 /**
- * The sprintf method with minimum functionality.
- *
- * @param format       - The string format.
- * @param replacements - Replacements accepting multiple arguments.
- *
- * @returns Converted string.
- */
-export function sprintf(format: string, replacements: string | Array<any>): string {
-  let i = 0;
-  return format.replace(/%s/g, () => toArray(replacements)[i++]);
-}
-
-/**
  * Append px unit to the given subject if necessary.
  *
  * @param value - A value that may not include an unit.

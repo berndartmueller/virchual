@@ -57,23 +57,3 @@ export function merge({ ...to }: object, from: object): object {
 
   return to;
 }
-
-/**
- * Assign all properties "from" to "to" object.
- *
- * @param to   - An object where properties are assigned.
- * @param from - An object whose properties are assigned to "to".
- *
- * @return An assigned object.
- */
-export function assign(to: any, from: any): object {
-  to._s = from;
-
-  Object.keys(from).forEach(key => {
-    if (!to[key]) {
-      Object.defineProperty(to, key, Object.getOwnPropertyDescriptor(from, key) as any);
-    }
-  });
-
-  return to;
-}

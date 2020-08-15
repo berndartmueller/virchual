@@ -77,8 +77,6 @@ export class Event {
    * @param item - An object containing event this.data.
    */
   private unsubscribe(item) {
-    if (item.elm) {
-      item.elm.removeEventListener(item.event, item.handler, item.options);
-    }
+    item.elm && item.elm.removeEventListener(item.event, item.handler, item.options);
   }
 }
