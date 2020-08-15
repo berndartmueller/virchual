@@ -67,9 +67,9 @@ export class HorizontalDirection {
   /**
    * Trim redundant spaces on the left or right edge if necessary.
    *
-   * @param {number} position - Position value to be trimmed.
+   * @param position - Position value to be trimmed.
    *
-   * @return {number} - Trimmed position.
+   * @return Trimmed position.
    */
   trim(position: number): number {
     const edge = this.sign * (this.layout.totalWidth(this.virtual.total) - (this.layout.width + this.layout.gap));
@@ -80,7 +80,7 @@ export class HorizontalDirection {
   /**
    * Return current offset value, considering direction.
    *
-   * @return {number} - Offset amount.
+   * @return Offset amount.
    */
   offset(index: number): number {
     const { focus } = this.options;

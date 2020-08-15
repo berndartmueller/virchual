@@ -10,7 +10,7 @@ export default class ControllerComponent implements BaseComponent {
    *
    * @type {boolean}
    */
-  private isLoop = true;
+  private isLoop: boolean = true;
 
   private swiperInstance: VirtualSwiper;
   private track: TrackComponent;
@@ -33,10 +33,10 @@ export default class ControllerComponent implements BaseComponent {
    * - "<"    : Go to prev page.
    * - ">{i}" : Go to page i.
    *
-   * @param {string|number} control  - A control pattern.
-   * @param {boolean}       silently - Go to the destination without event emission.
+   * @param control  - A control pattern.
+   * @param silently - Go to the destination without event emission.
    */
-  go(control, silently: boolean = false) {
+  go(control: string | number, silently: boolean = false) {
     const destIndex = this.trim(this.parse(control));
 
     this.track.go(destIndex, this.rewind(destIndex), silently);
@@ -45,11 +45,11 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Parse the given control and return the destination index for the track.
    *
-   * @param {string} control - A control target pattern.
+   * @param control - A control target pattern.
    *
-   * @return {string|number} - A parsed target.
+   * @return A parsed target.
    */
-  parse(control) {
+  parse(control: string | number): number {
     let index = this.swiperInstance.index;
 
     const matches = String(control).match(/([+\-<>])(\d+)?/);
@@ -74,7 +74,7 @@ export default class ControllerComponent implements BaseComponent {
         break;
 
       default:
-        index = parseInt(control);
+        index = parseInt(`${control}`);
     }
 
     return index;
@@ -83,11 +83,11 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Compute index from the given page number.
    *
-   * @param {number} page - Page number.
+   * @param page - Page number.
    *
-   * @return {number} - A computed page number.
+   * @return A computed page number.
    */
-  toIndex(page) {
+  toIndex(page: number): number {
     if (this.hasFocus()) {
       return page;
     }
@@ -111,9 +111,9 @@ export default class ControllerComponent implements BaseComponent {
    *
    * @param index - Slide index.
    *
-   * @return {number} - A computed page number.
+   * @return A computed page number.
    */
-  toPage(index) {
+  toPage(index: number): number {
     if (this.hasFocus()) {
       return index;
     }
@@ -133,11 +133,11 @@ export default class ControllerComponent implements BaseComponent {
    * Trim the given index according to the current mode.
    * Index being returned could be less than 0 or greater than the length in Loop mode.
    *
-   * @param {number} index - An index being trimmed.
+   * @param index - An index being trimmed.
    *
-   * @return {number} - A trimmed index.
+   * @return A trimmed index.
    */
-  trim(index) {
+  trim(index: number): number {
     if (!this.isLoop) {
       index = this.options.rewind ? this.rewind(index) : between(index, 0, this.edgeIndex);
     }
@@ -148,11 +148,11 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Rewind the given index if it's out of range.
    *
-   * @param {number} index - An index.
+   * @param index - An index.
    *
-   * @return {number} - A rewound index.
+   * @return A rewound index.
    */
-  rewind(index) {
+  rewind(index: number): number {
     const edge = this.edgeIndex;
 
     if (this.isLoop) {
@@ -177,18 +177,18 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Check if the direction is "rtl" or not.
    *
-   * @return {boolean} - True if "rtl" or false if not.
+   * @return True if "rtl" or false if not.
    */
-  isRtl() {
+  isRtl(): boolean {
     return this.options.direction === 'rtl';
   }
 
   /**
    * Return the page length.
    *
-   * @return {number} - Max page number.
+   * @return Max page number.
    */
-  get pageLength() {
+  get pageLength(): number {
     const length = this.swiperInstance.length;
     return this.hasFocus() ? length : Math.ceil(length / this.options.perPage);
   }
@@ -196,9 +196,9 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Return the edge index.
    *
-   * @return {number} - Edge index.
+   * @return Edge index.
    */
-  get edgeIndex() {
+  get edgeIndex(): number {
     const length = this.swiperInstance.length;
 
     if (!length) {
@@ -215,9 +215,9 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Return the index of the previous slide.
    *
-   * @return {number} - The index of the previous slide if available. -1 otherwise.
+   * @return The index of the previous slide if available. -1 otherwise.
    */
-  get prevIndex() {
+  get prevIndex(): number {
     let prev = this.swiperInstance.index - 1;
 
     if (this.isLoop || this.options.rewind) {
@@ -230,9 +230,9 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Return the index of the next slide.
    *
-   * @return {number} - The index of the next slide if available. -1 otherwise.
+   * @return The index of the next slide if available. -1 otherwise.
    */
-  get nextIndex() {
+  get nextIndex(): number {
     let next = this.swiperInstance.index + 1;
 
     if (this.isLoop || this.options.rewind) {
@@ -260,9 +260,9 @@ export default class ControllerComponent implements BaseComponent {
   /**
    * Verify if the focus option is available or not.
    *
-   * @return {boolean} - True if a slider has the focus option.
+   * @return True if a slider has the focus option.
    */
-  private hasFocus() {
+  private hasFocus(): boolean {
     return this.options.focus !== false;
   }
 }

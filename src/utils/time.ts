@@ -8,12 +8,12 @@
 /**
  * Simple throttle function that controls how often the given function is executed.
  *
- * @param {function} func - A function to be throttled.
- * @param {number}   wait - Time in millisecond for interval of execution.
+ * @param func - A function to be throttled.
+ * @param wait - Time in millisecond for interval of execution.
  *
- * @return {Function} - A debounced function.
+ * @return A debounced function.
  */
-export function throttle(func, wait) {
+export function throttle(func: Function, wait: number): Function {
   let timeout;
 
   // Declare function by the "function" keyword to prevent "this" from being inherited.
@@ -30,13 +30,13 @@ export function throttle(func, wait) {
 /**
  * Custom setInterval function that provides progress rate as callback.
  *
- * @param {function} callback - A callback function fired every time the interval time passes.
- * @param {number}   interval - Interval duration in milliseconds.
- * @param {function} progress - A callback function fired whenever the progress goes.
+ * @param callback - A callback function fired every time the interval time passes.
+ * @param interval - Interval duration in milliseconds.
+ * @param progress - A callback function fired whenever the progress goes.
  *
- * @return {Object} - An object containing play() and pause() functions.
+ * @return An object containing play() and pause() functions.
  */
-export function createInterval(callback, interval, progress) {
+export function createInterval(callback: Function, interval: number, progress: Function): object {
   const { requestAnimationFrame } = window;
   let start,
     elapse,

@@ -77,9 +77,9 @@ export class HorizontalLayout extends BaseLayout {
   /**
    * Return the slide width in px.
    *
-   * @param {number} index - Slide index.
+   * @param index - Slide index.
    *
-   * @return {number} - The slide width.
+   * @return The slide width.
    */
   slideWidth(index?: number): number {
     if (this.options.autoWidth) {

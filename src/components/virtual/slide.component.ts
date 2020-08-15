@@ -1,12 +1,11 @@
-import { TTB } from './../../constants/directions';
-import { STATUS_CLASSES } from './../../constants/classes';
-import { Event } from './../../core/event';
-import { BaseComponent } from './../base-component';
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from '../../virtual-swiper';
-import { find, getAttribute, removeClass, setAttribute, addClass, hasClass } from '../../utils/dom';
-import { pad } from '../../utils/utils';
+import { addClass, find, getAttribute, hasClass, removeClass, setAttribute } from '../../utils/dom';
 import { values } from '../../utils/object';
+import { pad } from '../../utils/utils';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
 import TrackComponent from '../track/track.component';
+import { STATUS_CLASSES } from './../../constants/classes';
+import { TTB } from './../../constants/directions';
+import { BaseComponent } from './../base-component';
 
 /**
  * Events for restoring original styles.
@@ -26,7 +25,6 @@ export class SlideComponent implements BaseComponent {
 
   /**
    * Hold the original styles.
-   * @type {string}
    */
   private styles: string;
 
@@ -91,16 +89,16 @@ export class SlideComponent implements BaseComponent {
   /**
    * Check whether this slide is active or not.
    *
-   * @return {boolean} - True if the slide is active or false if not.
+   * @return True if the slide is active or false if not.
    */
-  isActive() {
+  isActive(): boolean {
     return this.swiperInstance.index === this.index;
   }
 
   /**
    * Check whether this slide is visible in the viewport or not.
    *
-   * @return {boolean} - True if the slide is visible or false if not.
+   * @return True if the slide is visible or false if not.
    */
   isVisible() {
     const active = this.isActive();
@@ -125,10 +123,10 @@ export class SlideComponent implements BaseComponent {
    * Calculate how far this slide is from another slide and
    * return true if the distance is within the given number.
    *
-   * @param {number} from   - Index of a target slide.
-   * @param {number} within - True if the slide is within this number.
+   * @param from   - Index of a target slide.
+   * @param within - True if the slide is within this number.
    *
-   * @return {boolean} - True if the slide is within the number or false otherwise.
+   * @return True if the slide is within the number or false otherwise.
    */
   isWithin(from: number, within: number): boolean {
     let diff = Math.abs(from - this.index);
@@ -143,8 +141,8 @@ export class SlideComponent implements BaseComponent {
   /**
    * Update classes for activity or visibility.
    *
-   * @param {boolean} active        - Is active/visible or not.
-   * @param {boolean} forVisibility - Toggle classes for activity or visibility.
+   * @param active        - Is active/visible or not.
+   * @param forVisibility - Toggle classes for activity or visibility.
    */
   private updateClasses(active, forVisibility) {
     const type = forVisibility ? 'visible' : 'active';

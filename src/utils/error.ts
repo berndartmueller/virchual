@@ -10,14 +10,14 @@
  *
  * @type {string}
  */
-const MESSAGE_PREFIX = '[SPLIDE]';
+const MESSAGE_PREFIX: string = '[VSWIPER]';
 
 /**
  * Display an error message on the browser console.
  *
- * @param {string} message - An error message.
+ * @param message - An error message.
  */
-export function error(message) {
+export function error(message: string) {
   console.error(`${MESSAGE_PREFIX} ${message}`);
 }
 
@@ -26,10 +26,10 @@ export function error(message) {
  *
  * @throws {Error}
  *
- * @param {*}      subject - A subject to be confirmed.
- * @param {string} message - An error message.
+ * @param subject - A subject to be confirmed.
+ * @param message - An error message.
  */
-export function exist(subject, message) {
+export function exist(subject: any, message: string) {
   if (!subject) {
     throw new Error(message);
   }

@@ -191,7 +191,6 @@ export default class VirtualSwiper {
 
   /**
    * Return the class list.
-   * This is an alias of Splide.options.classList.
    *
    * @return An object containing all class list.
    */

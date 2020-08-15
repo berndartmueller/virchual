@@ -37,7 +37,7 @@
   transition-property: transform;
 }
 
-.splide__pagination {
+.vswiper__pagination {
   position: absolute;
   text-align: center;
   transition: 0.3s opacity;
@@ -51,7 +51,7 @@
   bottom: 10px;
 }
 
-.splide__pagination-track {
+.vswiper__pagination-track {
   position: relative;
   bottom: unset;
   align-items: center;
@@ -63,8 +63,9 @@
   transition: all 0.25s;
 }
 
-.splide__pagination__page {
+.vswiper__pagination__page {
   width: 8px;
+  cursor: pointer;
   height: 8px;
   display: inline-block;
   border-radius: 100%;
@@ -77,11 +78,11 @@
   transition: 0.2s transform;
 }
 
-.splide__pagination__page.active-prev,
-.splide__pagination__page.active-next {
+.vswiper__pagination__page.active-prev,
+.vswiper__pagination__page.active-next {
   transform: scale(0.66);
 }
 
-.splide__pagination__page.is-active {
+.vswiper__pagination__page.is-active {
   transform: scale(1);
 }

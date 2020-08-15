@@ -6,7 +6,7 @@
  */
 
 /**
- * Splide has been just created.
+ * VSwiper has been just created.
  *
  * @type {number}
  */
@@ -20,21 +20,21 @@ export const CREATED = 1;
 export const MOUNTED = 2;
 
 /**
- * Splide is ready for transition.
+ * VSwiper is ready for transition.
  *
  * @type {number}
  */
 export const IDLE = 3;
 
 /**
- * Splide is moving.
+ * VSwiper is moving.
  *
  * @type {number}
  */
 export const MOVING = 4;
 
 /**
- * Splide is moving.
+ * VSwiper is moving.
  *
  * @type {number}
  */

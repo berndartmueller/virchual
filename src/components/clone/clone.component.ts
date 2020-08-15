@@ -1,8 +1,7 @@
-import { addClass, append, before, remove, removeAttribute, domify } from '../../utils/dom';
+import { addClass, append, before, domify, remove, removeAttribute } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';
 import { LOOP } from './../../constants/types';
-import { Event } from './../../core/event';
 import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
 import { BaseComponent } from './../base-component';
 import { SlideComponent } from './../virtual/slide.component';
@@ -52,36 +51,36 @@ export default class CloneComponent implements BaseComponent {
   /**
    * Return all clones.
    *
-   * @return {Element[]} - Cloned elements.
+   * @return Cloned elements.
    */
-  get clones() {
+  get clones(): SlideComponent[] {
     return [...this._clonesBefore, ...this._clonesAfter];
   }
 
   /**
    * Return clone length.
    *
-   * @return {number} - A length of clones.
+   * @return A length of clones.
    */
-  get length() {
+  get length(): number {
     return this.clones.length;
   }
 
   /**
    * Return before clone length.
    *
-   * @return {number} - A length of before clones.
+   * @return A length of before clones.
    */
-  get lengthBefore() {
+  get lengthBefore(): number {
     return this._clonesBefore.length;
   }
 
   /**
    * Return after clone length.
    *
-   * @return {number} - A length of after clones.
+   * @return A length of after clones.
    */
-  get lengthAfter() {
+  get lengthAfter(): number {
     return this._clonesAfter.length;
   }
 
@@ -140,7 +139,7 @@ export default class CloneComponent implements BaseComponent {
    *
    * @param slide - An element being duplicated.
    *
-   * @return {Node} - A cloned node(element).
+   * @return A cloned node(element).
    */
   private cloneDeeply(element: HTMLElement): HTMLElement {
     const clone = element.cloneNode(true) as HTMLElement;

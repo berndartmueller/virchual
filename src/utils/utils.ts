@@ -10,9 +10,9 @@ import { create, append, remove, applyStyle } from './dom';
 /**
  * Convert the given value to array.
  *
- * @param {*} value - Any value.
+ * @param value - Any value.
  *
- * @return {*[]} - Array containing the given value.
+ * @return Array containing the given value.
  */
 export function toArray(value: any): any[] {
   return Array.isArray(value) ? value : [value];
@@ -48,9 +48,9 @@ export function sprintf(format: string, replacements: string | Array<any>): stri
 /**
  * Append px unit to the given subject if necessary.
  *
- * @param {number|string} value - A value that may not include an unit.
+ * @param value - A value that may not include an unit.
  *
- * @return {string} - If the value is string, return itself.
+ * @return If the value is string, return itself.
  *                    If number, do value + "px". An empty string, otherwise.
  */
 export function unit(value: number | string): string {
@@ -66,9 +66,9 @@ export function unit(value: number | string): string {
 /**
  * Pad start with 0.
  *
- * @param {number} number - A number to be filled with 0.
+ * @param number - A number to be filled with 0.
  *
- * @return {string|number} - Padded number.
+ * @return Padded number.
  */
 export function pad(number: number): string | number {
   return number < 10 ? '0' + number : number;
@@ -77,10 +77,10 @@ export function pad(number: number): string | number {
 /**
  * Convert the given value to pixel.
  *
- * @param {Element}       root  - Root element where a dummy div is appended.
- * @param {string|number} value - CSS value to be converted, such as 10rem.
+ * @param root  - Root element where a dummy div is appended.
+ * @param value - CSS value to be converted, such as 10rem.
  *
- * @return {number} - Pixel.
+ * @return Pixel.
  */
 export function toPixel(root: HTMLElement, value: string | number): number {
   let pixelValue: number;

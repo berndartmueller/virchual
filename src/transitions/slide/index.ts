@@ -1,9 +1,8 @@
-import { Event } from './../../core/event';
-import { BaseComponent } from './../../components/base-component';
-import TrackComponent from '../../components/track/track.component';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
-import { applyStyle } from '../../utils/dom';
 import ControllerComponent from '../../components/controller/controller.component';
+import TrackComponent from '../../components/track/track.component';
+import { applyStyle } from '../../utils/dom';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
+import { BaseComponent } from './../../components/base-component';
 
 export class SlideTransition implements BaseComponent {
   /**
@@ -11,14 +10,14 @@ export class SlideTransition implements BaseComponent {
    *
    * @type {Element}
    */
-  private list;
+  private list: HTMLElement;
 
   /**
    * Hold the onEnd callback function.
    *
    * @type {function}
    */
-  private endCallback;
+  private endCallback: Function;
 
   private track: TrackComponent;
   private swiperInstance: VirtualSwiper;
@@ -47,13 +46,12 @@ export class SlideTransition implements BaseComponent {
   /**
    * Start transition.
    *
-   * @param {number}   destIndex - Destination slide index that might be clone's.
-   * @param {number}   newIndex  - New index.
-   * @param {number}   prevIndex - Previous index.
-   * @param {Object}   coord     - Destination coordinates.
-   * @param {function} done      - Callback function must be invoked when transition is completed.
+   * @param newIndex  - New index.
+   * @param prevIndex - Previous index.
+   * @param coord     - Destination coordinates.
+   * @param done      - Callback function must be invoked when transition is completed.
    */
-  start(destIndex, newIndex, prevIndex, coord, done) {
+  start(newIndex: number, prevIndex: number, coord: { x: number; y: number }, done: Function) {
     const options = this.options;
     const edgeIndex = this.controller.edgeIndex;
     let speed = options.speed;

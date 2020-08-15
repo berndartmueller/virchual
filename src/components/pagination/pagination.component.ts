@@ -1,7 +1,4 @@
 import { STATUS_CLASSES } from '../../constants/classes';
-/**
- * The component for handling pagination
- */
 import { addClass, append, applyStyle, create, remove, removeClass } from '../../utils/dom';
 import { unit } from '../../utils/utils';
 import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
@@ -21,12 +18,6 @@ const UPDATE_EVENT = 'updated.page refresh.page';
 
 /**
  * The component for handling pagination
- *
- * @param {Splide} Splide     - A Splide instance.
- * @param {Object} Components - An object containing components.
- * @param {string} name       - A component name as a lowercase string.
- *
- * @return {Object} - The component object.
  */
 export default class TrackComponent implements BaseComponent {
   /**
@@ -40,8 +31,6 @@ export default class TrackComponent implements BaseComponent {
   private controller: ControllerComponent;
   private swiperInstance: VirtualSwiper;
   private currentPosition: number;
-  private previousFrom: number;
-  private previousTo: number;
   private components: VirtualSwiperComponents;
 
   constructor(private options: VirtualSwiperOptions) {}
@@ -52,8 +41,6 @@ export default class TrackComponent implements BaseComponent {
     this.virtual = components.Virtual as VirtualComponent;
     this.controller = components.Controller as ControllerComponent;
     this.currentPosition = 0;
-    this.previousFrom = 0;
-    this.previousTo = 0;
 
     this._data = this.createPagination();
 
@@ -108,7 +95,7 @@ export default class TrackComponent implements BaseComponent {
   /**
    * Return object containing pagination data.
    *
-   * @return {Object} - Pagination data including list and items.
+   * @return Pagination data including list and items.
    */
   get data(): any {
     return this._data;
@@ -233,7 +220,7 @@ export default class TrackComponent implements BaseComponent {
   }
 
   /**
-   * Position slides with offset to counteract removed slides
+   * Position slides with offset to counteract removed pagination bullets
    */
   private offsetPositionSlides() {
     const offsetProp: string = 'left';

@@ -1,9 +1,8 @@
-import { Event } from './../../core/event';
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from './../../virtual-swiper';
-import { BaseComponent } from './../base-component';
-import TrackComponent from '../track/track.component';
-import { BaseLayout } from '../layout/index';
 import ControllerComponent from '../controller/controller.component';
+import { BaseLayout } from '../layout/index';
+import TrackComponent from '../track/track.component';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
+import { BaseComponent } from './../base-component';
 
 /**
  * Adjust how much the track can be pulled on the first or last page.
@@ -112,11 +111,11 @@ export default class DragComponent implements BaseComponent {
   /**
    * Resist dragging the track on the first/last page because there is no more.
    *
-   * @param {number} position - A position being applied to the track.
+   * @param position - A position being applied to the track.
    *
-   * @return {Object} - Adjusted position.
+   * @return Adjusted position.
    */
-  private resist(position) {
+  private resist(position: number): number {
     // if (!Splide.is(LOOP)) {
     //   const sign = Track.sign;
     //   const start = sign * Track.trim(Track.toPosition(0));

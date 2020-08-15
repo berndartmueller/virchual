@@ -1,11 +1,10 @@
-import { Event } from './../../core/event';
 import { applyStyle } from '../../utils/dom';
-import VirtualComponent from '../virtual/virtual.component';
-import TrackComponent from '../track/track.component';
-import { unit } from '../../utils/utils';
 import { throttle } from '../../utils/time';
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from '../../virtual-swiper';
+import { unit } from '../../utils/utils';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
 import { BaseComponent } from '../base-component';
+import TrackComponent from '../track/track.component';
+import VirtualComponent from '../virtual/virtual.component';
 
 /**
  * Interval time for throttle.

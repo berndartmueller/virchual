@@ -10,7 +10,7 @@
  *
  * @type {string}
  */
-const ROOT = 'splide';
+const ROOT = 'vswiper';
 
 /**
  * The definition table of all classes for elements.

@@ -9,10 +9,10 @@
  * Iterate an object like Array.forEach.
  * IE doesn't support forEach of HTMLCollection.
  *
- * @param {Object}    obj       - An object.
- * @param {function}  callback  - A function handling each value. Arguments are value, property and index.
+ * @param obj       - An object.
+ * @param callback  - A function handling each value. Arguments are value, property and index.
  */
-export function each(obj, callback) {
+export function each(obj: object, callback: Function) {
   Object.keys(obj).some((key, index) => {
     return callback(obj[key], key, index);
   });
@@ -22,34 +22,34 @@ export function each(obj, callback) {
  * Return values of the given object as an array.
  * IE doesn't support Object.values.
  *
- * @param {Object} obj - An object.
+ * @param obj - An object.
  *
- * @return {Array} - An array containing all values of the given object.
+ * @return An array containing all values of the given object.
  */
-export function values(obj) {
+export function values(obj: object): Array<any> {
   return Object.keys(obj).map(key => obj[key]);
 }
 
 /**
  * Check if the given subject is object or not.
  *
- * @param {*} subject - A subject to be verified.
+ * @param subject - A subject to be verified.
  *
- * @return {boolean} - True if object, false otherwise.
+ * @return True if object, false otherwise.
  */
-export function isObject(subject) {
+export function isObject(subject: any): boolean {
   return typeof subject === 'object';
 }
 
 /**
  * Merge two objects deeply.
  *
- * @param {Object} to   - An object where "from" is merged.
- * @param {Object} from - An object merged to "to".
+ * @param to   - An object where "from" is merged.
+ * @param from - An object merged to "to".
  *
- * @return {Object} - A merged object.
+ * @return A merged object.
  */
-export function merge({ ...to }, from) {
+export function merge({ ...to }: object, from: object): object {
   each(from, (value, key) => {
     if (isObject(value)) {
       if (!isObject(to[key])) {
@@ -68,12 +68,12 @@ export function merge({ ...to }, from) {
 /**
  * Assign all properties "from" to "to" object.
  *
- * @param {Object} to   - An object where properties are assigned.
- * @param {Object} from - An object whose properties are assigned to "to".
+ * @param to   - An object where properties are assigned.
+ * @param from - An object whose properties are assigned to "to".
  *
- * @return {Object} - An assigned object.
+ * @return An assigned object.
  */
-export function assign(to, from) {
+export function assign(to: any, from: any): object {
   to._s = from;
 
   Object.keys(from).forEach(key => {

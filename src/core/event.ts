@@ -7,13 +7,18 @@ export class Event {
   /**
    * Subscribe the given event(s).
    *
-   * @param {string}   events  - An event name. Use space to separate multiple events.
-   *                             Also, namespace is accepted by dot, such as 'resize.{namespace}'.
-   * @param {function} handler - A callback function.
-   * @param {Element}  element     - Optional. Native event will be listened to when this arg is provided.
-   * @param {Object}   options - Optional. Options for addEventListener.
+   * @param events  - An event name. Use space to separate multiple events.
+   *                  Also, namespace is accepted by dot, such as 'resize.{namespace}'.
+   * @param handler - A callback function.
+   * @param element - Optional. Native event will be listened to when this arg is provided.
+   * @param options - Optional. Options for addEventListener.
    */
-  on(events: string, handler, element?: (Window & typeof globalThis) | Element, options: boolean | AddEventListenerOptions = {}) {
+  on(
+    events: string,
+    handler: () => void,
+    element?: (Window & typeof globalThis) | Element,
+    options: boolean | AddEventListenerOptions = {},
+  ) {
     events.split(' ').forEach(event => {
       if (element) {
         element.addEventListener(event, handler, options);
@@ -26,8 +31,8 @@ export class Event {
   /**
    * Unsubscribe the given event(s).
    *
-   * @param {string}  events - A event name or names split by space.
-   * @param {Element} element    - Optional. removeEventListener() will be called when this arg is provided.
+   * @param events - A event name or names split by space.
+   * @param element - Optional. removeEventListener() will be called when this arg is provided.
    */
   off(events: string, element?: (Window & typeof globalThis) | Element) {
     events.split(' ').forEach(event => {
@@ -47,10 +52,10 @@ export class Event {
    * Emit an event.
    * This method is only for custom events.
    *
-   * @param {string}  event - An event name.
-   * @param {*}       args  - Any number of arguments passed to handlers.
+   * @param event - An event name.
+   * @param args  - Any number of arguments passed to handlers.
    */
-  emit(event: string, ...args) {
+  emit(event: string, ...args: any[]) {
     this.data.forEach(item => {
       if (!item.elm && item.event.split('.')[0] === event) {
         item.handler(...args);

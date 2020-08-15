@@ -4,7 +4,6 @@ import { SlideTransition } from './../../transitions/slide/index';
 import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
 import { BaseComponent } from './../base-component';
 import { HorizontalDirection } from './directions/horizontal';
-import { Event } from './../../core/event';
 
 export default class TrackComponent implements BaseComponent {
   // Store the current position.
@@ -62,12 +61,12 @@ export default class TrackComponent implements BaseComponent {
    * Go to the given destination index.
    * After arriving there, the track is jump to the new index without animation, mainly for loop mode.
    *
-   * @param {number}  destIndex - A destination index.
+   * @param destIndex - A destination index.
    *                              This can be negative or greater than slides length for reaching clones.
-   * @param {number}  newIndex  - An actual new index. They are always same in Slide and Rewind mode.
-   * @param {boolean} silently  - If true, suppress emitting events.
+   * @param newIndex  - An actual new index. They are always same in Slide and Rewind mode.
+   * @param silently  - If true, suppress emitting events.
    */
-  go(destIndex, newIndex, silently: boolean = false) {
+  go(destIndex: number, newIndex: number, silently: boolean = false) {
     const newPosition = this.getTrimmedPosition(destIndex);
     const prevIndex = this.swiperInstance.index;
 
@@ -76,7 +75,7 @@ export default class TrackComponent implements BaseComponent {
     }
 
     if (Math.abs(newPosition - this.currPosition) >= 1 || this.isFade) {
-      this.transition.start(destIndex, newIndex, prevIndex, this.toCoord(newPosition), () => {
+      this.transition.start(newIndex, prevIndex, this.toCoord(newPosition), () => {
         this.end(destIndex, newIndex, prevIndex, silently);
       });
     } else {
@@ -91,10 +90,10 @@ export default class TrackComponent implements BaseComponent {
   /**
    * Called whenever slides arrive at a destination.
    *
-   * @param {number}  destIndex - A destination index.
-   * @param {number}  newIndex  - A new index.
-   * @param {number}  prevIndex - A previous index.
-   * @param {boolean} silently  - If true, suppress emitting events.
+   * @param destIndex - A destination index.
+   * @param newIndex  - A new index.
+   * @param prevIndex - A previous index.
+   * @param silently  - If true, suppress emitting events.
    */
   end(destIndex: number, newIndex: number, prevIndex: number, silently?: boolean) {
     applyStyle(this.list, { transition: '' });
@@ -111,18 +110,18 @@ export default class TrackComponent implements BaseComponent {
   /**
    * Move the track to the specified index.
    *
-   * @param {number} index - A destination index where the track jumps.
+   * @param index - A destination index where the track jumps.
    */
-  jump(index) {
+  jump(index: number) {
     this.translate(this.getTrimmedPosition(index));
   }
 
   /**
    * Set position.
    *
-   * @param {number} position - A new position value.
+   * @param position - A new position value.
    */
-  translate(position) {
+  translate(position: number) {
     this.currPosition = position;
 
     applyStyle(this.list, { transform: `translate${this._direction.axis}(${position}px)` });
@@ -131,11 +130,11 @@ export default class TrackComponent implements BaseComponent {
   /**
    * Trim redundant spaces on the left or right edge if necessary.
    *
-   * @param {number} position - Position value to be trimmed.
+   * @param position - Position value to be trimmed.
    *
-   * @return {number} - Trimmed position.
+   * @return Trimmed position.
    */
-  trim(position) {
+  trim(position: number): number {
     // if ( ! Splide.options.trimSpace || Splide.is( LOOP ) ) {
     if (true) {
       return position;
@@ -151,7 +150,7 @@ export default class TrackComponent implements BaseComponent {
    *
    * @return - A coordinates object.
    */
-  toCoord(position) {
+  toCoord(position: number) {
     return {
       x: this.isVertical ? 0 : position,
       y: this.isVertical ? position : 0,
@@ -170,9 +169,9 @@ export default class TrackComponent implements BaseComponent {
   /**
    * Convert index to the trimmed position.
    *
-   * @return {number} - Trimmed position.
+   * @return Trimmed position.
    */
-  getTrimmedPosition(index) {
+  getTrimmedPosition(index: number): number {
     return this.trim(this._direction.toPosition(index));
   }
 }

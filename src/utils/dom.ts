@@ -12,10 +12,10 @@ import { toArray } from './utils';
  * Find the first element matching the given selector.
  * Be aware that all selectors after a space are ignored.
  *
- * @param {Element|Node}  elm       - An ancestor element.
- * @param {string}        selector  - DOMString.
+ * @param elm       - An ancestor element.
+ * @param selector  - DOMString.
  *
- * @return {Element|null} - A found element or null.
+ * @return A found element or null.
  */
 export function find(elm: HTMLElement | ParentNode, selector: string): HTMLElement {
   return elm ? elm.querySelector(selector.split(' ')[0]) : null;
@@ -24,10 +24,10 @@ export function find(elm: HTMLElement | ParentNode, selector: string): HTMLEleme
 /**
  * Find a first child having the given tag or class name.
  *
- * @param {Element} parent         - A parent element.
- * @param {string}  tagOrClassName - A tag or class name.
+ * @param parent         - A parent element.
+ * @param tagOrClassName - A tag or class name.
  *
- * @return {Element|null} - A found element on success. Null on failure.
+ * @return A found element on success. Null on failure.
  */
 export function child(parent: HTMLElement, tagOrClassName: string): HTMLElement | null {
   if (parent) {
@@ -44,10 +44,10 @@ export function child(parent: HTMLElement, tagOrClassName: string): HTMLElement 
 /**
  * Create an element with some optional attributes.
  *
- * @param {string} tag   - A tag name.
- * @param {Object} attrs - An object any attribute pairs of name and value.
+ * @param tag   - A tag name.
+ * @param attrs - An object any attribute pairs of name and value.
  *
- * @return {Element} - A created element.
+ * @return A created element.
  */
 export function create(tag: string, attrs: object): HTMLElement {
   const elm = document.createElement(tag);
@@ -59,9 +59,9 @@ export function create(tag: string, attrs: object): HTMLElement {
 /**
  * Convert HTML string to DOM node.
  *
- * @param {string} html - HTML string.
+ * @param html - HTML string.
  *
- * @return {Node} - A created node.
+ * @return A created node.
  */
 export function domify(html: string): HTMLElement {
   const div = create('div', {});
@@ -73,7 +73,7 @@ export function domify(html: string): HTMLElement {
 /**
  * Remove a given element from a DOM tree.
  *
- * @param {Element|Element[]} elms - Element(s) to be removed.
+ * @param elms - Element(s) to be removed.
  */
 export function remove(elms: HTMLElement | HTMLElement[]) {
   toArray(elms).forEach(elm => {
@@ -86,8 +86,8 @@ export function remove(elms: HTMLElement | HTMLElement[]) {
 /**
  * Append a child to a given element.
  *
- * @param {Element} parent - A parent element.
- * @param {Element} child  - An element to be appended.
+ * @param parent - A parent element.
+ * @param child  - An element to be appended.
  */
 export function append(parent: HTMLElement, child: HTMLElement) {
   if (parent) {
@@ -98,8 +98,8 @@ export function append(parent: HTMLElement, child: HTMLElement) {
 /**
  * Insert an element before the reference element.
  *
- * @param {Element}      elemt- An element to be inserted.
- * @param {Element|Node} ref - A reference element.
+ * @param elemt- An element to be inserted.
+ * @param ref - A reference element.
  */
 export function before(element: HTMLElement, ref: HTMLElement) {
   if (element && ref && ref.parentElement) {
@@ -110,8 +110,8 @@ export function before(element: HTMLElement, ref: HTMLElement) {
 /**
  * Apply styles to the given element.
  *
- * @param {Element} elm     - An element where styles are applied.
- * @param {Object}  styles  - Object containing styles.
+ * @param elm     - An element where styles are applied.
+ * @param styles  - Object containing styles.
  */
 export function applyStyle(elm: HTMLElement, styles: any) {
   if (elm) {
@@ -127,9 +127,9 @@ export function applyStyle(elm: HTMLElement, styles: any) {
  * Add or remove classes to/from the element.
  * This function is for internal usage.
  *
- * @param {Element}         elm     - An element where classes are added.
- * @param {string|string[]} classes - Class names being added.
- * @param {boolean}         remove  - Whether to remove or add classes.
+ * @param elm     - An element where classes are added.
+ * @param classes - Class names being added.
+ * @param remove  - Whether to remove or add classes.
  */
 function addOrRemoveClasses(elm: HTMLElement, classes: string | string[], remove: boolean) {
   if (elm) {
@@ -144,8 +144,8 @@ function addOrRemoveClasses(elm: HTMLElement, classes: string | string[], remove
 /**
  * Add classes to the element.
  *
- * @param {Element}          elm     - An element where classes are added.
- * @param {string|string[]}  classes - Class names being added.
+ * @param elm     - An element where classes are added.
+ * @param classes - Class names being added.
  */
 export function addClass(elm: HTMLElement, classes: string | string[]) {
   addOrRemoveClasses(elm, classes, false);
@@ -154,8 +154,8 @@ export function addClass(elm: HTMLElement, classes: string | string[]) {
 /**
  * Remove a class from the element.
  *
- * @param {Element}         elm     - An element where classes are removed.
- * @param {string|string[]} classes - A class name being removed.
+ * @param elm     - An element where classes are removed.
+ * @param classes - A class name being removed.
  */
 export function removeClass(elm: HTMLElement, classes: string | string[]) {
   addOrRemoveClasses(elm, classes, true);
@@ -164,10 +164,10 @@ export function removeClass(elm: HTMLElement, classes: string | string[]) {
 /**
  * Verify if the provided element has the class or not.
  *
- * @param {Element} elm       - An element.
- * @param {string}  className - A class name.
+ * @param elm       - An element.
+ * @param className - A class name.
  *
- * @return {boolean} - True if the element has the class or false if not.
+ * @return True if the element has the class or false if not.
  */
 export function hasClass(elm: HTMLElement, className: string): boolean {
   return !!elm && elm.classList.contains(className);
@@ -176,9 +176,9 @@ export function hasClass(elm: HTMLElement, className: string): boolean {
 /**
  * Set attribute to the given element.
  *
- * @param {Element}                 elm   - An element where an attribute is assigned.
- * @param {string}                  name  - Attribute name.
- * @param {string|number|boolean}   value - Attribute value.
+ * @param elm   - An element where an attribute is assigned.
+ * @param name  - Attribute name.
+ * @param value - Attribute value.
  */
 export function setAttribute(elm: HTMLElement, name: string, value: string | number | boolean) {
   if (elm) {
@@ -189,10 +189,10 @@ export function setAttribute(elm: HTMLElement, name: string, value: string | num
 /**
  * Get attribute from the given element.
  *
- * @param {Element} elm  - An element where an attribute is assigned.
- * @param {string}  name - Attribute name.
+ * @param elm  - An element where an attribute is assigned.
+ * @param name - Attribute name.
  *
- * @return {string} - The value of the given attribute if available. An empty string if not.
+ * @return The value of the given attribute if available. An empty string if not.
  */
 export function getAttribute(elm: HTMLElement, name: string): string {
   return elm ? elm.getAttribute(name) : '';
@@ -201,8 +201,8 @@ export function getAttribute(elm: HTMLElement, name: string): string {
 /**
  * Remove attribute from the given element.
  *
- * @param {Element|Element[]} elms  - An element where an attribute is removed.
- * @param {string|string[]}      names - Attribute name.
+ * @param elms  - An element where an attribute is removed.
+ * @param names - Attribute name.
  */
 export function removeAttribute(elms: HTMLElement | HTMLElement[], names: string | string[]) {
   toArray(names).forEach(name => {
@@ -213,8 +213,8 @@ export function removeAttribute(elms: HTMLElement | HTMLElement[], names: string
 /**
  * Trigger the given callback after all images contained by the element are loaded.
  *
- * @param {Element}  elm      - Element that may contain images.
- * @param {Function} callback - Callback function fired right after all images are loaded.
+ * @param elm      - Element that may contain images.
+ * @param callback - Callback function fired right after all images are loaded.
  */
 export function loaded(elm: HTMLElement, callback: Function) {
   const images = elm.querySelectorAll('img');
