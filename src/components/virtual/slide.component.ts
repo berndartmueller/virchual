@@ -1,7 +1,7 @@
 import { addClass, find, getAttribute, hasClass, removeClass, setAttribute } from '../../utils/dom';
 import { values } from '../../utils/object';
 import { pad } from '../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
 import TrackComponent from '../track/track.component';
 import { STATUS_CLASSES } from './../../constants/classes';
 import { TTB } from './../../constants/directions';
@@ -44,7 +44,7 @@ export class SlideComponent implements BaseComponent {
     public slide: HTMLElement,
     public key?: string,
   ) {
-    this.container = find(this.slide, `.vswiper__list`);
+    this.container = find(this.slide, `.virchual__list`);
     this.isClone = realIndex > -1;
     this.styles = getAttribute(this.slide, 'style') || '';
     this.statusUpdateEvents = 'ready.slide updated.slide resize.slide ' + (this.options.updateOnMove ? 'move.slide' : 'moved.slide');

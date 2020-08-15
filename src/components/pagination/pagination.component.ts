@@ -1,7 +1,7 @@
 import { STATUS_CLASSES } from '../../constants/classes';
 import { addClass, append, applyStyle, create, remove, removeClass } from '../../utils/dom';
 import { unit } from '../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
 import ControllerComponent from '../controller/controller.component';
 import VirtualComponent from '../virtual/virtual.component';
 import { BaseComponent } from './../base-component';

@@ -1,4 +1,4 @@
-.vswiper-container {
+.virchual-container {
   margin-left: auto;
   margin-right: auto;
   position: relative;
@@ -8,14 +8,14 @@
   z-index: 1;
 }
 
-.vswiper__track {
+.virchual__track {
   position: relative;
   z-index: 0;
   overflow: hidden;
   height: 100%;
 }
 
-.vswiper__list {
+.virchual__list {
   position: relative;
   width: 100%;
   height: 100%;
@@ -25,11 +25,11 @@
   box-sizing: content-box;
 }
 
-.vswiper__list {
+.virchual__list {
   transform: translate3d(0px, 0, 0);
 }
 
-.vswiper-slide {
+.virchual-slide {
   flex-shrink: 0;
   width: 100%;
   height: 100%;
@@ -37,7 +37,7 @@
   transition-property: transform;
 }
 
-.vswiper__pagination {
+.virchual__pagination {
   position: absolute;
   text-align: center;
   transition: 0.3s opacity;
@@ -51,7 +51,7 @@
   bottom: 10px;
 }
 
-.vswiper__pagination-track {
+.virchual__pagination-track {
   position: relative;
   bottom: unset;
   align-items: center;
@@ -63,7 +63,7 @@
   transition: all 0.25s;
 }
 
-.vswiper__pagination__page {
+.virchual__pagination__page {
   width: 8px;
   cursor: pointer;
   height: 8px;
@@ -78,11 +78,11 @@
   transition: 0.2s transform;
 }
 
-.vswiper__pagination__page.active-prev,
-.vswiper__pagination__page.active-next {
+.virchual__pagination__page.active-prev,
+.virchual__pagination__page.active-next {
   transform: scale(0.66);
 }
 
-.vswiper__pagination__page.is-active {
+.virchual__pagination__page.is-active {
   transform: scale(1);
 }

@@ -1,5 +1,5 @@
 import { SlideComponent } from './slide.component';
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents, VirtualSwiperSlide } from './../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents, VirtualSwiperSlide } from './../../virchual';
 import { BaseComponent } from './../base-component';
 import { domify, append, applyStyle } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
@@ -45,13 +45,13 @@ export default class VirtualComponent implements BaseComponent {
      * Note that IE doesn't support padStart() to fill the uid by 0.
      */
     if (!this.swiperInstance.root.id) {
-      window['vswiper'] = window['vswiper'] || {};
+      window['virchual'] = window['virchual'] || {};
 
-      const uid = window['vswiper'][UID_NAME] || 0;
+      const uid = window['virchual'][UID_NAME] || 0;
 
-      window['vswiper'][UID_NAME] = uid + 1;
+      window['virchual'][UID_NAME] = uid + 1;
 
-      this.swiperInstance.root.id = `vswiper-${pad(uid)}`;
+      this.swiperInstance.root.id = `virchual-${pad(uid)}`;
     }
 
     this.collect();
@@ -150,7 +150,7 @@ export default class VirtualComponent implements BaseComponent {
 
         // create new DOM node
       } else {
-        element = domify(`<div class='vswiper-slide'>${slide.html}</div>`);
+        element = domify(`<div class='virchual-slide'>${slide.html}</div>`);
 
         append(this.track.list, element);
       }
@@ -183,7 +183,7 @@ export default class VirtualComponent implements BaseComponent {
         return;
       }
 
-      const node = domify(`<div class='vswiper-slide'>${slide.html}</div>`);
+      const node = domify(`<div class='virchual-slide'>${slide.html}</div>`);
 
       append(this.track.list, node);
 

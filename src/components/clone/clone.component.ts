@@ -2,7 +2,7 @@ import { addClass, append, before, domify, remove, removeAttribute } from '../..
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';
 import { LOOP } from './../../constants/types';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 import { SlideComponent } from './../virtual/slide.component';
 
@@ -101,7 +101,7 @@ export default class CloneComponent implements BaseComponent {
 
     if (currentIndex > 0 && currentIndex >= virtualSlidesLength - 1 && this.lengthAfter === 0) {
       this.virtual.slides.slice(0, count).forEach((slide, index) => {
-        const node = domify(`<div class='vswiper-slide'>${slide.html}</div>`) as HTMLElement;
+        const node = domify(`<div class='virchual-slide'>${slide.html}</div>`) as HTMLElement;
         const clone = this.cloneDeeply(node);
 
         append(this.track.list, clone);
@@ -116,7 +116,7 @@ export default class CloneComponent implements BaseComponent {
 
     if (this.lengthBefore === 0) {
       this.virtual.slides.slice(-count).forEach((slide, index) => {
-        const node = domify(`<div class='vswiper-slide'>${slide.html}</div>`) as HTMLElement;
+        const node = domify(`<div class='virchual-slide'>${slide.html}</div>`) as HTMLElement;
         const clone = this.cloneDeeply(node);
 
         before(clone, firstSlide.slide);

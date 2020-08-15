@@ -1,7 +1,7 @@
 /**
  * A root class name.
  */
-const ROOT = 'vswiper';
+const ROOT = 'virchual';
 
 /**
  * The definition table of all classes for elements.

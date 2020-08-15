@@ -1,5 +1,5 @@
 import { between } from '../../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../../virchual';
 import VirtualComponent from '../../virtual/virtual.component';
 import { BaseLayout } from '../../layout/index';
 

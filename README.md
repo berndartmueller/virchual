@@ -10,7 +10,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/berndartmueller/virtual-swiper">
+  <a href="https://github.com/berndartmueller/virchual">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -19,14 +19,14 @@
   <p align="center">
     YOUR_SHORT_DESCRIPTION
     <br />
-    <a href="https://github.com/berndartmueller/virtual-swiper"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/berndartmueller/virchual"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/berndartmueller/virtual-swiper">View Demo</a>
+    <a href="https://github.com/berndartmueller/virchual">View Demo</a>
     ·
-    <a href="https://github.com/berndartmueller/virtual-swiper/issues">Report Bug</a>
+    <a href="https://github.com/berndartmueller/virchual/issues">Report Bug</a>
     ·
-    <a href="https://github.com/berndartmueller/virtual-swiper/issues">Request Feature</a>
+    <a href="https://github.com/berndartmueller/virchual/issues">Request Feature</a>
   </p>
 </p>
 
@@ -73,7 +73,7 @@ This is an example of how to list things you need to use the software and how to
 - npm
 
 ```sh
-npm install virtual-swiper
+npm install virchual
 ```
 
 ### Installation
@@ -81,7 +81,7 @@ npm install virtual-swiper
 1. Clone the repo
 
 ```sh
-git clone github.com/berndartmueller/virtual-swiper.git
+git clone github.com/berndartmueller/virchual.git
 ```
 
 2. Install NPM packages
@@ -102,7 +102,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-See the [open issues](https://github.com/berndartmueller/virtual-swiper/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/berndartmueller/virchual/issues) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
@@ -128,7 +128,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Bernd Artmüller - [@berndartmueller](https://twitter.com/berndartmueller) - hello@berndartmueller.com
 
-Project Link: [https://github.com/berndartmueller/virtual-swiper](https://github.com/berndartmueller/virtual-swiper)
+Project Link: [https://github.com/berndartmueller/virchual](https://github.com/berndartmueller/virchual)
 
 <!-- ACKNOWLEDGEMENTS -->
 
@@ -139,16 +139,16 @@ Huge credits to [https://github.com/Splidejs/splide](https://github.com/Splidejs
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/berndartmueller/virtual-swiper.svg?style=flat-square
-[contributors-url]: https://github.com/berndartmueller/virtual-swiper/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/berndartmueller/virtual-swiper.svg?style=flat-square
-[forks-url]: https://github.com/berndartmueller/virtual-swiper/network/members
-[stars-shield]: https://img.shields.io/github/stars/berndartmueller/virtual-swiper.svg?style=flat-square
-[stars-url]: https://github.com/berndartmueller/virtual-swiper/stargazers
-[issues-shield]: https://img.shields.io/github/issues/berndartmueller/virtual-swiper.svg?style=flat-square
-[issues-url]: https://github.com/berndartmueller/virtual-swiper/issues
-[license-shield]: https://img.shields.io/github/license/berndartmueller/virtual-swiper.svg?style=flat-square
-[license-url]: https://github.com/berndartmueller/virtual-swiper/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/berndartmueller/virchual.svg?style=flat-square
+[contributors-url]: https://github.com/berndartmueller/virchual/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/berndartmueller/virchual.svg?style=flat-square
+[forks-url]: https://github.com/berndartmueller/virchual/network/members
+[stars-shield]: https://img.shields.io/github/stars/berndartmueller/virchual.svg?style=flat-square
+[stars-url]: https://github.com/berndartmueller/virchual/stargazers
+[issues-shield]: https://img.shields.io/github/issues/berndartmueller/virchual.svg?style=flat-square
+[issues-url]: https://github.com/berndartmueller/virchual/issues
+[license-shield]: https://img.shields.io/github/license/berndartmueller/virchual.svg?style=flat-square
+[license-url]: https://github.com/berndartmueller/virchual/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/berndartmueller
 [product-screenshot]: images/screenshot.png

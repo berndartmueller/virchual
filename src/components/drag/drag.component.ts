@@ -1,7 +1,7 @@
 import ControllerComponent from '../controller/controller.component';
 import { BaseLayout } from '../layout/index';
 import TrackComponent from '../track/track.component';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 
 /**

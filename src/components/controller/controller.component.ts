@@ -1,7 +1,7 @@
 import { between } from '../../utils/utils';
 import TrackComponent from '../track/track.component';
 import { Event } from './../../core/event';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 
 export default class ControllerComponent implements BaseComponent {

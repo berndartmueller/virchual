@@ -7,7 +7,7 @@ import postcss_import from 'postcss-import';
 import postcss_copy from 'postcss-copy';
 
 export default {
-  input: 'src/virtual-swiper.ts', // our source file
+  input: 'src/virchual.ts', // our source file
   output: [
     {
       file: pkg.main,

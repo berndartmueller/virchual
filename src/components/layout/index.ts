@@ -1,7 +1,7 @@
 import { applyStyle } from '../../utils/dom';
 import { throttle } from '../../utils/time';
 import { unit } from '../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
 import { BaseComponent } from '../base-component';
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';

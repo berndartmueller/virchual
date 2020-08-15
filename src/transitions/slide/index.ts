@@ -1,7 +1,7 @@
 import ControllerComponent from '../../components/controller/controller.component';
 import TrackComponent from '../../components/track/track.component';
 import { applyStyle } from '../../utils/dom';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
 import { BaseComponent } from './../../components/base-component';
 
 export class SlideTransition implements BaseComponent {

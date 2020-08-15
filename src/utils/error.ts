@@ -1,7 +1,7 @@
 /**
  * Prefix of an error massage.
  */
-const MESSAGE_PREFIX: string = '[VSWIPER]';
+const MESSAGE_PREFIX: string = '[VIRCHUAL]';
 
 /**
  * Display an error message on the browser console.

@@ -1,7 +1,7 @@
 import { applyStyle } from '../../utils/dom';
 import ControllerComponent from '../controller/controller.component';
 import { SlideTransition } from './../../transitions/slide/index';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 import { HorizontalDirection } from './directions/horizontal';
 
@@ -42,8 +42,8 @@ export default class TrackComponent implements BaseComponent {
     this.transition = components.Transition as SlideTransition;
     this._direction = new HorizontalDirection(this.options, instance, components);
 
-    this._track = this.swiperInstance.root.querySelector('.vswiper__track');
-    this._list = this.swiperInstance.root.querySelector('.vswiper__list');
+    this._track = this.swiperInstance.root.querySelector('.virchual__track');
+    this._list = this.swiperInstance.root.querySelector('.virchual__list');
   }
   /**
    * Called after the component is mounted.

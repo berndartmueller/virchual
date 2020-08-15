@@ -1,5 +1,5 @@
 {
-  "name": "virtual-swiper",
+  "name": "virchual",
   "version": "0.0.1",
   "description": "Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.",
   "main": "dist/index.js",
@@ -23,14 +23,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/berndartmueller/virtual-swiper.git"
+    "url": "git+https://github.com/berndartmueller/virchual.git"
   },
   "author": "Bernd Artmüller",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/berndartmueller/virtual-swiper/issues"
+    "url": "https://github.com/berndartmueller/virchual/issues"
   },
-  "homepage": "https://github.com/berndartmueller/virtual-swiper#readme",
+  "homepage": "https://github.com/berndartmueller/virchual#readme",
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",

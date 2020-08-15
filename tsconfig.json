@@ -10,6 +10,6 @@
     "types": [],
     "sourceMap": true
   },
-  "include": ["src/virtual-swiper.ts"],
+  "include": ["src/virchual.ts"],
   "exclude": ["node_modules"]
 }

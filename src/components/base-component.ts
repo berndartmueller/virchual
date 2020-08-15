@@ -1,4 +1,4 @@
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from './../virtual-swiper';
+import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from './../virchual';
 
 export interface BaseComponentConstructor {
   new (options: VirtualSwiperOptions): BaseComponent;
