@@ -1,7 +1,7 @@
 import { STATUS_CLASSES } from '../../constants/classes';
 import { addClass, append, applyStyle, create, remove, removeClass } from '../../utils/dom';
 import { unit } from '../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
 import ControllerComponent from '../controller/controller.component';
 import VirtualComponent from '../virtual/virtual.component';
 import { BaseComponent } from './../base-component';
@@ -29,13 +29,13 @@ export default class TrackComponent implements BaseComponent {
 
   private virtual: VirtualComponent;
   private controller: ControllerComponent;
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
   private currentPosition: number;
-  private components: VirtualSwiperComponents;
+  private components: VirchualComponents;
 
-  constructor(private options: VirtualSwiperOptions) {}
+  constructor(private options: VirchualOptions) {}
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.components = components;
     this.virtual = components.Virtual as VirtualComponent;

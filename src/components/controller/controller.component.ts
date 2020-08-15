@@ -1,7 +1,7 @@
 import { between } from '../../utils/utils';
 import TrackComponent from '../track/track.component';
 import { Event } from './../../core/event';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 
 export default class ControllerComponent implements BaseComponent {
@@ -10,12 +10,12 @@ export default class ControllerComponent implements BaseComponent {
    */
   private isLoop: boolean = true;
 
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
   private track: TrackComponent;
 
-  constructor(private options: VirtualSwiperOptions) {}
+  constructor(private options: VirchualOptions) {}
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.track = components.Track as TrackComponent;
 

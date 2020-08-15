@@ -1,7 +1,7 @@
 import ControllerComponent from '../controller/controller.component';
 import { BaseLayout } from '../layout/index';
 import TrackComponent from '../track/track.component';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 
 /**
@@ -35,11 +35,11 @@ export default class DragComponent implements BaseComponent {
   private track: TrackComponent;
   private layout: BaseLayout;
   private controller: ControllerComponent;
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
 
-  constructor(private options: VirtualSwiperOptions) {}
+  constructor(private options: VirchualOptions) {}
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.track = components.Track as TrackComponent;
     this.layout = components.Layout as BaseLayout;

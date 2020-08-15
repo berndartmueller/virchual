@@ -1,7 +1,7 @@
 import { applyStyle } from '../../utils/dom';
 import { throttle } from '../../utils/time';
 import { unit } from '../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
 import { BaseComponent } from '../base-component';
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';
@@ -12,11 +12,11 @@ import VirtualComponent from '../virtual/virtual.component';
 const THROTTLE = 100;
 
 export abstract class BaseLayout implements BaseComponent {
-  protected swiperInstance: VirtualSwiper;
+  protected swiperInstance: Virchual;
   protected track: TrackComponent;
   protected virtual: VirtualComponent;
 
-  constructor(protected options: VirtualSwiperOptions) {}
+  constructor(protected options: VirchualOptions) {}
 
   abstract initLayout();
   abstract get listWidth(): number;
@@ -29,7 +29,7 @@ export abstract class BaseLayout implements BaseComponent {
   abstract totalWidth(index: number): number;
   abstract get width(): number;
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.virtual = components.Virtual as VirtualComponent;
     this.track = components.Track as TrackComponent;

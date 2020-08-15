@@ -15,9 +15,9 @@ import { applyStyle, find } from './utils/dom';
 import { error, exist } from './utils/error';
 import { each } from './utils/object';
 
-export type VirtualSwiperOptions = {
+export type VirchualOptions = {
   type?: 'slide' | 'loop';
-  slides?: VirtualSwiperSlides;
+  slides?: VirchualSlides;
   rewindSpeed?: number;
   speed?: number;
   rewind?: boolean;
@@ -46,22 +46,18 @@ export type VirtualSwiperOptions = {
   pagination?: boolean;
 };
 
-export type VirtualSwiperSlide = string | { key: string; html: string };
-export type VirtualSwiperSlides = VirtualSwiperSlide[] | (() => VirtualSwiperSlide[]);
+export type VirchualSlide = string | { key: string; html: string };
+export type VirchualSlides = VirchualSlide[] | (() => VirchualSlide[]);
 
-export type VirtualSwiperComponents = { [key: string]: BaseComponent };
+export type VirchualComponents = { [key: string]: BaseComponent };
 
-export default class VirtualSwiper {
+export default class Virchual {
   root: HTMLElement;
 
   private _index: number;
   private event: Event;
 
-  constructor(
-    public selector: HTMLElement | string,
-    public options: VirtualSwiperOptions = {},
-    private components: VirtualSwiperComponents = {},
-  ) {
+  constructor(public selector: HTMLElement | string, public options: VirchualOptions = {}, private components: VirchualComponents = {}) {
     this.root = selector instanceof Element ? selector : find(document, selector);
 
     exist(this.root, 'An invalid element/selector was given.');
@@ -98,7 +94,7 @@ export default class VirtualSwiper {
       ...options,
     };
 
-    const defaultComponents: VirtualSwiperComponents = {
+    const defaultComponents: VirchualComponents = {
       Controller: new ControllerComponent(this.options),
       Track: new TrackComponent(this.options),
       Virtual: new VirtualComponent(this.options),
@@ -158,7 +154,7 @@ export default class VirtualSwiper {
    *
    * @return  - This instance.
    */
-  on(events: string, handler: any, elm: (Window & typeof globalThis) | Element = null, options: object = {}): VirtualSwiper {
+  on(events: string, handler: any, elm: (Window & typeof globalThis) | Element = null, options: object = {}): Virchual {
     this.event.on(events, handler, elm, options);
 
     return this;
@@ -172,7 +168,7 @@ export default class VirtualSwiper {
    *
    * @return This instance.
    */
-  off(events: string, elm: (Window & typeof globalThis) | Element = null): VirtualSwiper {
+  off(events: string, elm: (Window & typeof globalThis) | Element = null): Virchual {
     this.event.off(events, elm);
 
     return this;
@@ -222,7 +218,7 @@ export default class VirtualSwiper {
 }
 
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
-  const instance = new VirtualSwiper(slider, {
+  const instance = new Virchual(slider, {
     slides: () => {
       const slides: { key: string; html: string }[] = [];
 

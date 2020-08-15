@@ -1,9 +1,9 @@
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents } from './../virchual';
+import Virchual, { VirchualOptions, VirchualComponents } from './../virchual';
 
 export interface BaseComponentConstructor {
-  new (options: VirtualSwiperOptions): BaseComponent;
+  new (options: VirchualOptions): BaseComponent;
 }
 
 export interface BaseComponent {
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents): void;
+  mount(instance: Virchual, components: VirchualComponents): void;
 }

@@ -14,7 +14,7 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Virtual Swiper</h3>
+  <h3 align="center">Virchual</h3>
 
   <p align="center">
     YOUR_SHORT_DESCRIPTION

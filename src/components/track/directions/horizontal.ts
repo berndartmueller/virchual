@@ -1,5 +1,5 @@
 import { between } from '../../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from '../../../virchual';
 import VirtualComponent from '../../virtual/virtual.component';
 import { BaseLayout } from '../../layout/index';
 
@@ -17,7 +17,7 @@ export class HorizontalDirection {
   private virtual: VirtualComponent;
   private layout: BaseLayout;
 
-  constructor(private options: VirtualSwiperOptions, private instance: VirtualSwiper, private components: VirtualSwiperComponents) {
+  constructor(private options: VirchualOptions, private instance: Virchual, private components: VirchualComponents) {
     this.virtual = components.Virtual as VirtualComponent;
     this.layout = components.Layout as BaseLayout;
   }

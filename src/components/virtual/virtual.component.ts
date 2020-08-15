@@ -1,5 +1,5 @@
 import { SlideComponent } from './slide.component';
-import VirtualSwiper, { VirtualSwiperOptions, VirtualSwiperComponents, VirtualSwiperSlide } from './../../virchual';
+import Virchual, { VirchualOptions, VirchualComponents, VirchualSlide } from './../../virchual';
 import { BaseComponent } from './../base-component';
 import { domify, append, applyStyle } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
@@ -26,16 +26,16 @@ export default class VirtualComponent implements BaseComponent {
   private virtualSlides: SlideComponent[];
   private track: TrackComponent;
   private layout: BaseLayout;
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
   private previousFrom: number;
   private previousTo: number;
 
-  constructor(private options: VirtualSwiperOptions) {
+  constructor(private options: VirchualOptions) {
     this.previousFrom = 0;
     this.previousTo = 0;
   }
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.track = components.Track as TrackComponent;
     this.layout = components.Layout as BaseLayout;
@@ -114,7 +114,7 @@ export default class VirtualComponent implements BaseComponent {
   }
 
   private init() {
-    let slides: VirtualSwiperSlide[] = [];
+    let slides: VirchualSlide[] = [];
     this.virtualSlides = [];
 
     if (typeof this.options.slides === 'function') {

@@ -2,7 +2,7 @@ import { addClass, append, before, domify, remove, removeAttribute } from '../..
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';
 import { LOOP } from './../../constants/types';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 import { SlideComponent } from './../virtual/slide.component';
 
@@ -13,13 +13,13 @@ export default class CloneComponent implements BaseComponent {
   private _clonesBefore: SlideComponent[] = [];
   private _clonesAfter: SlideComponent[] = [];
 
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
   private virtual: VirtualComponent;
   private track: TrackComponent;
 
-  constructor(private options: VirtualSwiperOptions) {}
+  constructor(private options: VirchualOptions) {}
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.virtual = components.Virtual as VirtualComponent;
     this.track = components.Track as TrackComponent;

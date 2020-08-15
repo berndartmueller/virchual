@@ -1,7 +1,7 @@
 import { applyStyle } from '../../utils/dom';
 import ControllerComponent from '../controller/controller.component';
 import { SlideTransition } from './../../transitions/slide/index';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from './../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 import { HorizontalDirection } from './directions/horizontal';
 
@@ -15,14 +15,14 @@ export default class TrackComponent implements BaseComponent {
   // Whether the slider type is FADE or not.
   private isFade: boolean = false;
 
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
   private controller: ControllerComponent;
   private _direction: HorizontalDirection;
   private _list: HTMLElement;
   private _track: HTMLElement;
   private transition: SlideTransition;
 
-  constructor(private options: VirtualSwiperOptions) {}
+  constructor(private options: VirchualOptions) {}
 
   get direction() {
     return this._direction;
@@ -36,7 +36,7 @@ export default class TrackComponent implements BaseComponent {
     return this._track;
   }
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.controller = components.Controller as ControllerComponent;
     this.transition = components.Transition as SlideTransition;

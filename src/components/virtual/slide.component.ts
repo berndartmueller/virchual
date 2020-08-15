@@ -1,7 +1,7 @@
 import { addClass, find, getAttribute, hasClass, removeClass, setAttribute } from '../../utils/dom';
 import { values } from '../../utils/object';
 import { pad } from '../../utils/utils';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
 import TrackComponent from '../track/track.component';
 import { STATUS_CLASSES } from './../../constants/classes';
 import { TTB } from './../../constants/directions';
@@ -28,7 +28,7 @@ export class SlideComponent implements BaseComponent {
    */
   private styles: string;
 
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
   private track: TrackComponent;
 
   /**
@@ -38,7 +38,7 @@ export class SlideComponent implements BaseComponent {
   private statusUpdateEvents: string;
 
   constructor(
-    private options: VirtualSwiperOptions,
+    private options: VirchualOptions,
     public index: number,
     public realIndex: number,
     public slide: HTMLElement,
@@ -50,7 +50,7 @@ export class SlideComponent implements BaseComponent {
     this.statusUpdateEvents = 'ready.slide updated.slide resize.slide ' + (this.options.updateOnMove ? 'move.slide' : 'moved.slide');
   }
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.track = components.Track as TrackComponent;
 

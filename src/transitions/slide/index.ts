@@ -1,7 +1,7 @@
 import ControllerComponent from '../../components/controller/controller.component';
 import TrackComponent from '../../components/track/track.component';
 import { applyStyle } from '../../utils/dom';
-import VirtualSwiper, { VirtualSwiperComponents, VirtualSwiperOptions } from '../../virchual';
+import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
 import { BaseComponent } from './../../components/base-component';
 
 export class SlideTransition implements BaseComponent {
@@ -16,12 +16,12 @@ export class SlideTransition implements BaseComponent {
   private endCallback: Function;
 
   private track: TrackComponent;
-  private swiperInstance: VirtualSwiper;
+  private swiperInstance: Virchual;
   private controller: ControllerComponent;
 
-  constructor(private options: VirtualSwiperOptions) {}
+  constructor(private options: VirchualOptions) {}
 
-  mount(instance: VirtualSwiper, components: VirtualSwiperComponents) {
+  mount(instance: Virchual, components: VirchualComponents) {
     this.swiperInstance = instance;
     this.controller = components.Controller as ControllerComponent;
     this.track = components.Track as TrackComponent;
