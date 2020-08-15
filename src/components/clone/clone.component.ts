@@ -94,7 +94,6 @@ export default class CloneComponent implements BaseComponent {
     const count = this.getCloneCount();
     const slides = this.virtual.getSlides();
     const firstSlide = slides[0];
-    const lastSlide = slides.slice(-1)[0];
 
     const currentIndex = this.swiperInstance.index;
     const virtualSlidesLength = this.virtual.getSlides(false).length;

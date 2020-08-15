@@ -1,6 +1,5 @@
 import { between } from '../../utils/utils';
 import TrackComponent from '../track/track.component';
-import { Event } from './../../core/event';
 import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 
