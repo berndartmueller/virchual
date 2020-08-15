@@ -1,10 +1,21 @@
 {
   "name": "virtual-swiper",
   "version": "0.0.1",
-  "description": "",
+  "description": "Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "browser": "dist/index.bundle.js",
+  "keywords": [
+    "slider",
+    "carousel",
+    "slideshow",
+    "lightweight",
+    "touch",
+    "responsive",
+    "image-slider",
+    "image-swiper",
+    "swiper"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c && tsc",
@@ -14,8 +25,8 @@
     "type": "git",
     "url": "git+https://github.com/berndartmueller/virtual-swiper.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Bernd Artmüller",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/berndartmueller/virtual-swiper/issues"
   },
@@ -30,9 +41,7 @@
     "postcss-import": "^12.0.1",
     "rollup-plugin-postcss": "^3.1.5",
     "rollup-plugin-serve": "^1.0.3",
-    "typescript": "^3.9.7"
-  },
-  "dependencies": {
+    "typescript": "^3.9.7",
     "rollup": "^2.26.0",
     "rollup-plugin-terser": "^7.0.0",
     "rollup-plugin-typescript2": "^0.27.2"
