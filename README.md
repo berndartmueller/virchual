@@ -7,7 +7,7 @@
 ***
 ***
 *** To avoid retyping too much info. Do a search and replace for the following:
-*** github_username, repo, twitter_handle, email
+*** github_username, repo, berndartmueller, hello@berndartmueller.com
 -->
 
 <!-- PROJECT SHIELDS -->
@@ -29,7 +29,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/github_username/repo">
+  <a href="https://github.com/berndartmueller/virtual-swiper">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -38,14 +38,14 @@
   <p align="center">
     YOUR_SHORT_DESCRIPTION
     <br />
-    <a href="https://github.com/github_username/repo"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/berndartmueller/virtual-swiper"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo">View Demo</a>
+    <a href="https://github.com/berndartmueller/virtual-swiper">View Demo</a>
     ·
-    <a href="https://github.com/github_username/repo/issues">Report Bug</a>
+    <a href="https://github.com/berndartmueller/virtual-swiper/issues">Report Bug</a>
     ·
-    <a href="https://github.com/github_username/repo/issues">Request Feature</a>
+    <a href="https://github.com/berndartmueller/virtual-swiper/issues">Request Feature</a>
   </p>
 </p>
 
@@ -75,9 +75,6 @@ This swiper library written in TypeScript aims to provide a high-performance swi
 
 To achieve this goal, this swiper carousel uses virtual slides to only render those slides which are really necessary.
 
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo`, `twitter_handle`, `email`
-
 ### Built With
 
 - []()
@@ -105,7 +102,7 @@ npm install virtual-swiper
 1. Clone the repo
 
 ```sh
-git clone https://github.com/github_username/repo.git
+git clone github.com/berndartmueller/virtual-swiper.git
 ```
 
 2. Install NPM packages
@@ -126,7 +123,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-See the [open issues](https://github.com/github_username/repo/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/berndartmueller/virtual-swiper/issues) for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
@@ -150,9 +147,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
+Your Name - [@berndartmueller](https://twitter.com/berndartmueller) - hello@berndartmueller.com
 
-Project Link: [https://github.com/github_username/repo](https://github.com/github_username/repo)
+Project Link: [https://github.com/berndartmueller/virtual-swiper](https://github.com/berndartmueller/virtual-swiper)
 
 <!-- ACKNOWLEDGEMENTS -->
 
