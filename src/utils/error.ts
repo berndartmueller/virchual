@@ -1,14 +1,5 @@
 /**
- * Utility functions for outputting logs.
- *
- * @author    Naotoshi Fujita
- * @copyright Naotoshi Fujita. All rights reserved.
- */
-
-/**
  * Prefix of an error massage.
- *
- * @type {string}
  */
 const MESSAGE_PREFIX: string = '[VSWIPER]';
 

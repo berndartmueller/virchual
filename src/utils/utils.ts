@@ -1,10 +1,3 @@
-/**
- * A package of some miscellaneous utility functions.
- *
- * @author    Naotoshi Fujita
- * @copyright Naotoshi Fujita. All rights reserved.
- */
-
 import { create, append, remove, applyStyle } from './dom';
 
 /**

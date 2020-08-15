@@ -1,11 +1,4 @@
 /**
- * A package of utility functions related with time.
- *
- * @author    Naotoshi Fujita
- * @copyright Naotoshi Fujita. All rights reserved.
- */
-
-/**
  * Simple throttle function that controls how often the given function is executed.
  *
  * @param func - A function to be throttled.

@@ -1,22 +1,11 @@
 /**
- * Export class names.
- *
- * @author    Naotoshi Fujita
- * @copyright Naotoshi Fujita. All rights reserved.
- */
-
-/**
  * A root class name.
- *
- * @type {string}
  */
 const ROOT = 'vswiper';
 
 /**
  * The definition table of all classes for elements.
  * They might be modified by options.
- *
- * @type {Object}
  */
 export const ELEMENT_CLASSES = {
   root: ROOT,
@@ -44,8 +33,6 @@ export const ELEMENT_CLASSES = {
 
 /**
  * Definitions of status classes.
- *
- * @type {Object}
  */
 export const STATUS_CLASSES = {
   active: 'is-active',

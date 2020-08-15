@@ -1,19 +1,19 @@
-import { Event } from './core/event';
-import './css/styles.css';
-
 import { BaseComponent } from './components/base-component';
+import CloneComponent from './components/clone/clone.component';
 import ControllerComponent from './components/controller/controller.component';
 import DragComponent from './components/drag/drag.component';
 import { HorizontalLayout } from './components/layout/directions/horizontal-layout';
+import PaginationComponent from './components/pagination/pagination.component';
 import TrackComponent from './components/track/track.component';
 import VirtualComponent from './components/virtual/virtual.component';
-import CloneComponent from './components/clone/clone.component';
-import PaginationComponent from './components/pagination/pagination.component';
+import { ELEMENT_CLASSES as classes } from './constants/classes';
+import { SliderType } from './constants/types';
+import { Event } from './core/event';
+import './css/styles.css';
 import { SlideTransition } from './transitions/slide/index';
-import { find, applyStyle } from './utils/dom';
+import { applyStyle, find } from './utils/dom';
 import { error, exist } from './utils/error';
 import { each } from './utils/object';
-import { ELEMENT_CLASSES as classes } from './constants/classes';
 
 export type VirtualSwiperOptions = {
   type?: 'slide' | 'loop';
@@ -143,7 +143,7 @@ export default class VirtualSwiper {
    *
    * @return True if the slider type is the provided type or false if not.
    */
-  is(type: string): boolean {
+  is(type: SliderType): boolean {
     return type === this.options.type;
   }
 

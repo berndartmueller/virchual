@@ -6,15 +6,11 @@ import { BaseLayout } from '../../layout/index';
 export class HorizontalDirection {
   /**
    * Axis of translate.
-   *
-   * @type {string}
    */
   public axis: 'X' | 'Y' = 'X';
 
   /**
    * Sign for the direction.
-   *
-   * @type {number}
    */
   public sign: number = -1;
 

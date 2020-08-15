@@ -1,10 +1,3 @@
-/**
- * Some utility functions related with DOM.
- *
- * @author    Naotoshi Fujita
- * @copyright Naotoshi Fujita. All rights reserved.
- */
-
 import { each, values } from './object';
 import { toArray } from './utils';
 

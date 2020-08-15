@@ -7,8 +7,6 @@ import { BaseComponent } from './../base-component';
 export default class ControllerComponent implements BaseComponent {
   /**
    * True if the slide is LOOP mode.
-   *
-   * @type {boolean}
    */
   private isLoop: boolean = true;
 

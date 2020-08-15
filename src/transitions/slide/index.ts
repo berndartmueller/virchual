@@ -7,15 +7,11 @@ import { BaseComponent } from './../../components/base-component';
 export class SlideTransition implements BaseComponent {
   /**
    * Hold the list element.
-   *
-   * @type {Element}
    */
   private list: HTMLElement;
 
   /**
    * Hold the onEnd callback function.
-   *
-   * @type {function}
    */
   private endCallback: Function;
 

@@ -1,11 +1,4 @@
 /**
- * Some utility functions related with Object, supporting IE.
- *
- * @author    Naotoshi Fujita
- * @copyright Naotoshi Fujita. All rights reserved.
- */
-
-/**
  * Iterate an object like Array.forEach.
  * IE doesn't support forEach of HTMLCollection.
  *

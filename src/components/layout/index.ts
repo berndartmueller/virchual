@@ -8,8 +8,6 @@ import VirtualComponent from '../virtual/virtual.component';
 
 /**
  * Interval time for throttle.
- *
- * @type {number}
  */
 const THROTTLE = 100;
 
