@@ -1,23 +1,4 @@
-<!--
-*** Thanks for checking out this README Template. If you have a suggestion that would
-*** make this better, please fork the repo and create a pull request or simply open
-*** an issue with the tag "enhancement".
-*** Thanks again! Now go create something AMAZING! :D
-***
-***
-***
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** github_username, repo, berndartmueller, hello@berndartmueller.com
--->
-
 <!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -77,9 +58,7 @@ To achieve this goal, this swiper carousel uses virtual slides to only render th
 
 ### Built With
 
-- []()
-- []()
-- []()
+- TypeScript
 
 <!-- GETTING STARTED -->
 
@@ -147,7 +126,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [@berndartmueller](https://twitter.com/berndartmueller) - hello@berndartmueller.com
+Bernd Artmüller - [@berndartmueller](https://twitter.com/berndartmueller) - hello@berndartmueller.com
 
 Project Link: [https://github.com/berndartmueller/virtual-swiper](https://github.com/berndartmueller/virtual-swiper)
 
@@ -155,11 +134,7 @@ Project Link: [https://github.com/berndartmueller/virtual-swiper](https://github
 
 ## Acknowledgements
 
-Huge credits to https://github.com/Splidejs/splide by NaotoshiFujita. Great slider and very well implemented!
-
-- []()
-- []()
-- []()
+Huge credits to [https://github.com/Splidejs/splide](https://github.com/Splidejs/splide) by NaotoshiFujita. Splide was used as a boilerplate for my TypeScript implementation. Great slider and very well implemented!
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -173,7 +148,7 @@ Huge credits to https://github.com/Splidejs/splide by NaotoshiFujita. Great slid
 [issues-shield]: https://img.shields.io/github/issues/berndartmueller/virtual-swiper.svg?style=flat-square
 [issues-url]: https://github.com/berndartmueller/virtual-swiper/issues
 [license-shield]: https://img.shields.io/github/license/berndartmueller/virtual-swiper.svg?style=flat-square
-[license-url]: https://github.com/berndartmueller/virtual-swiper/blob/master/LICENSE.txt
+[license-url]: https://github.com/berndartmueller/virtual-swiper/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/berndartmueller
 [product-screenshot]: images/screenshot.png
