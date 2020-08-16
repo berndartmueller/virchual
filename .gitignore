@@ -3,3 +3,5 @@ npm-debug.log
 lib
 .idea
 dist
+website/node_modules
+website/build
