@@ -80,7 +80,7 @@ export abstract class BaseLayout implements BaseComponent {
       applyStyle(slide.container, { height: slideHeight });
 
       applyStyle(slide.slide, {
-        width: this.options.autoWidth ? null : unit(this.slideWidth(slide.index)),
+        width: unit(this.slideWidth(slide.index)),
         height: slide.container ? null : slideHeight,
       });
     });
@@ -101,7 +101,7 @@ export abstract class BaseLayout implements BaseComponent {
     const slideHeight = unit(this.slideHeight);
 
     applyStyle(slide.slide, {
-      width: this.options.autoWidth ? null : unit(this.slideWidth(slide.index)),
+      width: unit(this.slideWidth(slide.index)),
       height: slide.container ? null : slideHeight,
     });
   }

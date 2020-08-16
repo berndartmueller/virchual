@@ -6,7 +6,7 @@ export const DEFAULTS = {
    * Determine a slider type.
    * - 'slide': Regular slider.
    * - 'loop' : Carousel slider.
-   * - 'fade' : Change slides with fade transition. perPage, drag options are ignored.
+   * - 'fade' : Change slides with fade transition. Drag options are ignored.
    */
   type: 'slide',
 
@@ -37,12 +37,6 @@ export const DEFAULTS = {
   height: 0,
 
   /**
-   * Fix width of slides. CSS format is allowed such as 10em, 80% or 80vw.
-   * perPage number will be ignored when this option is falsy.
-   */
-  fixedWidth: 0,
-
-  /**
    * Fix height of slides. CSS format is allowed such as 10em, 80vh but % unit is not accepted.
    * heightRatio option will be ignored when this option is falsy.
    */
@@ -53,18 +47,6 @@ export const DEFAULTS = {
    * This will be ignored when the fixedHeight is provided.
    */
   heightRatio: 0,
-
-  /**
-   * If true, slide width will be determined by the element width itself.
-   * - perPage/perMove should be 1.
-   * - lazyLoad should be false.
-   */
-  autoWidth: false,
-
-  /**
-   * Determine how many slides should be displayed per page.
-   */
-  perPage: 1,
 
   /**
    * Determine how many slides should be moved when a slider goes to next or perv.
@@ -240,11 +222,9 @@ export const DEFAULTS = {
    * @example
    * {
    *   '1000': {
-   *     perPage: 3,
    *     gap: 20
    *   },
    *   '600': {
-   *     perPage: 1,
    *     gap: 5,
    *   }
    * }

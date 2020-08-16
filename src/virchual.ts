@@ -22,17 +22,13 @@ export type VirchualOptions = {
   speed?: number;
   rewind?: boolean;
   focus?: boolean | string | number;
-  perPage?: number;
   isNavigation?: boolean;
-  drag?: boolean;
   easing?: string;
   gap?: number | string;
   padding?: { left: number | string; right: number | string };
-  autoWidth?: boolean;
   width?: number | string;
   trimSpace?: boolean | string;
   direction?: string;
-  fixedWidth?: number | string;
   height?: number;
   fixedHeight?: number | string;
   heightRatio?: number;
@@ -69,16 +65,12 @@ export default class Virchual {
       speed: 400,
       rewind: false,
       focus: false,
-      perPage: 1,
-      drag: true,
       isNavigation: false,
       trimSpace: false,
-      autoWidth: false,
       padding: undefined,
       width: 0,
       gap: 0,
       direction: 'ltr',
-      fixedWidth: 0,
       height: 0,
       fixedHeight: 0,
       heightRatio: 0,

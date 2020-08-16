@@ -2,11 +2,6 @@ import { BaseLayout } from './../index';
 import { toPixel, unit } from '../../../utils/utils';
 import { applyStyle } from '../../../utils/dom';
 
-/**
- * Max width of a slide.
- */
-const SLIDE_MAX_WIDTH = 5000;
-
 export class HorizontalLayout extends BaseLayout {
   private padding: { left: number; right: number };
   private _gap: number;
@@ -56,7 +51,7 @@ export class HorizontalLayout extends BaseLayout {
   get listWidth() {
     const total = this.virtual.total;
 
-    return this.options.autoWidth ? total * SLIDE_MAX_WIDTH : this.totalWidth(total);
+    return this.totalWidth(total);
   }
 
   get listHeight(): number {
@@ -82,13 +77,7 @@ export class HorizontalLayout extends BaseLayout {
    * @return The slide width.
    */
   slideWidth(index?: number): number {
-    if (this.options.autoWidth) {
-      const slide = this.virtual.getSlide(index);
-
-      return slide ? slide.slide.offsetWidth : 0;
-    }
-
-    const width: string | number = this.options.fixedWidth || (this.width + this.gap) / this.options.perPage - this.gap;
+    const width: string | number = this.width + this.gap - this.gap;
 
     return toPixel(this.instance.root, width);
   }

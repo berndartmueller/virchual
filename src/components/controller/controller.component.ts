@@ -90,14 +90,13 @@ export default class ControllerComponent implements BaseComponent {
     }
 
     const length = this.instance.length;
-    const perPage = this.options.perPage;
 
-    let index = page * perPage;
-    index = index - (this.pageLength * perPage - length) * Math.floor(index / length);
+    let index = page;
+    index = index - (this.pageLength - length) * Math.floor(index / length);
 
     // Adjustment for the last page.
-    if (length - perPage <= index && index < length) {
-      index = length - perPage;
+    if (length - 1 <= index && index < length) {
+      index = length - 1;
     }
 
     return index;
@@ -116,14 +115,12 @@ export default class ControllerComponent implements BaseComponent {
     }
 
     const length = this.instance.length;
-    const perPage = this.options.perPage;
 
-    // Make the last "perPage" number of slides belong to the last page.
-    if (length - perPage <= index && index < length) {
-      return Math.floor((length - 1) / perPage);
+    if (length - 1 <= index && index < length) {
+      return length - 1;
     }
 
-    return Math.floor(index / perPage);
+    return index;
   }
 
   /**
@@ -187,7 +184,7 @@ export default class ControllerComponent implements BaseComponent {
    */
   get pageLength(): number {
     const length = this.instance.length;
-    return this.hasFocus() ? length : Math.ceil(length / this.options.perPage);
+    return this.hasFocus() ? length : Math.ceil(length);
   }
 
   /**
@@ -206,7 +203,7 @@ export default class ControllerComponent implements BaseComponent {
       return length - 1;
     }
 
-    return length - this.options.perPage;
+    return length - 1;
   }
 
   /**

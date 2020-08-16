@@ -222,7 +222,7 @@ export default class VirtualComponent implements BaseComponent {
     const offset = this.layout.slideWidth() * this.previousFrom;
 
     const styles = {};
-    styles[offsetProp] = this.options.autoWidth ? null : unit(offset);
+    styles[offsetProp] = unit(offset);
 
     this.each(slide => {
       applyStyle(slide.slide, styles);
