@@ -1,5 +1,5 @@
 import { applyStyle } from '../../utils/dom';
-import { throttle } from '../../utils/time';
+import { throttle } from '../../utils/throttle';
 import { unit } from '../../utils/utils';
 import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
 import { BaseComponent } from '../base-component';

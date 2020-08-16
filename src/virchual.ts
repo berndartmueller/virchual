@@ -182,6 +182,7 @@ export default class Virchual {
    */
   emit(event: string, ...args: any) {
     this.event.emit(event, ...args);
+
     return this;
   }
 
@@ -202,7 +203,7 @@ export default class Virchual {
     } catch (e) {
       error(e.message);
 
-      return null;
+      return;
     }
 
     each(this.components, component => {

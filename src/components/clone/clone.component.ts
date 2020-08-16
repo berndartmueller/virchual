@@ -1,4 +1,4 @@
-import { addClass, append, before, domify, remove, removeAttribute } from '../../utils/dom';
+import { addClass, append, before, domify, remove } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';
 import { LOOP } from './../../constants/types';
@@ -146,7 +146,7 @@ export default class CloneComponent implements BaseComponent {
     addClass(clone, this.instance.classes.clone);
 
     // ID should not be duplicated.
-    removeAttribute(clone, 'id');
+    clone.removeAttribute('id');
 
     return clone as HTMLElement;
   }

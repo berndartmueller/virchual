@@ -1,4 +1,4 @@
-import { addClass, find, getAttribute, hasClass, removeClass, setAttribute } from '../../utils/dom';
+import { addClass, find, removeClass } from '../../utils/dom';
 import { values } from '../../utils/object';
 import { pad } from '../../utils/utils';
 import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
@@ -46,7 +46,7 @@ export class SlideComponent implements BaseComponent {
   ) {
     this.container = find(this.slide, `.virchual__list`);
     this.isClone = realIndex > -1;
-    this.styles = getAttribute(this.slide, 'style') || '';
+    this.styles = this.slide.getAttribute('style') || '';
     this.statusUpdateEvents = 'ready.slide updated.slide resize.slide ' + (this.options.updateOnMove ? 'move.slide' : 'moved.slide');
   }
 
@@ -153,7 +153,7 @@ export class SlideComponent implements BaseComponent {
 
       this.instance.emit(`${type}`, this.slide);
     } else {
-      if (hasClass(this.slide, className)) {
+      if (this.slide.classList.contains(className)) {
         removeClass(this.slide, className);
 
         this.instance.emit(`${forVisibility ? 'hidden' : 'inactive'}`, this.slide);
@@ -165,6 +165,6 @@ export class SlideComponent implements BaseComponent {
    * Restore the original styles.
    */
   private restoreStyles() {
-    setAttribute(this.slide, 'style', this.styles);
+    this.slide.setAttribute('style', this.styles);
   }
 }

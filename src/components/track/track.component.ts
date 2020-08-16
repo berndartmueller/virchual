@@ -45,6 +45,7 @@ export default class TrackComponent implements BaseComponent {
     this._track = this.instance.root.querySelector('.virchual__track');
     this._list = this.instance.root.querySelector('.virchual__list');
   }
+
   /**
    * Called after the component is mounted.
    * The resize event must be registered after the Layout's one is done.

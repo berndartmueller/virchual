@@ -24,7 +24,7 @@ export function find(elm: HTMLElement | ParentNode, selector: string): HTMLEleme
  */
 export function create(tag: string, attrs: object): HTMLElement {
   const elm = document.createElement(tag);
-  each(attrs, (value, key) => setAttribute(elm, key, value));
+  each(attrs, (value, key) => elm.setAttribute(key, value));
 
   return elm;
 }
@@ -132,51 +132,4 @@ export function addClass(elm: HTMLElement, classes: string | string[]) {
  */
 export function removeClass(elm: HTMLElement, classes: string | string[]) {
   addOrRemoveClasses(elm, classes, true);
-}
-
-/**
- * Verify if the provided element has the class or not.
- *
- * @param elm       - An element.
- * @param className - A class name.
- *
- * @return True if the element has the class or false if not.
- */
-export function hasClass(elm: HTMLElement, className: string): boolean {
-  return !!elm && elm.classList.contains(className);
-}
-
-/**
- * Set attribute to the given element.
- *
- * @param elm   - An element where an attribute is assigned.
- * @param name  - Attribute name.
- * @param value - Attribute value.
- */
-export function setAttribute(elm: HTMLElement, name: string, value: string | number | boolean) {
-  elm && elm.setAttribute(name, `${value}`);
-}
-
-/**
- * Get attribute from the given element.
- *
- * @param elm  - An element where an attribute is assigned.
- * @param name - Attribute name.
- *
- * @return The value of the given attribute if available. An empty string if not.
- */
-export function getAttribute(elm: HTMLElement, name: string): string {
-  return elm ? elm.getAttribute(name) : '';
-}
-
-/**
- * Remove attribute from the given element.
- *
- * @param elms  - An element where an attribute is removed.
- * @param names - Attribute name.
- */
-export function removeAttribute(elms: HTMLElement | HTMLElement[], names: string | string[]) {
-  toArray(names).forEach(name => {
-    toArray(elms).forEach(elm => elm && elm.removeAttribute(name));
-  });
 }

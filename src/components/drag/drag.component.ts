@@ -4,13 +4,6 @@ import TrackComponent from '../track/track.component';
 import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 
-/**
- * Adjust how much the track can be pulled on the first or last page.
- * The larger number this is, the farther the track moves.
- * This should be around 5 - 9.
- */
-const FRICTION_REDUCER = 7;
-
 export default class DragComponent implements BaseComponent {
   // Coordinate of the track on starting drag.
   private startCoord: { x: number; y: number };
@@ -22,7 +15,7 @@ export default class DragComponent implements BaseComponent {
   private currentInfo;
 
   // Determine whether slides are being dragged or not.
-  private isDragging;
+  private isDragging = false;
 
   // Whether the slider direction is vertical or not.
   private isVertical = false;
@@ -30,7 +23,7 @@ export default class DragComponent implements BaseComponent {
   // Axis for the direction.
   private axis = this.isVertical ? 'y' : 'x';
 
-  private isDisabled: boolean = false;
+  private isDisabled = false;
 
   private track: TrackComponent;
   private layout: BaseLayout;
@@ -63,23 +56,23 @@ export default class DragComponent implements BaseComponent {
   }
 
   private onMove(event: MouseEvent & TouchEvent) {
-    if (this.startInfo) {
-      this.currentInfo = this.analyze(event, this.startInfo);
+    if (!this.startInfo) {
+      return;
+    }
 
-      if (this.isDragging) {
-        if (event.cancelable) {
-          event.preventDefault();
-        }
+    this.currentInfo = this.analyze(event, this.startInfo);
 
-        const position = this.startCoord[this.axis] + this.currentInfo.offset[this.axis];
+    if (this.isDragging) {
+      event.cancelable && event.preventDefault();
 
-        this.track.translate(this.resist(position));
-      } else {
-        if (this.shouldMove(this.currentInfo)) {
-          this.instance.emit('drag', this.startInfo);
+      const position = this.startCoord[this.axis] + this.currentInfo.offset[this.axis];
 
-          this.isDragging = true;
-        }
+      this.track.translate(position);
+    } else {
+      if (this.shouldMove(this.currentInfo)) {
+        this.instance.emit('drag', this.startInfo);
+
+        this.isDragging = true;
       }
     }
   }
@@ -106,33 +99,6 @@ export default class DragComponent implements BaseComponent {
     }
 
     return false;
-  }
-
-  /**
-   * Resist dragging the track on the first/last page because there is no more.
-   *
-   * @param position - A position being applied to the track.
-   *
-   * @return Adjusted position.
-   */
-  private resist(position: number): number {
-    // if (!Splide.is(LOOP)) {
-    //   const sign = Track.sign;
-    //   const start = sign * Track.trim(Track.toPosition(0));
-    //   const end = sign * Track.trim(Track.toPosition(Controller.edgeIndex));
-
-    //   position *= sign;
-
-    //   if (position < start) {
-    //     position = start - FRICTION_REDUCER * Math.log(start - position);
-    //   } else if (position > end) {
-    //     position = end + FRICTION_REDUCER * Math.log(position - end);
-    //   }
-
-    //   position *= sign;
-    // }
-
-    return position;
   }
 
   /**
@@ -175,10 +141,6 @@ export default class DragComponent implements BaseComponent {
       if (index === this.instance.index) {
         index += sign * this.track.direction.sign;
       }
-
-      // if ( ! Splide.is( LOOP ) ) {
-      // 	index = between( index, 0, Controller.edgeIndex );
-      // }
 
       this.controller.go(index, options.isNavigation);
     }

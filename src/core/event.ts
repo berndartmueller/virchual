@@ -20,9 +20,7 @@ export class Event {
     options: boolean | AddEventListenerOptions = {},
   ) {
     events.split(' ').forEach(event => {
-      if (element) {
-        element.addEventListener(event, handler, options);
-      }
+      element && element.addEventListener(event, handler, options);
 
       this.data.push({ event, handler, elm: element, options });
     });
