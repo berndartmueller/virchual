@@ -21,17 +21,13 @@ const users = [
 ];
 
 const siteConfig = {
-  title: 'virchual', // Title for your website.
+  title: 'virchual',
   tagline: 'Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.',
-  url: 'https://www.virchual.xyz', // Your website URL
-  baseUrl: '/', // Base URL for your project */
-
-  // Used for publishing and more
+  url: 'https://www.virchual.xyz',
+  baseUrl: '/',
   projectName: 'virchual',
   organizationName: 'berndartmueller',
-  // For top-level user or org sites, the organization is still the same.
-  // e.g., for the https://JoelMarcey.github.io site, it would be set like...
-  //   organizationName: 'JoelMarcey'
+  cname: 'virchual.xyz',
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
