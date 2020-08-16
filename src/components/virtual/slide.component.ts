@@ -4,7 +4,6 @@ import { pad } from '../../utils/utils';
 import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
 import TrackComponent from '../track/track.component';
 import { STATUS_CLASSES } from './../../constants/classes';
-import { TTB } from './../../constants/directions';
 import { BaseComponent } from './../base-component';
 
 /**
@@ -108,7 +107,7 @@ export class SlideComponent implements BaseComponent {
     }
 
     const { floor } = Math;
-    const prop = this.options.direction === TTB ? 'clientHeight' : 'clientWidth';
+    const prop = 'clientWidth';
     const position = floor(
       (this.track.direction.toPosition(this.index) + this.track.direction.offset(this.index) - this.track.position) *
         this.track.direction.sign,

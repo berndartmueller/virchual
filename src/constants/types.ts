@@ -8,9 +8,4 @@ export const SLIDE = 'slide';
  */
 export const LOOP = 'loop';
 
-/**
- * The track doesn't move.
- */
-export const FADE = 'fade';
-
-export type SliderType = typeof SLIDE | typeof LOOP | typeof FADE;
+export type SliderType = typeof SLIDE | typeof LOOP;

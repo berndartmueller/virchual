@@ -7,8 +7,3 @@ export const LTR = 'ltr';
  * Enumerate slides from right to left.
  */
 export const RTL = 'rtl';
-
-/**
- * Enumerate slides in a col.
- */
-export const TTB = 'ttb';

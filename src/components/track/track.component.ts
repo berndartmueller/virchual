@@ -12,9 +12,6 @@ export default class TrackComponent implements BaseComponent {
   // Whether the current direction is vertical or not.
   private isVertical: boolean = false;
 
-  // Whether the slider type is FADE or not.
-  private isFade: boolean = false;
-
   private instance: Virchual;
   private controller: ControllerComponent;
   private _direction: HorizontalDirection;
@@ -51,11 +48,9 @@ export default class TrackComponent implements BaseComponent {
    * The resize event must be registered after the Layout's one is done.
    */
   mounted() {
-    if (!this.isFade) {
-      this.instance.on('mounted resize updated', () => {
-        this.jump(this.instance.index);
-      });
-    }
+    this.instance.on('mounted resize updated', () => {
+      this.jump(this.instance.index);
+    });
   }
 
   /**
@@ -75,7 +70,7 @@ export default class TrackComponent implements BaseComponent {
       this.instance.emit('move', newIndex, prevIndex, destIndex);
     }
 
-    if (Math.abs(newPosition - this.currPosition) >= 1 || this.isFade) {
+    if (Math.abs(newPosition - this.currPosition) >= 1) {
       this.transition.start(newIndex, prevIndex, this.toCoord(newPosition), () => {
         this.end(destIndex, newIndex, prevIndex, silently);
       });
@@ -99,9 +94,7 @@ export default class TrackComponent implements BaseComponent {
   end(destIndex: number, newIndex: number, prevIndex: number, silently?: boolean) {
     applyStyle(this.list, { transition: '' });
 
-    if (!this.isFade) {
-      this.jump(newIndex);
-    }
+    this.jump(newIndex);
 
     if (!silently) {
       this.instance.emit('moved', newIndex, prevIndex, destIndex);
