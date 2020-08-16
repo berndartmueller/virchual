@@ -25,9 +25,6 @@ const siteConfig = {
   tagline: 'Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.',
   url: 'https://www.virchual.xyz', // Your website URL
   baseUrl: '/', // Base URL for your project */
-  // For github.io type URLs, you would set the url and baseUrl like:
-  url: 'https://berndartmueller.github.io',
-  baseUrl: '/virchual/',
 
   // Used for publishing and more
   projectName: 'virchual',
