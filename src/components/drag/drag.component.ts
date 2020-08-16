@@ -35,19 +35,19 @@ export default class DragComponent implements BaseComponent {
   private track: TrackComponent;
   private layout: BaseLayout;
   private controller: ControllerComponent;
-  private swiperInstance: Virchual;
+  private instance: Virchual;
 
   constructor(private options: VirchualOptions) {}
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.track = components.Track as TrackComponent;
     this.layout = components.Layout as BaseLayout;
     this.controller = components.Controller as ControllerComponent;
 
-    this.swiperInstance.on('touchstart mousedown', this.onStart.bind(this), this.track.list);
-    this.swiperInstance.on('touchmove mousemove', this.onMove.bind(this), this.track.list, { passive: false });
-    this.swiperInstance.on('touchend touchcancel mouseleave mouseup dragend', this.onEnd.bind(this), this.track.list);
+    this.instance.on('touchstart mousedown', this.onStart.bind(this), this.track.list);
+    this.instance.on('touchmove mousemove', this.onMove.bind(this), this.track.list, { passive: false });
+    this.instance.on('touchend touchcancel mouseleave mouseup dragend', this.onEnd.bind(this), this.track.list);
   }
 
   /**
@@ -76,7 +76,7 @@ export default class DragComponent implements BaseComponent {
         this.track.translate(this.resist(position));
       } else {
         if (this.shouldMove(this.currentInfo)) {
-          this.swiperInstance.emit('drag', this.startInfo);
+          this.instance.emit('drag', this.startInfo);
 
           this.isDragging = true;
         }
@@ -142,7 +142,7 @@ export default class DragComponent implements BaseComponent {
     this.startInfo = null;
 
     if (this.isDragging) {
-      this.swiperInstance.emit('dragged', this.currentInfo);
+      this.instance.emit('dragged', this.currentInfo);
 
       this.go(this.currentInfo);
 
@@ -172,7 +172,7 @@ export default class DragComponent implements BaseComponent {
       let index = this.track.direction.toIndex(destination);
 
       // Do not allow the track to go to a previous position.
-      if (index === this.swiperInstance.index) {
+      if (index === this.instance.index) {
         index += sign * this.track.direction.sign;
       }
 

@@ -15,7 +15,7 @@ export default class TrackComponent implements BaseComponent {
   // Whether the slider type is FADE or not.
   private isFade: boolean = false;
 
-  private swiperInstance: Virchual;
+  private instance: Virchual;
   private controller: ControllerComponent;
   private _direction: HorizontalDirection;
   private _list: HTMLElement;
@@ -37,13 +37,13 @@ export default class TrackComponent implements BaseComponent {
   }
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.controller = components.Controller as ControllerComponent;
     this.transition = components.Transition as SlideTransition;
     this._direction = new HorizontalDirection(this.options, instance, components);
 
-    this._track = this.swiperInstance.root.querySelector('.virchual__track');
-    this._list = this.swiperInstance.root.querySelector('.virchual__list');
+    this._track = this.instance.root.querySelector('.virchual__track');
+    this._list = this.instance.root.querySelector('.virchual__list');
   }
   /**
    * Called after the component is mounted.
@@ -51,8 +51,8 @@ export default class TrackComponent implements BaseComponent {
    */
   mounted() {
     if (!this.isFade) {
-      this.swiperInstance.on('mounted resize updated', () => {
-        this.jump(this.swiperInstance.index);
+      this.instance.on('mounted resize updated', () => {
+        this.jump(this.instance.index);
       });
     }
   }
@@ -68,10 +68,10 @@ export default class TrackComponent implements BaseComponent {
    */
   go(destIndex: number, newIndex: number, silently: boolean = false) {
     const newPosition = this.getTrimmedPosition(destIndex);
-    const prevIndex = this.swiperInstance.index;
+    const prevIndex = this.instance.index;
 
     if (!silently) {
-      this.swiperInstance.emit('move', newIndex, prevIndex, destIndex);
+      this.instance.emit('move', newIndex, prevIndex, destIndex);
     }
 
     if (Math.abs(newPosition - this.currPosition) >= 1 || this.isFade) {
@@ -79,7 +79,7 @@ export default class TrackComponent implements BaseComponent {
         this.end(destIndex, newIndex, prevIndex, silently);
       });
     } else {
-      if (destIndex !== prevIndex && this.swiperInstance.options.trimSpace === 'move') {
+      if (destIndex !== prevIndex && this.instance.options.trimSpace === 'move') {
         this.controller.go(destIndex + destIndex - prevIndex, silently);
       } else {
         this.end(destIndex, newIndex, prevIndex, silently);
@@ -103,7 +103,7 @@ export default class TrackComponent implements BaseComponent {
     }
 
     if (!silently) {
-      this.swiperInstance.emit('moved', newIndex, prevIndex, destIndex);
+      this.instance.emit('moved', newIndex, prevIndex, destIndex);
     }
   }
 

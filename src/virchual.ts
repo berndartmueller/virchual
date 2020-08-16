@@ -60,7 +60,7 @@ export default class Virchual {
   constructor(public selector: HTMLElement | string, public options: VirchualOptions = {}, private components: VirchualComponents = {}) {
     this.root = selector instanceof Element ? selector : find(document, selector);
 
-    exist(this.root, 'An invalid element/selector was given.');
+    exist(this.root, 'Invalid element/selector');
 
     this._index = 0;
     this.options = {
@@ -218,7 +218,7 @@ export default class Virchual {
 }
 
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
-  const instance = new Virchual(slider, {
+  new Virchual(slider, {
     slides: () => {
       const slides: { key: string; html: string }[] = [];
 

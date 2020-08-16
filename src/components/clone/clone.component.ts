@@ -13,26 +13,26 @@ export default class CloneComponent implements BaseComponent {
   private _clonesBefore: SlideComponent[] = [];
   private _clonesAfter: SlideComponent[] = [];
 
-  private swiperInstance: Virchual;
+  private instance: Virchual;
   private virtual: VirtualComponent;
   private track: TrackComponent;
 
   constructor(private options: VirchualOptions) {}
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.virtual = components.Virtual as VirtualComponent;
     this.track = components.Track as TrackComponent;
 
-    if (this.swiperInstance.is(LOOP)) {
+    if (this.instance.is(LOOP)) {
       this.generateClones();
 
-      this.swiperInstance.on('refresh', () => {
+      this.instance.on('refresh', () => {
         this.destroy();
         this.generateClones();
       });
 
-      this.swiperInstance.on('move', () => {
+      this.instance.on('move', () => {
         this.generateClones();
       });
     }
@@ -95,7 +95,7 @@ export default class CloneComponent implements BaseComponent {
     const slides = this.virtual.getSlides();
     const firstSlide = slides[0];
 
-    const currentIndex = this.swiperInstance.index;
+    const currentIndex = this.instance.index;
     const virtualSlidesLength = this.virtual.getSlides(false).length;
 
     if (currentIndex > 0 && currentIndex >= virtualSlidesLength - 1 && this.lengthAfter === 0) {
@@ -109,7 +109,7 @@ export default class CloneComponent implements BaseComponent {
 
         this._clonesAfter.push(slideClone);
 
-        this.swiperInstance.emit('cloned');
+        this.instance.emit('cloned');
       });
     }
 
@@ -124,7 +124,7 @@ export default class CloneComponent implements BaseComponent {
 
         this._clonesBefore.push(slideClone);
 
-        this.swiperInstance.emit('cloned');
+        this.instance.emit('cloned');
       });
     }
   }
@@ -143,7 +143,7 @@ export default class CloneComponent implements BaseComponent {
   private cloneDeeply(element: HTMLElement): HTMLElement {
     const clone = element.cloneNode(true) as HTMLElement;
 
-    addClass(clone, this.swiperInstance.classes.clone);
+    addClass(clone, this.instance.classes.clone);
 
     // ID should not be duplicated.
     removeAttribute(clone, 'id');

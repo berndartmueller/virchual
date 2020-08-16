@@ -12,14 +12,14 @@ export class HorizontalLayout extends BaseLayout {
   private _gap: number;
 
   initLayout() {
-    this._gap = toPixel(this.swiperInstance.root, this.options.gap);
+    this._gap = toPixel(this.instance.root, this.options.gap);
 
     const padding = this.options.padding || { left: 0, right: 0 };
     const { left, right } = padding;
 
     this.padding = {
-      left: toPixel(this.swiperInstance.root, left),
-      right: toPixel(this.swiperInstance.root, right),
+      left: toPixel(this.instance.root, left),
+      right: toPixel(this.instance.root, right),
     };
 
     applyStyle(this.track.list, {
@@ -71,7 +71,7 @@ export class HorizontalLayout extends BaseLayout {
   get slideHeight() {
     const height = this.options.height || this.options.fixedHeight || this.width * this.options.heightRatio;
 
-    return toPixel(this.swiperInstance.root, height);
+    return toPixel(this.instance.root, height);
   }
 
   /**
@@ -90,7 +90,7 @@ export class HorizontalLayout extends BaseLayout {
 
     const width: string | number = this.options.fixedWidth || (this.width + this.gap) / this.options.perPage - this.gap;
 
-    return toPixel(this.swiperInstance.root, width);
+    return toPixel(this.instance.root, width);
   }
 
   get height(): number {

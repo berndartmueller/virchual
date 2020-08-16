@@ -29,14 +29,14 @@ export default class TrackComponent implements BaseComponent {
 
   private virtual: VirtualComponent;
   private controller: ControllerComponent;
-  private swiperInstance: Virchual;
+  private instance: Virchual;
   private currentPosition: number;
   private components: VirchualComponents;
 
   constructor(private options: VirchualOptions) {}
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.components = components;
     this.virtual = components.Virtual as VirtualComponent;
     this.controller = components.Controller as ControllerComponent;
@@ -44,7 +44,7 @@ export default class TrackComponent implements BaseComponent {
 
     this._data = this.createPagination();
 
-    const parent = this.options.pagination ? this.swiperInstance.root : undefined;
+    const parent = this.options.pagination ? this.instance.root : undefined;
 
     append(parent, this._data.list);
 
@@ -55,9 +55,9 @@ export default class TrackComponent implements BaseComponent {
    * Called after all components are mounted.
    */
   mounted() {
-    const index = this.swiperInstance.index;
+    const index = this.instance.index;
 
-    this.swiperInstance.emit(`${name}:mounted`, this._data, this.getItem(index));
+    this.instance.emit(`${name}:mounted`, this._data, this.getItem(index));
 
     this.update(index, -1);
   }
@@ -71,12 +71,12 @@ export default class TrackComponent implements BaseComponent {
 
     if (this._data.items) {
       this._data.items.forEach(item => {
-        this.swiperInstance.off('click', item.button);
+        this.instance.off('click', item.button);
       });
     }
 
-    this.swiperInstance.off(ATTRIBUTES_UPDATE_EVENT);
-    this.swiperInstance.off(UPDATE_EVENT);
+    this.instance.off(ATTRIBUTES_UPDATE_EVENT);
+    this.instance.off(UPDATE_EVENT);
 
     this._data = {};
   }
@@ -105,12 +105,12 @@ export default class TrackComponent implements BaseComponent {
    * Listen some events.
    */
   private bind() {
-    this.swiperInstance.on(ATTRIBUTES_UPDATE_EVENT, this.update.bind(this));
-    this.swiperInstance.on(UPDATE_EVENT, () => {
+    this.instance.on(ATTRIBUTES_UPDATE_EVENT, this.update.bind(this));
+    this.instance.on(UPDATE_EVENT, () => {
       this.destroy();
 
       if (this.options.pagination) {
-        this.mount(this.swiperInstance, this.components);
+        this.mount(this.instance, this.components);
         this.mounted();
       }
     });
@@ -171,7 +171,7 @@ export default class TrackComponent implements BaseComponent {
       this.offsetPositionSlides();
     }
 
-    this.swiperInstance.emit(`${name}:updated`, this.data, prev, curr);
+    this.instance.emit(`${name}:updated`, this.data, prev, curr);
   }
 
   /**
@@ -208,7 +208,7 @@ export default class TrackComponent implements BaseComponent {
   private createBullet(index: number, cssClass: string = '') {
     const button = create('button', { class: `${this.options.classes.page} ${cssClass}`, type: 'button' });
 
-    this.swiperInstance.on(
+    this.instance.on(
       'click',
       () => {
         this.controller.go(`>${index}`);
@@ -224,7 +224,7 @@ export default class TrackComponent implements BaseComponent {
    */
   private offsetPositionSlides() {
     const offsetProp: string = 'left';
-    const offset = 16 * Math.max(this.swiperInstance.index - 4, 0);
+    const offset = 16 * Math.max(this.instance.index - 4, 0);
 
     const styles = {};
     styles[offsetProp] = unit(offset);

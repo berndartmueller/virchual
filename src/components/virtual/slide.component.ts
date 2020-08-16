@@ -28,7 +28,7 @@ export class SlideComponent implements BaseComponent {
    */
   private styles: string;
 
-  private swiperInstance: Virchual;
+  private instance: Virchual;
   private track: TrackComponent;
 
   /**
@@ -51,27 +51,27 @@ export class SlideComponent implements BaseComponent {
   }
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.track = components.Track as TrackComponent;
 
     if (!this.isClone) {
-      this.slide.id = `${this.swiperInstance.root.id}-slide${pad(this.index + 1)}`;
+      this.slide.id = `${this.instance.root.id}-slide${pad(this.index + 1)}`;
     }
 
     if (this.key != null) {
       this.slide.dataset.key = this.key;
     }
 
-    this.swiperInstance.on(this.statusUpdateEvents, () => this.update());
-    this.swiperInstance.on(STYLE_RESTORE_EVENTS, this.restoreStyles);
+    this.instance.on(this.statusUpdateEvents, () => this.update());
+    this.instance.on(STYLE_RESTORE_EVENTS, this.restoreStyles);
   }
 
   /**
    * Destroy.
    */
   destroy() {
-    this.swiperInstance.off(this.statusUpdateEvents);
-    this.swiperInstance.off(STYLE_RESTORE_EVENTS);
+    this.instance.off(this.statusUpdateEvents);
+    this.instance.off(STYLE_RESTORE_EVENTS);
 
     removeClass(this.slide, values(STATUS_CLASSES));
 
@@ -92,7 +92,7 @@ export class SlideComponent implements BaseComponent {
    * @return True if the slide is active or false if not.
    */
   isActive(): boolean {
-    return this.swiperInstance.index === this.index;
+    return this.instance.index === this.index;
   }
 
   /**
@@ -132,7 +132,7 @@ export class SlideComponent implements BaseComponent {
     let diff = Math.abs(from - this.index);
 
     if (!this.isClone) {
-      diff = Math.min(diff, this.swiperInstance.length - diff);
+      diff = Math.min(diff, this.instance.length - diff);
     }
 
     return diff < within;
@@ -151,12 +151,12 @@ export class SlideComponent implements BaseComponent {
     if (active) {
       addClass(this.slide, className);
 
-      this.swiperInstance.emit(`${type}`, this.slide);
+      this.instance.emit(`${type}`, this.slide);
     } else {
       if (hasClass(this.slide, className)) {
         removeClass(this.slide, className);
 
-        this.swiperInstance.emit(`${forVisibility ? 'hidden' : 'inactive'}`, this.slide);
+        this.instance.emit(`${forVisibility ? 'hidden' : 'inactive'}`, this.slide);
       }
     }
   }

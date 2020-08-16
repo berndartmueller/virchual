@@ -9,13 +9,13 @@ export default class ControllerComponent implements BaseComponent {
    */
   private isLoop: boolean = true;
 
-  private swiperInstance: Virchual;
+  private instance: Virchual;
   private track: TrackComponent;
 
   constructor(private options: VirchualOptions) {}
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.track = components.Track as TrackComponent;
 
     this.bind();
@@ -47,7 +47,7 @@ export default class ControllerComponent implements BaseComponent {
    * @return A parsed target.
    */
   parse(control: string | number): number {
-    let index = this.swiperInstance.index;
+    let index = this.instance.index;
 
     const matches = String(control).match(/([+\-<>])(\d+)?/);
     const indicator = matches ? matches[1] : '';
@@ -89,7 +89,7 @@ export default class ControllerComponent implements BaseComponent {
       return page;
     }
 
-    const length = this.swiperInstance.length;
+    const length = this.instance.length;
     const perPage = this.options.perPage;
 
     let index = page * perPage;
@@ -115,7 +115,7 @@ export default class ControllerComponent implements BaseComponent {
       return index;
     }
 
-    const length = this.swiperInstance.length;
+    const length = this.instance.length;
     const perPage = this.options.perPage;
 
     // Make the last "perPage" number of slides belong to the last page.
@@ -186,7 +186,7 @@ export default class ControllerComponent implements BaseComponent {
    * @return Max page number.
    */
   get pageLength(): number {
-    const length = this.swiperInstance.length;
+    const length = this.instance.length;
     return this.hasFocus() ? length : Math.ceil(length / this.options.perPage);
   }
 
@@ -196,7 +196,7 @@ export default class ControllerComponent implements BaseComponent {
    * @return Edge index.
    */
   get edgeIndex(): number {
-    const length = this.swiperInstance.length;
+    const length = this.instance.length;
 
     if (!length) {
       return 0;
@@ -215,7 +215,7 @@ export default class ControllerComponent implements BaseComponent {
    * @return The index of the previous slide if available. -1 otherwise.
    */
   get prevIndex(): number {
-    let prev = this.swiperInstance.index - 1;
+    let prev = this.instance.index - 1;
 
     if (this.isLoop || this.options.rewind) {
       prev = this.rewind(prev);
@@ -230,27 +230,27 @@ export default class ControllerComponent implements BaseComponent {
    * @return The index of the next slide if available. -1 otherwise.
    */
   get nextIndex(): number {
-    let next = this.swiperInstance.index + 1;
+    let next = this.instance.index + 1;
 
     if (this.isLoop || this.options.rewind) {
       next = this.rewind(next);
     }
 
-    return (this.swiperInstance.index < next && next <= this.edgeIndex) || next === 0 ? next : -1;
+    return (this.instance.index < next && next <= this.edgeIndex) || next === 0 ? next : -1;
   }
 
   /**
    * Listen some events.
    */
   private bind() {
-    this.swiperInstance.on('move', newIndex => {
-      this.swiperInstance.index = newIndex;
+    this.instance.on('move', newIndex => {
+      this.instance.index = newIndex;
     });
 
-    this.swiperInstance.on('updated refresh', newOptions => {
+    this.instance.on('updated refresh', newOptions => {
       this.options = newOptions || this.options;
 
-      this.swiperInstance.index = between(this.swiperInstance.index, 0, this.edgeIndex);
+      this.instance.index = between(this.instance.index, 0, this.edgeIndex);
     });
   }
 

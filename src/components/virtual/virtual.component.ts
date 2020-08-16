@@ -26,7 +26,7 @@ export default class VirtualComponent implements BaseComponent {
   private virtualSlides: SlideComponent[];
   private track: TrackComponent;
   private layout: BaseLayout;
-  private swiperInstance: Virchual;
+  private instance: Virchual;
   private previousFrom: number;
   private previousTo: number;
 
@@ -36,7 +36,7 @@ export default class VirtualComponent implements BaseComponent {
   }
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.track = components.Track as TrackComponent;
     this.layout = components.Layout as BaseLayout;
 
@@ -44,14 +44,14 @@ export default class VirtualComponent implements BaseComponent {
      * Assign unique ID to the root element if it doesn't have the one.
      * Note that IE doesn't support padStart() to fill the uid by 0.
      */
-    if (!this.swiperInstance.root.id) {
+    if (!this.instance.root.id) {
       window['virchual'] = window['virchual'] || {};
 
       const uid = window['virchual'][UID_NAME] || 0;
 
       window['virchual'][UID_NAME] = uid + 1;
 
-      this.swiperInstance.root.id = `virchual-${pad(uid)}`;
+      this.instance.root.id = `virchual-${pad(uid)}`;
     }
 
     this.collect();
@@ -106,7 +106,7 @@ export default class VirtualComponent implements BaseComponent {
   register(slide: HTMLElement, index: number, realIndex: number, key?: string) {
     const slideInstance = new SlideComponent(this.options, index, realIndex, slide, key);
 
-    slideInstance.mount(this.swiperInstance, { Track: this.track });
+    slideInstance.mount(this.instance, { Track: this.track });
 
     this.virtualSlides.push(slideInstance);
 
@@ -169,7 +169,7 @@ export default class VirtualComponent implements BaseComponent {
   }
 
   private bind() {
-    this.swiperInstance.on('move', (newIndex, prevIndex) => {
+    this.instance.on('move', (newIndex, prevIndex) => {
       const slide = this._slides[1 + newIndex];
 
       if (slide == null) {
@@ -189,15 +189,15 @@ export default class VirtualComponent implements BaseComponent {
 
       this.register(node, 1 + newIndex, -1, slide.key);
 
-      this.swiperInstance.emit('add', 1 + newIndex);
+      this.instance.emit('add', 1 + newIndex);
     });
 
-    this.swiperInstance.on('moved', () => {
+    this.instance.on('moved', () => {
       const slidesBefore = 2;
       const slidesAfter = 2;
 
-      const from = Math.max((this.swiperInstance.index || 0) - slidesBefore, 0);
-      const to = Math.min((this.swiperInstance.index || 0) + slidesAfter, this.length - 1);
+      const from = Math.max((this.instance.index || 0) - slidesBefore, 0);
+      const to = Math.min((this.instance.index || 0) + slidesAfter, this.length - 1);
 
       for (let i = this.previousFrom; i <= this.previousTo; i += 1) {
         if (i < from || i > to) {

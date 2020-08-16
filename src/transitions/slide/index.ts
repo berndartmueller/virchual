@@ -16,19 +16,19 @@ export class SlideTransition implements BaseComponent {
   private endCallback: Function;
 
   private track: TrackComponent;
-  private swiperInstance: Virchual;
+  private instance: Virchual;
   private controller: ControllerComponent;
 
   constructor(private options: VirchualOptions) {}
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.controller = components.Controller as ControllerComponent;
     this.track = components.Track as TrackComponent;
 
     this.list = this.track.list;
 
-    this.swiperInstance.on(
+    this.instance.on(
       'transitionend',
       e => {
         if (e.target === this.list && this.endCallback) {

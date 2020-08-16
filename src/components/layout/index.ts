@@ -12,7 +12,7 @@ import VirtualComponent from '../virtual/virtual.component';
 const THROTTLE = 100;
 
 export abstract class BaseLayout implements BaseComponent {
-  protected swiperInstance: Virchual;
+  protected instance: Virchual;
   protected track: TrackComponent;
   protected virtual: VirtualComponent;
 
@@ -30,7 +30,7 @@ export abstract class BaseLayout implements BaseComponent {
   abstract get width(): number;
 
   mount(instance: Virchual, components: VirchualComponents) {
-    this.swiperInstance = instance;
+    this.instance = instance;
     this.virtual = components.Virtual as VirtualComponent;
     this.track = components.Track as TrackComponent;
 
@@ -41,7 +41,7 @@ export abstract class BaseLayout implements BaseComponent {
   private init() {
     this.initLayout();
 
-    applyStyle(this.swiperInstance.root, { maxWidth: unit(this.options.width) });
+    applyStyle(this.instance.root, { maxWidth: unit(this.options.width) });
 
     this.virtual.each(slide => {
       slide.slide.style[this.margin] = unit(this.gap);
@@ -55,16 +55,16 @@ export abstract class BaseLayout implements BaseComponent {
    * Initialize when the component is mounted or options are updated.
    */
   private bind() {
-    this.swiperInstance.on(
+    this.instance.on(
       'resize load',
       throttle(() => {
-        this.swiperInstance.emit('resize');
+        this.instance.emit('resize');
       }, THROTTLE),
       window,
     );
-    this.swiperInstance.on('resize', this.onResize.bind(this));
-    this.swiperInstance.on('updated refresh cloned', this.init.bind(this));
-    this.swiperInstance.on('add', this.onResizeSlide.bind(this));
+    this.instance.on('resize', this.onResize.bind(this));
+    this.instance.on('updated refresh cloned', this.init.bind(this));
+    this.instance.on('add', this.onResizeSlide.bind(this));
   }
 
   /**
