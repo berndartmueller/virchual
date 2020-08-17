@@ -17,7 +17,7 @@
   <h3 align="center">virchual</h3>
 
   <p align="center">
-    Super-fast, lightweight (6kB) slider and carousel, written in TypeScript without any dependencies.
+    Super-fast, lightweight (6kB) image slider and carousel, written in TypeScript without any dependencies.
     <br />
     <br />
     <a href="https://github.com/berndartmueller/virchual"><strong>Explore the docs »</strong></a>
