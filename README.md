@@ -14,7 +14,7 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Virchual</h3>
+  <h3 align="center">virchual</h3>
 
   <p align="center">
     Super-fast, lightweight (6kB) slider and carousel, written in TypeScript without any dependencies.
