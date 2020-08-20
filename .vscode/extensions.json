@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "esbenp.prettier-vscod",
-    "steoates.autoimport",
-    "mike-co.import-sorter",
-    "mikestead.dotenv",
-    "kisstkondoros.vscode-codemetrics"
-  ]
-}

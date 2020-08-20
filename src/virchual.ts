@@ -1,124 +1,84 @@
-import { BaseComponent } from './components/base-component';
-import ControllerComponent from './components/controller/controller.component';
-import DragComponent from './components/drag/drag.component';
-import { HorizontalLayout } from './components/layout/directions/horizontal-layout';
-import TrackComponent from './components/track/track.component';
-import VirtualComponent from './components/virtual/virtual.component';
-import { ELEMENT_CLASSES as classes } from './constants/classes';
-import { Event } from './core/event';
 import './css/styles.css';
-import { SlideTransition } from './transitions/slide/index';
-import { applyStyle, find } from './utils/dom';
-import { error, exist } from './utils/error';
-import { each } from './utils/object';
+import { Drag } from './drag';
+import { Slide } from './slide';
+import { exist } from './utils/error';
+import { Event } from './utils/event';
+import { slidingWindow } from './utils/sliding-window';
+import { range, rewind } from './utils/utils';
 
 export type VirchualOptions = {
-  type?: 'slide' | 'loop';
-  slides?: VirchualSlides;
-  rewindSpeed?: number;
+  slides?: string[] | (() => string[]);
   speed?: number;
-  rewind?: boolean;
-  focus?: boolean | string | number;
-  isNavigation?: boolean;
   easing?: string;
-  gap?: number | string;
-  padding?: { left: number | string; right: number | string };
-  width?: number | string;
-  trimSpace?: boolean | string;
-  direction?: string;
-  height?: number;
-  fixedHeight?: number | string;
-  heightRatio?: number;
-  updateOnMove?: boolean;
   swipeDistanceThreshold?: number;
   flickVelocityThreshold?: number;
   flickPower?: number;
-  flickMaxPages?: number;
-  classes?: any;
-  cloneCount?: number;
   pagination?: boolean;
+  window?: number;
 };
 
-export type VirchualSlide = string | { key: string; html: string };
-export type VirchualSlides = VirchualSlide[] | (() => VirchualSlide[]);
+export class Virchual {
+  container: HTMLElement;
+  frame: HTMLElement;
+  frameWidth: number;
+  currentIndex: number = 0;
+  slides: Slide[] = [];
 
-export type VirchualComponents = { [key: string]: BaseComponent };
-
-export default class Virchual {
-  root: HTMLElement;
-
-  private _index: number;
   private event: Event;
+  private isBusy: boolean = false;
 
-  constructor(public selector: HTMLElement | string, public options: VirchualOptions = {}, private components: VirchualComponents = {}) {
-    this.root = selector instanceof Element ? selector : find(document, selector);
+  // bound event handlers (to keep `this` context)
+  private eventBindings: {
+    onClick: () => {};
+    onDrag: () => {};
+    onDragEnd: () => {};
+    onKeyUp: () => {};
+  };
 
-    exist(this.root, 'Invalid element/selector');
+  constructor(public selector: HTMLElement | string, public options: VirchualOptions = {}) {
+    this.container = selector instanceof Element ? selector : document.querySelector(selector);
+    this.frame = this.container.querySelector('.virchual__frame');
 
-    this._index = 0;
+    exist(this.frame, 'Invalid element/selector');
+
+    this.currentIndex = 0;
     this.options = {
       slides: [],
-      type: 'loop',
-      speed: 400,
-      rewind: false,
-      focus: false,
-      isNavigation: false,
-      trimSpace: false,
-      padding: undefined,
-      width: 0,
-      gap: 0,
-      direction: 'ltr',
-      height: 0,
-      fixedHeight: 0,
-      heightRatio: 0,
-      updateOnMove: false,
+      speed: 200,
       swipeDistanceThreshold: 150,
       flickVelocityThreshold: 0.6,
       flickPower: 600,
-      flickMaxPages: 1,
-      easing: 'cubic-bezier(.42,.65,.27,.99)',
-      cloneCount: 1,
+      easing: 'ease-out',
       pagination: true,
-      classes,
+      window: 1,
       ...options,
-    };
-
-    const defaultComponents: VirchualComponents = {
-      Controller: new ControllerComponent(this.options),
-      Track: new TrackComponent(this.options),
-      Virtual: new VirtualComponent(this.options),
-      Transition: new SlideTransition(this.options),
-      Drag: new DragComponent(this.options),
-      Layout: new HorizontalLayout(this.options),
-      // Clone: new CloneComponent(this.options),
-      // Pagination: new PaginationComponent(this.options),
-    };
-
-    this.components = {
-      ...defaultComponents,
-      ...this.components,
     };
 
     this.event = new Event();
 
+    this.eventBindings = {
+      onClick: this.onClick.bind(this),
+      onDrag: this.onDrag.bind(this),
+      onKeyUp: this.onKeyUp.bind(this),
+      onDragEnd: this.onDragEnd.bind(this),
+    };
+
+    let rawSlides;
+
+    if (typeof this.options.slides === 'function') {
+      rawSlides = this.options.slides();
+    } else {
+      rawSlides = this.options.slides;
+    }
+
+    this.slides = (rawSlides || []).map((slide, index) => new Slide(slide, this.frame, this.options));
+
+    this.resize();
     this.mount();
-  }
 
-  /**
-   * Get current slide index.
-   */
-  get index() {
-    return this._index;
-  }
+    new Drag(this.frame, this.options, { event: this.event }).start();
 
-  set index(index: number) {
-    this._index = parseInt(`${index}`, 10);
-  }
-
-  get length() {
-    const virtual = this.components.Virtual as VirtualComponent;
-
-    return virtual.length;
+    this.bindEvents();
   }
 
   /**
@@ -129,13 +89,9 @@ export default class Virchual {
    * @param handler - A callback function.
    * @param elm     - Optional. Native event will be listened to when this arg is provided.
    * @param options - Optional. Options for addEventListener.
-   *
-   * @return  - This instance.
    */
-  on(events: string, handler: any, elm: (Window & typeof globalThis) | Element = null, options: object = {}): Virchual {
+  on(events: string, handler: any, elm: (Window & typeof globalThis) | Element = null, options: object = {}) {
     this.event.on(events, handler, elm, options);
-
-    return this;
   }
 
   /**
@@ -143,60 +99,148 @@ export default class Virchual {
    *
    * @param events - A event name.
    * @param elm    - Optional. removeEventListener() will be called when this arg is provided.
-   *
-   * @return This instance.
    */
-  off(events: string, elm: (Window & typeof globalThis) | Element = null): Virchual {
+  off(events: string, elm: (Window & typeof globalThis) | Element = null) {
     this.event.off(events, elm);
+  }
 
-    return this;
+  previous() {}
+
+  next() {}
+
+  private mount() {
+    this.event.emit('mounted');
+
+    this.runSlidesLifecycle();
+  }
+
+  private resize() {
+    this.frameWidth = this.frame.getBoundingClientRect().width;
   }
 
   /**
-   * Emit an event.
-   *
-   * @param event - An event name.
-   * @param args  - Any number of arguments passed to handlers.
+   * Mount and unmount slides.
    */
-  emit(event: string, ...args: any) {
-    this.event.emit(event, ...args);
+  private runSlidesLifecycle({ direction }: { direction?: 'prev' | 'next' } = {}) {
+    const currentSlide = this.slides[this.currentIndex];
 
-    return this;
+    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.options.window);
+    const mountableSlideIndicesWithOffset = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.options.window + 1);
+
+    mountableSlideIndicesWithOffset.forEach(index => {
+      const slide = this.slides[index];
+
+      if (index === this.currentIndex) {
+        currentSlide.isActive = true;
+      } else {
+        this.slides[this.currentIndex].isActive = false;
+      }
+
+      let realIndex = mountableSlideIndices.indexOf(index);
+
+      // unmount
+      if (realIndex < 0) {
+        return slide.unmount();
+      }
+
+      slide.position = (this.options.window - realIndex) * -100;
+
+      const prepend = direction === 'prev';
+
+      slide.mount(prepend);
+    });
   }
 
-  private mount() {
-    try {
-      each(this.components, (component: BaseComponent, key: string) => {
-        component.mount(this, this.components);
-      });
-    } catch (e) {
-      error(e.message);
+  private bindEvents() {
+    this.event.on('keyup', this.eventBindings.onKeyUp, window);
+    this.event.on('drag', this.eventBindings.onDrag);
+    this.event.on('dragend', this.eventBindings.onDragEnd);
 
-      return;
+    // Disable clicks on slides
+    this.frame.addEventListener('click', this.eventBindings.onClick, { capture: true });
+  }
+
+  private unbindEvents() {
+    window.removeEventListener('keyup', this.eventBindings.onKeyUp);
+  }
+
+  /**
+   * Called when frame is clicked.
+   *
+   * @param event A click event.
+   */
+  private onClick(event: MouseEvent) {
+    if (this.isBusy) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
     }
+  }
 
-    each(this.components, component => {
-      component.mounted && component.mounted();
+  /**
+   * Handle drag event.
+   *
+   * @param event
+   */
+  private onDrag(event: { offset: { x: number; y: number }; direction: 'prev' | 'next' }) {
+    this.isBusy = true;
+
+    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.options.window);
+
+    const sign = event.direction === 'prev' ? +1 : -1;
+
+    mountableSlideIndices.forEach(index => {
+      const slide = this.slides[index];
+
+      const x = sign * Math.abs(event.offset.x);
+
+      slide.translate(x);
+    });
+  }
+
+  /**
+   * Handle dragged event.
+   *
+   * @param event
+   */
+  private onDragEnd(event: { direction: 'prev' | 'next' }) {
+    console.debug('[Drag] Drag end', event);
+
+    const slide = this.slides[this.currentIndex];
+
+    slide.translate(-100, () => {
+      console.log('translation END');
+      this.isBusy = false;
     });
 
-    this.emit('mounted');
-    // this.State.set( STATES.IDLE ); todo
-    this.emit('ready');
+    const sign = event.direction === 'prev' ? -1 : +1;
 
-    applyStyle(this.root, { visibility: 'visible' });
+    this.currentIndex = rewind(this.currentIndex + sign * 1, this.slides.length - 1);
+
+    this.runSlidesLifecycle({ direction: event.direction });
+  }
+
+  private onKeyUp(event: KeyboardEvent) {
+    switch (event.which) {
+      // arrow left
+      case 37:
+        this.previous();
+        break;
+
+      // arrow right
+      case 39:
+        this.next();
+    }
   }
 }
 
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
   new Virchual(slider, {
     slides: () => {
-      const slides: { key: string; html: string }[] = [];
+      const slides: string[] = [];
 
       for (let i = 0; i < 10; i++) {
-        slides.push({
-          key: i + '',
-          html: `<span>Slide ${i + 1}</span>`,
-        });
+        slides.push(`<span>Slide ${i + 1}</span>`);
       }
 
       return slides;

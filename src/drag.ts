@@ -1,10 +1,8 @@
-import ControllerComponent from '../controller/controller.component';
-import { BaseLayout } from '../layout/index';
-import TrackComponent from '../track/track.component';
-import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
-import { BaseComponent } from './../base-component';
+import { debounce } from './utils/debouncer';
+import { Event } from './utils/event';
+import { VirchualOptions } from './virchual';
 
-export default class DragComponent implements BaseComponent {
+export class Drag {
   // Coordinate of the track on starting drag.
   private startCoord: { x: number; y: number };
 
@@ -17,30 +15,43 @@ export default class DragComponent implements BaseComponent {
   // Determine whether slides are being dragged or not.
   private isDragging = false;
 
-  // Whether the slider direction is vertical or not.
-  private isVertical = false;
-
-  // Axis for the direction.
-  private axis = this.isVertical ? 'y' : 'x';
-
   private isDisabled = false;
 
-  private track: TrackComponent;
-  private layout: BaseLayout;
-  private controller: ControllerComponent;
-  private instance: Virchual;
+  private event: Event;
 
-  constructor(private options: VirchualOptions) {}
+  // bound event handlers (to keep `this` context)
+  private eventBindings: {
+    onStart: () => {};
+    onMove: () => {};
+    onEnd: () => {};
+  };
 
-  mount(instance: Virchual, components: VirchualComponents) {
-    this.instance = instance;
-    this.track = components.Track as TrackComponent;
-    this.layout = components.Layout as BaseLayout;
-    this.controller = components.Controller as ControllerComponent;
+  constructor(private frame: HTMLElement, private options: VirchualOptions, { event }: { event: Event }) {
+    this.event = event;
 
-    this.instance.on('touchstart mousedown', this.onStart.bind(this), this.track.list);
-    this.instance.on('touchmove mousemove', this.onMove.bind(this), this.track.list, { passive: false });
-    this.instance.on('touchend touchcancel mouseleave mouseup dragend', this.onEnd.bind(this), this.track.list);
+    this.eventBindings = {
+      onStart: this.onStart.bind(this),
+      onMove: this.onMove.bind(this),
+      onEnd: this.onEnd.bind(this),
+    };
+  }
+
+  start() {
+    this.event.on('touchstart mousedown', this.eventBindings.onStart, this.frame);
+    this.event.on('touchmove mousemove', debounce(this.eventBindings.onMove, 1), this.frame, { passive: false });
+    this.event.on('touchend touchcancel mouseleave mouseup dragend', this.eventBindings.onEnd, this.frame);
+
+    // Prevent dragging an image or anchor itself.
+    [].forEach.call(this.frame.querySelectorAll('img, a'), (element: HTMLElement, index: number) => {
+      this.event.on(
+        'dragstart touchstart',
+        e => {
+          e.preventDefault();
+        },
+        element,
+        { passive: false },
+      );
+    });
   }
 
   /**
@@ -48,10 +59,12 @@ export default class DragComponent implements BaseComponent {
    */
   private onStart(event: MouseEvent & TouchEvent) {
     if (!this.isDisabled && !this.isDragging) {
-      this.startCoord = this.track.toCoord(this.track.position);
+      // this.startCoord = this.track.toCoord(this.track.position);
       this.startInfo = this.analyze(event, {});
 
       this.currentInfo = this.startInfo;
+
+      this.event.emit('dragstart', this.currentInfo);
     }
   }
 
@@ -65,12 +78,12 @@ export default class DragComponent implements BaseComponent {
     if (this.isDragging) {
       event.cancelable && event.preventDefault();
 
-      const position = this.startCoord[this.axis] + this.currentInfo.offset[this.axis];
+      this.event.emit('drag', this.currentInfo);
 
-      this.track.translate(position);
+      // this.track.translate(position);
     } else {
       if (this.shouldMove(this.currentInfo)) {
-        this.instance.emit('drag', this.startInfo);
+        this.event.emit('drag', this.currentInfo);
 
         this.isDragging = true;
       }
@@ -85,20 +98,11 @@ export default class DragComponent implements BaseComponent {
    * @return True if the track should be moved or false if not.
    */
   private shouldMove({ offset }) {
-    // if (Splide.State.is(IDLE)) {
-    if (true) {
-      let angle = (Math.atan(Math.abs(offset.y) / Math.abs(offset.x)) * 180) / Math.PI;
+    let angle = (Math.atan(Math.abs(offset.y) / Math.abs(offset.x)) * 180) / Math.PI;
 
-      if (this.isVertical) {
-        angle = 90 - angle;
-      }
+    const dragAngleThreshold = 45;
 
-      const dragAngleThreshold = 45;
-
-      return angle < dragAngleThreshold;
-    }
-
-    return false;
+    return angle < dragAngleThreshold;
   }
 
   /**
@@ -108,8 +112,6 @@ export default class DragComponent implements BaseComponent {
     this.startInfo = null;
 
     if (this.isDragging) {
-      this.instance.emit('dragged', this.currentInfo);
-      console.log(this.currentInfo);
       this.go(this.currentInfo);
 
       this.isDragging = false;
@@ -122,35 +124,23 @@ export default class DragComponent implements BaseComponent {
    * @param info - An info object.
    */
   private go(info) {
-    const velocity = info.velocity[this.axis];
+    const velocity = info.velocity['x'];
     const absV = Math.abs(velocity);
 
     if (absV > 0) {
       const options = this.options;
       const sign = velocity < 0 ? -1 : 1;
 
-      let destination = this.track.position;
+      // let destination = this.track.position;
+      let destinationIndex = 0;
 
-      if (absV > options.flickVelocityThreshold && Math.abs(info.offset[this.axis]) < options.swipeDistanceThreshold) {
-        destination += sign * Math.min(absV * options.flickPower, this.layout.width * (options.flickMaxPages || 1));
+      if (absV > options.flickVelocityThreshold && Math.abs(info.offset['x']) < options.swipeDistanceThreshold) {
+        destinationIndex += sign;
       }
 
-      let index = this.track.direction.toIndex(destination);
+      console.log('index:', destinationIndex, info);
 
-      // Do not allow the track to go to a previous position.
-      if (index === this.instance.index) {
-        index += sign * this.track.direction.sign;
-      }
-      console.log('index:', index);
-
-      // next slide
-      if (index > this.instance.index) {
-        this.controller.next(options.isNavigation);
-
-        // previous slide
-      } else {
-        this.controller.previous(options.isNavigation);
-      }
+      this.event.emit('dragend', this.currentInfo);
     }
   }
 
@@ -170,6 +160,7 @@ export default class DragComponent implements BaseComponent {
     offset: { x: number; y: number };
     velocity: { x: number; y: number };
     time: number;
+    direction: 'prev' | 'next';
   } {
     const { timeStamp, touches } = event;
     const { clientX, clientY } = touches ? touches[0] : event;
@@ -185,6 +176,7 @@ export default class DragComponent implements BaseComponent {
       velocity,
       to: { x: clientX, y: clientY },
       time: timeStamp,
+      direction: velocity.x < 0 ? 'next' : 'prev',
     };
   }
 }

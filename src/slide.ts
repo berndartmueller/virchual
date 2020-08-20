@@ -1,4 +1,5 @@
-import { prepend as prependFn, domify, append, remove } from '../utils/dom';
+import { VirchualOptions } from './virchual';
+import { prepend as prependFn, domify, append, remove } from './utils/dom';
 
 /**
  * Virtual slide component.
@@ -9,10 +10,11 @@ export class Slide {
 
   private html: string;
   private ref: HTMLElement;
+  private transitionEndCallback: Function;
   private _isActive: boolean = false;
   private _position: number;
 
-  constructor(public content: string, private frame: HTMLElement) {}
+  constructor(public content: string, private frame: HTMLElement, private options: VirchualOptions) {}
 
   get isActive() {
     return this._isActive;
@@ -76,6 +78,12 @@ export class Slide {
 
     this.ref = domify(this.html) as HTMLElement;
 
+    this.ref.addEventListener('transitionend', e => {
+      if (e.target === this.ref && this.transitionEndCallback) {
+        this.transitionEndCallback();
+      }
+    });
+
     if (prepend) {
       prependFn(this.frame, this.ref);
 
@@ -95,10 +103,18 @@ export class Slide {
     remove(this.ref);
   }
 
-  translate(value: number) {
+  /**
+   * Start transition.
+   *
+   * @param value
+   * @param done
+   */
+  translate(value: number, done?: Function) {
     value = Math.round(value);
 
-    this.ref.style.transitionDuration = 'unset';
+    this.transitionEndCallback = done;
+
+    this.ref.style.transition = `transform ${this.options.speed}ms ${this.options.easing}`;
     this.ref.style.transform = `translate3d(calc(${this.position}% + ${value}px), 0, 0)`;
   }
 }

@@ -15,7 +15,7 @@ export class Event {
    */
   on(
     events: string,
-    handler: () => void,
+    handler: (event: any) => void,
     element?: (Window & typeof globalThis) | Element,
     options: boolean | AddEventListenerOptions = {},
   ) {
