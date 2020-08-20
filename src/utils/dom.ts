@@ -71,12 +71,24 @@ export function append(parent: HTMLElement, child: HTMLElement) {
 /**
  * Insert an element before the reference element.
  *
- * @param elemt- An element to be inserted.
+ * @param element- An element to be inserted.
  * @param ref - A reference element.
  */
 export function before(element: HTMLElement, ref: HTMLElement) {
   if (element && ref && ref.parentElement) {
     ref.parentElement.insertBefore(element, ref);
+  }
+}
+
+/**
+ * Prepend an element to parent.
+ *
+ * @param element- An element to prepend.
+ * @param element - A reference element.
+ */
+export function prepend(parent: HTMLElement, element: HTMLElement) {
+  if (parent && parent.firstChild && element) {
+    parent.insertBefore(element, parent.firstChild);
   }
 }
 

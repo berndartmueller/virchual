@@ -5,9 +5,10 @@
     "module": "es6",
     "noImplicitAny": false,
     "outDir": "./dist",
-    "target": "es2015",
+    "target": "es2016",
     "skipLibCheck": true,
-    "types": [],
+    "esModuleInterop": true,
+    "types": ["node", "jest"],
     "sourceMap": true
   },
   "include": ["src/virchual.ts"],

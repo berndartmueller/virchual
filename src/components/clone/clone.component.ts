@@ -1,10 +1,10 @@
 import { addClass, append, before, domify, remove } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
 import VirtualComponent from '../virtual/virtual.component';
-import { LOOP } from './../../constants/types';
 import Virchual, { VirchualComponents, VirchualOptions } from './../../virchual';
 import { BaseComponent } from './../base-component';
 import { SlideComponent } from './../virtual/slide.component';
+import { ELEMENT_CLASSES } from '../../constants/classes';
 
 export default class CloneComponent implements BaseComponent {
   /**
@@ -24,18 +24,16 @@ export default class CloneComponent implements BaseComponent {
     this.virtual = components.Virtual as VirtualComponent;
     this.track = components.Track as TrackComponent;
 
-    if (this.instance.is(LOOP)) {
+    this.generateClones();
+
+    this.instance.on('refresh', () => {
+      this.destroy();
       this.generateClones();
+    });
 
-      this.instance.on('refresh', () => {
-        this.destroy();
-        this.generateClones();
-      });
-
-      this.instance.on('move', () => {
-        this.generateClones();
-      });
-    }
+    this.instance.on('moved', () => {
+      this.generateClones();
+    });
   }
 
   /**
@@ -98,6 +96,13 @@ export default class CloneComponent implements BaseComponent {
     const currentIndex = this.instance.index;
     const virtualSlidesLength = this.virtual.getSlides(false).length;
 
+    // no before and after clones needed -> remove
+    if (currentIndex > 0 && currentIndex < virtualSlidesLength) {
+      this.cleanClones();
+
+      return;
+    }
+
     if (currentIndex > 0 && currentIndex >= virtualSlidesLength - 1 && this.lengthAfter === 0) {
       this.virtual.slides.slice(0, count).forEach((slide, index) => {
         const node = domify(`<div class='virchual-slide'>${slide.html}</div>`) as HTMLElement;
@@ -129,6 +134,19 @@ export default class CloneComponent implements BaseComponent {
     }
   }
 
+  /**
+   * Remove and clean unused clones from HTML.
+   */
+  private cleanClones() {
+    console.log('cleaned clones');
+
+    this.clones.forEach(clone => {
+      clone.slide.parentNode.removeChild(clone.slide);
+
+      this.virtual.unregister(clone.index);
+    });
+  }
+
   private getCloneCount(): number {
     return this.options.cloneCount;
   }
@@ -143,7 +161,7 @@ export default class CloneComponent implements BaseComponent {
   private cloneDeeply(element: HTMLElement): HTMLElement {
     const clone = element.cloneNode(true) as HTMLElement;
 
-    addClass(clone, this.instance.classes.clone);
+    addClass(clone, ELEMENT_CLASSES.clone);
 
     // ID should not be duplicated.
     clone.removeAttribute('id');

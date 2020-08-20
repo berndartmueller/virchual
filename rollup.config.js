@@ -8,7 +8,7 @@ import postcss_copy from 'postcss-copy';
 import visualizer from 'rollup-plugin-visualizer';
 
 export default {
-  input: 'src/virchual.ts', // our source file
+  input: 'src/virchual2.ts', // our source file
   output: [
     {
       file: pkg.main,

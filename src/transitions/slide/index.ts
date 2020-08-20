@@ -3,6 +3,7 @@ import TrackComponent from '../../components/track/track.component';
 import { applyStyle } from '../../utils/dom';
 import Virchual, { VirchualComponents, VirchualOptions } from '../../virchual';
 import { BaseComponent } from './../../components/base-component';
+import VirtualComponent from '../../components/virtual/virtual.component';
 
 export class SlideTransition implements BaseComponent {
   /**
@@ -17,14 +18,14 @@ export class SlideTransition implements BaseComponent {
 
   private track: TrackComponent;
   private instance: Virchual;
-  private controller: ControllerComponent;
+  private virtual: VirtualComponent;
 
   constructor(private options: VirchualOptions) {}
 
   mount(instance: Virchual, components: VirchualComponents) {
     this.instance = instance;
-    this.controller = components.Controller as ControllerComponent;
     this.track = components.Track as TrackComponent;
+    this.virtual = components.Virtual as VirtualComponent;
 
     this.list = this.track.list;
 
@@ -42,25 +43,20 @@ export class SlideTransition implements BaseComponent {
   /**
    * Start transition.
    *
-   * @param newIndex  - New index.
-   * @param prevIndex - Previous index.
-   * @param coord     - Destination coordinates.
+   * @param value
    * @param done      - Callback function must be invoked when transition is completed.
    */
-  start(newIndex: number, prevIndex: number, coord: { x: number; y: number }, done: Function) {
+  start(value: number, done: Function) {
     const options = this.options;
-    const edgeIndex = this.controller.edgeIndex;
     let speed = options.speed;
 
     this.endCallback = done;
 
-    if ((prevIndex === 0 && newIndex >= edgeIndex) || (prevIndex >= edgeIndex && newIndex === 0)) {
-      speed = options.rewindSpeed || speed;
-    }
-
-    applyStyle(this.list, {
-      transition: `transform ${speed}ms ${options.easing}`,
-      transform: `translate(${coord.x}px,${coord.y}px)`,
+    this.virtual.getSlides().forEach(slide => {
+      applyStyle(slide.slide, {
+        transition: `transform ${speed}ms ${options.easing}`,
+        transform: `translate3d(${value}%,0px,0px)`,
+      });
     });
   }
 }

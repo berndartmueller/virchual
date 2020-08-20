@@ -47,12 +47,12 @@ export class HorizontalDirection {
     }
 
     const slides = this.virtual.getSlides(true);
-
+    console.log('toIndex', position);
     for (const slide of slides) {
       const slideIndex = slide.index;
       const slidePosition = this.sign * this.toPosition(slideIndex);
 
-      if (slidePosition < position && position <= slidePosition + this.layout.slideWidth(slideIndex) + this.layout.gap) {
+      if (slidePosition < position && position <= slidePosition + this.layout.slideWidth(slideIndex) + this.layout.gap && !slide.isClone) {
         return slideIndex;
       }
     }

@@ -1,13 +1,10 @@
 import { BaseComponent } from './components/base-component';
-import CloneComponent from './components/clone/clone.component';
 import ControllerComponent from './components/controller/controller.component';
 import DragComponent from './components/drag/drag.component';
 import { HorizontalLayout } from './components/layout/directions/horizontal-layout';
-import PaginationComponent from './components/pagination/pagination.component';
 import TrackComponent from './components/track/track.component';
 import VirtualComponent from './components/virtual/virtual.component';
 import { ELEMENT_CLASSES as classes } from './constants/classes';
-import { SliderType } from './constants/types';
 import { Event } from './core/event';
 import './css/styles.css';
 import { SlideTransition } from './transitions/slide/index';
@@ -93,8 +90,8 @@ export default class Virchual {
       Transition: new SlideTransition(this.options),
       Drag: new DragComponent(this.options),
       Layout: new HorizontalLayout(this.options),
-      Clone: new CloneComponent(this.options),
-      Pagination: new PaginationComponent(this.options),
+      // Clone: new CloneComponent(this.options),
+      // Pagination: new PaginationComponent(this.options),
     };
 
     this.components = {
@@ -122,17 +119,6 @@ export default class Virchual {
     const virtual = this.components.Virtual as VirtualComponent;
 
     return virtual.length;
-  }
-
-  /**
-   * Verify whether the slider type is the given one or not.
-   *
-   * @param type - A slider type.
-   *
-   * @return True if the slider type is the provided type or false if not.
-   */
-  is(type: SliderType): boolean {
-    return type === this.options.type;
   }
 
   /**
@@ -176,15 +162,6 @@ export default class Virchual {
     this.event.emit(event, ...args);
 
     return this;
-  }
-
-  /**
-   * Return the class list.
-   *
-   * @return An object containing all class list.
-   */
-  get classes() {
-    return this.options.classes;
   }
 
   private mount() {

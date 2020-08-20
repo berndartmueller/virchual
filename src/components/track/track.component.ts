@@ -63,24 +63,28 @@ export default class TrackComponent implements BaseComponent {
    * @param silently  - If true, suppress emitting events.
    */
   go(destIndex: number, newIndex: number, silently: boolean = false) {
-    const newPosition = this.getTrimmedPosition(destIndex);
     const prevIndex = this.instance.index;
 
     if (!silently) {
       this.instance.emit('move', newIndex, prevIndex, destIndex);
     }
 
+    const newPosition = this.getTrimmedPosition(destIndex);
+
     if (Math.abs(newPosition - this.currPosition) >= 1) {
-      this.transition.start(newIndex, prevIndex, this.toCoord(newPosition), () => {
+      console.log('transition', newPosition, destIndex);
+      this.transition.start(100, () => {
         this.end(destIndex, newIndex, prevIndex, silently);
       });
-    } else {
-      if (destIndex !== prevIndex && this.instance.options.trimSpace === 'move') {
-        this.controller.go(destIndex + destIndex - prevIndex, silently);
-      } else {
-        this.end(destIndex, newIndex, prevIndex, silently);
-      }
     }
+
+    //  else {
+    //   if (destIndex !== prevIndex && this.instance.options.trimSpace === 'move') {
+    //     this.controller.go(destIndex + destIndex - prevIndex, silently);
+    //   } else {
+    //     this.end(destIndex, newIndex, prevIndex, silently);
+    //   }
+    // }
   }
 
   /**

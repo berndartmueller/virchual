@@ -1,7 +1,7 @@
 import { SlideComponent } from './slide.component';
 import Virchual, { VirchualOptions, VirchualComponents, VirchualSlide } from './../../virchual';
 import { BaseComponent } from './../base-component';
-import { domify, append, applyStyle } from '../../utils/dom';
+import { domify, append, applyStyle, before } from '../../utils/dom';
 import TrackComponent from '../track/track.component';
 import { pad, unit } from '../../utils/utils';
 import { Event } from './../../core/event';
@@ -72,6 +72,9 @@ export default class VirtualComponent implements BaseComponent {
     return this.getSlides().length;
   }
 
+  /**
+   * Get all slides.
+   */
   get slides() {
     return this._slides || [];
   }
@@ -113,6 +116,15 @@ export default class VirtualComponent implements BaseComponent {
     return slideInstance;
   }
 
+  /**
+   * Unregister a slide.
+   *
+   * @param index     - Unique slide index.
+   */
+  unregister(index: number) {
+    this.virtualSlides = this.virtualSlides.filter(vSlide => vSlide.index !== index);
+  }
+
   private init() {
     let slides: VirchualSlide[] = [];
     this.virtualSlides = [];
@@ -138,6 +150,17 @@ export default class VirtualComponent implements BaseComponent {
         key: slide.key,
         html: slide.html,
       };
+    });
+
+    const firstSlide = this._slides[0];
+    const firstSlideHydrated = this.hydratedSlides.find(hydratedSlide => hydratedSlide.dataset.key === firstSlide.key);
+
+    this._slides.slice(-1).forEach((slide, index) => {
+      let element = domify(`<div class='virchual-slide'>${slide.html}</div>`);
+      console.log('asdfasdf', slide.index, firstSlideHydrated, slide.html);
+      before(element, firstSlideHydrated);
+
+      this.register(element, -1, -1, slide.key);
     });
 
     this._slides.slice(0, 2).forEach((slide, index) => {
@@ -169,15 +192,18 @@ export default class VirtualComponent implements BaseComponent {
   }
 
   private bind() {
-    this.instance.on('move', (newIndex, prevIndex) => {
-      const slide = this._slides[1 + newIndex];
+    this.instance.on('move', (newIndex, _prevIndex) => {
+      console.log('virtual movee', newIndex, _prevIndex);
+      newIndex = newIndex > 0 ? newIndex + 1 : newIndex;
+
+      const slide = this._slides[newIndex];
 
       if (slide == null) {
         return;
       }
 
       const virtualSlide = this.getSlide(slide.index);
-
+      console.log('virtual slide move', slide.index, virtualSlide);
       // slide already injected in DOM
       if (virtualSlide) {
         return;
@@ -187,9 +213,9 @@ export default class VirtualComponent implements BaseComponent {
 
       append(this.track.list, node);
 
-      this.register(node, 1 + newIndex, -1, slide.key);
+      this.register(node, newIndex, -1, slide.key);
 
-      this.instance.emit('add', 1 + newIndex);
+      this.instance.emit('add', newIndex);
     });
 
     this.instance.on('moved', () => {

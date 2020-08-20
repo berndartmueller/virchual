@@ -63,7 +63,7 @@ export abstract class BaseLayout implements BaseComponent {
       window,
     );
     this.instance.on('resize', this.onResize.bind(this));
-    this.instance.on('updated refresh cloned', this.init.bind(this));
+    this.instance.on('updated refresh cloned moved', this.init.bind(this));
     this.instance.on('add', this.onResizeSlide.bind(this));
   }
 
