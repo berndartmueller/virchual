@@ -1,8 +1,8 @@
-import { Pagination } from './pagination';
 import './css/styles.css';
-
 import { Drag } from './drag';
+import { Pagination } from './pagination';
 import { Slide } from './slide';
+import { Sign } from './types';
 import { assert } from './utils/error';
 import { Event } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
@@ -87,6 +87,9 @@ export class Virchual {
     this.pagination.render();
   }
 
+  /**
+   * Mount components.
+   */
   mount() {
     this.event.emit('mounted');
 
@@ -116,12 +119,18 @@ export class Virchual {
     this.event.off(events, elm);
   }
 
+  /**
+   * Go to previous slide.
+   */
   prev() {
     console.debug('[Controls] Previous');
 
     this.go('prev');
   }
 
+  /**
+   * Go to next slide.
+   */
   next() {
     console.debug('[Controls] Next');
 
@@ -135,7 +144,7 @@ export class Virchual {
       this.isBusy = false;
     });
 
-    const sign = direction === 'prev' ? -1 : +1;
+    const sign: Sign = direction === 'prev' ? -1 : +1;
 
     this.currentIndex = rewind(this.currentIndex + sign * 1, this.slides.length - 1);
 

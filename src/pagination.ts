@@ -10,15 +10,8 @@ import { range, rewind } from './utils/utils';
  * @param total Total bullets. Same as amount of slides.
  */
 export function mapActiveIndex(index: number, center: number, total: number) {
-  return index - Math.max(index - center, 0) + Math.max(index - (total - 1 - center), 0);
+  return index - Math.max(index - center, 0) + Math.max(index - (-1 + total - center), 0);
 }
-
-/**
- * Figure out if given bullet element index is edge.
- *
- * @param index Current bullet element index.
- */
-export function isEdgeBullet(index: number) {}
 
 export class Pagination {
   private ref: HTMLElement;
