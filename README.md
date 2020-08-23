@@ -6,6 +6,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 ![size][size-shield]
+[![Build Status](https://travis-ci.org/berndartmueller/virchual.svg?branch=master)](https://travis-ci.org/berndartmueller/virchual)
 
 <!-- PROJECT LOGO -->
 <br />

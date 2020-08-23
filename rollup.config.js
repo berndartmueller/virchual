@@ -8,6 +8,8 @@ import postcss_copy from 'postcss-copy';
 import visualizer from 'rollup-plugin-visualizer';
 import bundleSize from 'rollup-plugin-bundle-size';
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export default {
   input: 'src/virchual.ts', // our source file
   output: [
@@ -57,22 +59,23 @@ export default {
       sourceMap: true,
       //minimize: true, // Causes an error at the moment for some reason
     }),
-    serve({
-      open: true,
+    isDevelopment &&
+      serve({
+        open: true,
 
-      host: '0.0.0.0',
+        host: '0.0.0.0',
 
-      // Page to navigate to when opening the browser.
-      // Will not do anything if open=false.
-      // Remember to start with a slash.
-      openPage: '/index.html',
+        // Page to navigate to when opening the browser.
+        // Will not do anything if open=false.
+        // Remember to start with a slash.
+        openPage: '/index.html',
 
-      // Multiple folders to serve from
-      contentBase: ['dist', 'examples'],
+        // Multiple folders to serve from
+        contentBase: ['dist', 'examples'],
 
-      // Options used in setting up server
-      host: 'localhost',
-      port: 1337,
-    }),
+        // Options used in setting up server
+        host: 'localhost',
+        port: 1337,
+      }),
   ],
 };
