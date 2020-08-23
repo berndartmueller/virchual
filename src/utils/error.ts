@@ -6,7 +6,7 @@
  * @param subject - A subject to be confirmed.
  * @param message - An error message.
  */
-export function exist(subject: any, message: string) {
+export function assert(subject: any, message: string) {
   if (!subject) {
     throw new Error(message);
   }

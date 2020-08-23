@@ -1,7 +1,9 @@
+import { Pagination } from './pagination';
 import './css/styles.css';
+
 import { Drag } from './drag';
 import { Slide } from './slide';
-import { exist } from './utils/error';
+import { assert } from './utils/error';
 import { Event } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
@@ -20,26 +22,28 @@ export type VirchualOptions = {
 export class Virchual {
   container: HTMLElement;
   frame: HTMLElement;
-  frameWidth: number;
+  paginationButtons: HTMLButtonElement[];
   currentIndex: number = 0;
-  slides: Slide[] = [];
 
+  private slides: Slide[] = [];
   private event: Event;
   private isBusy: boolean = false;
+  private pagination: Pagination;
 
   // bound event handlers (to keep `this` context)
   private eventBindings: {
     onClick: () => {};
     onDrag: () => {};
     onDragEnd: () => {};
-    onKeyUp: () => {};
+    onPaginationButtonClick: () => {};
   };
 
   constructor(public selector: HTMLElement | string, public options: VirchualOptions = {}) {
     this.container = selector instanceof Element ? selector : document.querySelector(selector);
     this.frame = this.container.querySelector('.virchual__frame');
+    this.paginationButtons = [].slice.call(this.container.querySelectorAll('.virchual__control'));
 
-    exist(this.frame, 'Invalid element/selector');
+    assert(this.frame, 'Invalid element/selector');
 
     this.currentIndex = 0;
     this.options = {
@@ -59,8 +63,8 @@ export class Virchual {
     this.eventBindings = {
       onClick: this.onClick.bind(this),
       onDrag: this.onDrag.bind(this),
-      onKeyUp: this.onKeyUp.bind(this),
       onDragEnd: this.onDragEnd.bind(this),
+      onPaginationButtonClick: this.onPaginationButtonClick.bind(this),
     };
 
     let rawSlides;
@@ -71,14 +75,22 @@ export class Virchual {
       rawSlides = this.options.slides;
     }
 
-    this.slides = (rawSlides || []).map((slide, index) => new Slide(slide, this.frame, this.options));
+    this.slides = this.hydrate();
 
-    this.resize();
-    this.mount();
-
-    new Drag(this.frame, this.options, { event: this.event }).start();
+    this.slides = this.slides.concat((rawSlides || []).map((slide, index) => new Slide(slide, this.frame, this.options)));
 
     this.bindEvents();
+
+    new Drag(this.frame, this.options, { event: this.event }).start();
+    this.pagination = new Pagination(this.container, this.slides.length);
+
+    this.pagination.render();
+  }
+
+  mount() {
+    this.event.emit('mounted');
+
+    this.mountAndUnmountSlides();
   }
 
   /**
@@ -104,24 +116,48 @@ export class Virchual {
     this.event.off(events, elm);
   }
 
-  previous() {}
+  prev() {
+    console.debug('[Controls] Previous');
 
-  next() {}
-
-  private mount() {
-    this.event.emit('mounted');
-
-    this.runSlidesLifecycle();
+    this.go('prev');
   }
 
-  private resize() {
-    this.frameWidth = this.frame.getBoundingClientRect().width;
+  next() {
+    console.debug('[Controls] Next');
+
+    this.go('next');
+  }
+
+  private go(direction: 'prev' | 'next') {
+    const slide = this.slides[this.currentIndex];
+
+    slide.translate(-100, () => {
+      this.isBusy = false;
+    });
+
+    const sign = direction === 'prev' ? -1 : +1;
+
+    this.currentIndex = rewind(this.currentIndex + sign * 1, this.slides.length - 1);
+
+    this.mountAndUnmountSlides({ direction });
+
+    this.pagination[direction]();
+  }
+
+  private hydrate(): Slide[] {
+    const slideElements = [].slice.call(this.frame.querySelectorAll('div'));
+
+    const slides = slideElements.map(element => {
+      return new Slide(element, this.frame, this.options);
+    });
+
+    return slides;
   }
 
   /**
    * Mount and unmount slides.
    */
-  private runSlidesLifecycle({ direction }: { direction?: 'prev' | 'next' } = {}) {
+  private mountAndUnmountSlides({ direction }: { direction?: 'prev' | 'next' } = {}) {
     const currentSlide = this.slides[this.currentIndex];
 
     const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.options.window);
@@ -145,23 +181,22 @@ export class Virchual {
 
       slide.position = (this.options.window - realIndex) * -100;
 
-      const prepend = direction === 'prev';
+      const prepend = direction === 'prev' || (direction == null && this.slides[0].isMounted && realIndex - this.options.window < 0);
 
       slide.mount(prepend);
     });
   }
 
   private bindEvents() {
-    this.event.on('keyup', this.eventBindings.onKeyUp, window);
     this.event.on('drag', this.eventBindings.onDrag);
     this.event.on('dragend', this.eventBindings.onDragEnd);
 
+    this.paginationButtons.forEach(button => {
+      this.event.on('click', this.eventBindings.onPaginationButtonClick, button);
+    });
+
     // Disable clicks on slides
     this.frame.addEventListener('click', this.eventBindings.onClick, { capture: true });
-  }
-
-  private unbindEvents() {
-    window.removeEventListener('keyup', this.eventBindings.onKeyUp);
   }
 
   /**
@@ -175,6 +210,13 @@ export class Virchual {
       event.stopPropagation();
       event.stopImmediatePropagation();
     }
+  }
+
+  private onPaginationButtonClick(event: MouseEvent) {
+    const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
+    const direction = button.dataset.controls as 'prev' | 'next';
+
+    this[direction]();
   }
 
   /**
@@ -206,44 +248,38 @@ export class Virchual {
   private onDragEnd(event: { direction: 'prev' | 'next' }) {
     console.debug('[Drag] Drag end', event);
 
-    const slide = this.slides[this.currentIndex];
-
-    slide.translate(-100, () => {
-      console.log('translation END');
-      this.isBusy = false;
-    });
-
-    const sign = event.direction === 'prev' ? -1 : +1;
-
-    this.currentIndex = rewind(this.currentIndex + sign * 1, this.slides.length - 1);
-
-    this.runSlidesLifecycle({ direction: event.direction });
-  }
-
-  private onKeyUp(event: KeyboardEvent) {
-    switch (event.which) {
-      // arrow left
-      case 37:
-        this.previous();
-        break;
-
-      // arrow right
-      case 39:
-        this.next();
-    }
+    this.go(event.direction);
   }
 }
 
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
-  new Virchual(slider, {
+  const instance = new Virchual(slider, {
     slides: () => {
       const slides: string[] = [];
 
       for (let i = 0; i < 10; i++) {
-        slides.push(`<span>Slide ${i + 1}</span>`);
+        slides.push(`
+          <picture>
+            <source
+              type="image/webp"
+              srcset="
+                https://i.findheim.at/images/sm/6iBu4sycxr9kXMlcbyVyz.webp,
+                https://i.findheim.at/images/md/6iBu4sycxr9kXMlcbyVyz.webp 2x
+              " />
+            <source
+              type="image/jpeg"
+              srcset="
+                https://i.findheim.at/images/sm/6iBu4sycxr9kXMlcbyVyz.jpg,
+                https://i.findheim.at/images/md/6iBu4sycxr9kXMlcbyVyz.jpg 2x
+              " />
+            <img src="https://i.findheim.at/images/md/6iBu4sycxr9kXMlcbyVyz.jpg" itemprop="image"/>
+          </picture>
+        `);
       }
 
       return slides;
     },
   });
+
+  instance.mount();
 });

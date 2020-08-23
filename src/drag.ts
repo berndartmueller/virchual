@@ -42,9 +42,9 @@ export class Drag {
     this.event.on('touchend touchcancel mouseleave mouseup dragend', this.eventBindings.onEnd, this.frame);
 
     // Prevent dragging an image or anchor itself.
-    [].forEach.call(this.frame.querySelectorAll('img, a'), (element: HTMLElement, index: number) => {
+    [].forEach.call(this.frame.querySelectorAll('img, a'), (element: HTMLElement) => {
       this.event.on(
-        'dragstart touchstart',
+        'dragstart',
         e => {
           e.preventDefault();
         },
@@ -79,8 +79,6 @@ export class Drag {
       event.cancelable && event.preventDefault();
 
       this.event.emit('drag', this.currentInfo);
-
-      // this.track.translate(position);
     } else {
       if (this.shouldMove(this.currentInfo)) {
         this.event.emit('drag', this.currentInfo);
@@ -137,8 +135,6 @@ export class Drag {
       if (absV > options.flickVelocityThreshold && Math.abs(info.offset['x']) < options.swipeDistanceThreshold) {
         destinationIndex += sign;
       }
-
-      console.log('index:', destinationIndex, info);
 
       this.event.emit('dragend', this.currentInfo);
     }

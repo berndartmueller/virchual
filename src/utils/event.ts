@@ -37,11 +37,7 @@ export class Event {
       this.data = this.data.filter(item => {
         if (item && item.event === event && item.elm === element) {
           this.unsubscribe(item);
-
-          return false;
         }
-
-        return true;
       });
     });
   }

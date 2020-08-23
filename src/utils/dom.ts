@@ -1,21 +1,3 @@
-import { each } from './object';
-import { toArray } from './utils';
-
-/**
- * Create an element with some optional attributes.
- *
- * @param tag   - A tag name.
- * @param attrs - An object any attribute pairs of name and value.
- *
- * @return A created element.
- */
-export function create(tag: string, attrs: object): HTMLElement {
-  const elm = document.createElement(tag);
-  each(attrs, (value, key) => elm.setAttribute(key, value));
-
-  return elm;
-}
-
 /**
  * Convert HTML string to DOM node.
  *
@@ -24,7 +6,8 @@ export function create(tag: string, attrs: object): HTMLElement {
  * @return A created node.
  */
 export function domify(html: string): HTMLElement {
-  const div = create('div', {});
+  const div = document.createElement('div');
+
   div.innerHTML = html;
 
   return div.firstChild as HTMLElement;
@@ -35,12 +18,10 @@ export function domify(html: string): HTMLElement {
  *
  * @param elms - Element(s) to be removed.
  */
-export function remove(elms: HTMLElement | HTMLElement[]) {
-  toArray(elms).forEach(elm => {
-    if (elm && elm.parentElement) {
-      elm.parentElement.removeChild(elm);
-    }
-  });
+export function remove(element: HTMLElement) {
+  if (element && element.parentElement) {
+    element.parentElement.removeChild(element);
+  }
 }
 
 /**

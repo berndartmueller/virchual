@@ -1,14 +1,3 @@
-/**
- * Convert the given value to array.
- *
- * @param value - Any value.
- *
- * @return Array containing the given value.
- */
-export function toArray(value: any): any[] {
-  return Array.isArray(value) ? value : [value];
-}
-
 export function range(start: number, end: number): number[] {
   return Array(end - start + 1)
     .fill(0)

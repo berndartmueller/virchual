@@ -8,13 +8,21 @@ export class Slide {
   isMounted: boolean = false;
   hasChanged: boolean = false;
 
-  private html: string;
+  private content: string;
   private ref: HTMLElement;
   private transitionEndCallback: Function;
   private _isActive: boolean = false;
   private _position: number;
 
-  constructor(public content: string, private frame: HTMLElement, private options: VirchualOptions) {}
+  constructor(content: string | HTMLElement, private frame: HTMLElement, private options: VirchualOptions) {
+    if (typeof content === 'string') {
+      this.content = content;
+    } else {
+      this.ref = content;
+      this.content = this.ref.innerHTML;
+      this.isMounted = true;
+    }
+  }
 
   get isActive() {
     return this._isActive;
@@ -36,10 +44,12 @@ export class Slide {
     this.hasChanged = true;
   }
 
-  render() {
-    return `<div class="virchual-slide ${this.isActive ? 'virchual-slide--active' : ''}" style="transform: translate3d(${
+  render(): HTMLElement {
+    const html = `<div class="virchual-slide ${this.isActive ? 'virchual-slide--active' : ''}" style="transform: translate3d(${
       this.position
     }%, 0, 0)">${this.content}</div>`;
+
+    return domify(html) as HTMLElement;
   }
 
   update() {
@@ -74,9 +84,7 @@ export class Slide {
 
     this.isMounted = true;
 
-    this.html = this.render();
-
-    this.ref = domify(this.html) as HTMLElement;
+    this.ref = this.render();
 
     this.ref.addEventListener('transitionend', e => {
       if (e.target === this.ref && this.transitionEndCallback) {
@@ -84,18 +92,12 @@ export class Slide {
       }
     });
 
-    if (prepend) {
-      prependFn(this.frame, this.ref);
+    const insert = prepend ? prependFn : append;
 
-      return;
-    }
-
-    append(this.frame, this.ref);
+    insert(this.frame, this.ref);
   }
 
   unmount() {
-    if (!this.isMounted) return;
-
     console.debug('[Unmount] Slide', { ref: this.ref });
 
     this.isMounted = false;

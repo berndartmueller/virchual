@@ -26,7 +26,7 @@ export function slidingWindow(source: number[], start: number, size: number): nu
  * @param source Source array.
  * @param index Index of array item to access.
  */
-function get(source: number[], index: number): number {
+export function get<T>(source: T[], index: number): T {
   if (source.length === 0) {
     return;
   }

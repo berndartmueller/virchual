@@ -6,6 +6,7 @@ import postcss from 'rollup-plugin-postcss';
 import postcss_import from 'postcss-import';
 import postcss_copy from 'postcss-copy';
 import visualizer from 'rollup-plugin-visualizer';
+import bundleSize from 'rollup-plugin-bundle-size';
 
 export default {
   input: 'src/virchual.ts', // our source file
@@ -32,6 +33,7 @@ export default {
       typescript: require('typescript'),
     }),
     terser(), // minifies generated bundles
+    bundleSize(),
     postcss({
       plugins: [
         postcss_import({}),
@@ -41,6 +43,7 @@ export default {
           dest: 'dist',
           template: 'css/styles.[ext]',
         }),
+
         // postcss_url(),
         // postcss_url({
         //      url: "copy",
