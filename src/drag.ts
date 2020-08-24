@@ -1,7 +1,6 @@
 import { identity } from './types';
 import { debounce } from './utils/debouncer';
-import { Event } from './utils/event';
-import { VirchualOptions } from './virchual';
+import { Event, stop } from './utils/event';
 
 export class Drag {
   // Coordinate of the track on starting drag.
@@ -27,40 +26,29 @@ export class Drag {
     onEnd: identity;
   };
 
-  constructor(private frame: HTMLElement, private options: VirchualOptions, { event }: { event: Event }) {
+  constructor(private frame: HTMLElement, { event }: { event: Event }) {
     this.event = event;
 
     this.eventBindings = {
       onStart: this.onStart.bind(this),
-      onMove: this.onMove.bind(this),
+      onMove: debounce(this.onMove.bind(this), 1),
       onEnd: this.onEnd.bind(this),
     };
   }
 
   start() {
     this.event.on('touchstart mousedown', this.eventBindings.onStart, this.frame);
-    this.event.on('touchmove mousemove', debounce(this.eventBindings.onMove, 1), this.frame, { passive: false });
+    this.event.on('touchmove mousemove', this.eventBindings.onMove, this.frame, { passive: false });
     this.event.on('touchend touchcancel mouseleave mouseup dragend', this.eventBindings.onEnd, this.frame);
-
-    // Prevent dragging an image or anchor itself.
-    [].forEach.call(this.frame.querySelectorAll('img, a'), (element: HTMLElement) => {
-      this.event.on(
-        'dragstart',
-        e => {
-          (e as MouseEvent).preventDefault();
-        },
-        element,
-        { passive: false },
-      );
-    });
   }
 
   /**
    * Called when the track starts to be dragged.
    */
   private onStart(event: MouseEvent & TouchEvent) {
+    stop(event);
+
     if (!this.isDisabled && !this.isDragging) {
-      // this.startCoord = this.track.toCoord(this.track.position);
       this.startInfo = this.analyze(event, {});
 
       this.currentInfo = this.startInfo;
@@ -70,6 +58,8 @@ export class Drag {
   }
 
   private onMove(event: MouseEvent & TouchEvent) {
+    stop(event);
+
     if (!this.startInfo) {
       return;
     }
@@ -77,7 +67,7 @@ export class Drag {
     this.currentInfo = this.analyze(event, this.startInfo);
 
     if (this.isDragging) {
-      event.cancelable && event.preventDefault();
+      stop(event);
 
       this.event.emit('drag', this.currentInfo);
     } else {

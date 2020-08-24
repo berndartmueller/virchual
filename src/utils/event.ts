@@ -1,3 +1,11 @@
+export function stop(event: MouseEvent | TouchEvent) {
+  if (!event) return;
+
+  event.stopImmediatePropagation();
+  event.stopPropagation();
+  event.preventDefault();
+}
+
 export class Event {
   /**
    * Store all event this.data.

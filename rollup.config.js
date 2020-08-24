@@ -34,7 +34,11 @@ export default {
     typescript({
       typescript: require('typescript'),
     }),
-    terser(), // minifies generated bundles
+    terser({
+      mangle: {
+        properties: true,
+      },
+    }), // minifies generated bundles
     bundleSize(),
     postcss({
       plugins: [
