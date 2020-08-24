@@ -1,6 +1,6 @@
 {
   "name": "virchual",
-  "version": "0.0.1",
+  "version": "1.0.0-alpha.0",
   "description": "Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -70,10 +70,9 @@
     "rollup-plugin-typescript2": "^0.27.2",
     "rollup-plugin-visualizer": "^4.1.0",
     "ts-jest": "^26.2.0",
+    "@types/jest": "^26.0.10",
+    "jest": "^26.4.1",
     "typescript": "^3.9.7"
   },
-  "dependencies": {
-    "@types/jest": "^26.0.10",
-    "jest": "^26.4.1"
-  }
+  "dependencies": {}
 }
