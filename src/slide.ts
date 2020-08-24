@@ -1,3 +1,4 @@
+import { identity } from './types';
 import { VirchualOptions } from './virchual';
 import { prepend as prependFn, domify, append, remove } from './utils/dom';
 
@@ -5,13 +6,13 @@ import { prepend as prependFn, domify, append, remove } from './utils/dom';
  * Virtual slide component.
  */
 export class Slide {
-  isMounted: boolean = false;
-  hasChanged: boolean = false;
+  isMounted = false;
+  hasChanged = false;
 
   private content: string;
   private ref: HTMLElement;
-  private transitionEndCallback: Function;
-  private _isActive: boolean = false;
+  private transitionEndCallback: identity;
+  private _isActive = false;
   private _position: number;
 
   constructor(content: string | HTMLElement, private frame: HTMLElement, private options: VirchualOptions) {
@@ -70,7 +71,7 @@ export class Slide {
     }
   }
 
-  mount(prepend: boolean = false) {
+  mount(prepend = false) {
     if (this.isMounted) {
       // slide has changed -> update in DOM
       if (this.hasChanged) {
@@ -111,7 +112,7 @@ export class Slide {
    * @param value
    * @param done
    */
-  translate(value: number, done?: Function) {
+  translate(value: number, done?: identity) {
     value = Math.round(value);
 
     this.transitionEndCallback = done;

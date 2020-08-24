@@ -1,3 +1,3 @@
-export function cleanDOM(window: Window) {
+export function cleanDOM(window: Window): void {
   window.document.body.innerHTML = '';
 }

@@ -2,7 +2,7 @@ import './css/styles.css';
 import { Drag } from './drag';
 import { Pagination } from './pagination';
 import { Slide } from './slide';
-import { Sign } from './types';
+import { Sign, identity } from './types';
 import { assert } from './utils/error';
 import { Event } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
@@ -23,19 +23,19 @@ export class Virchual {
   container: HTMLElement;
   frame: HTMLElement;
   paginationButtons: HTMLButtonElement[];
-  currentIndex: number = 0;
+  currentIndex = 0;
 
   private slides: Slide[] = [];
   private event: Event;
-  private isBusy: boolean = false;
+  private isBusy = false;
   private pagination: Pagination;
 
   // bound event handlers (to keep `this` context)
   private eventBindings: {
-    onClick: () => {};
-    onDrag: () => {};
-    onDragEnd: () => {};
-    onPaginationButtonClick: () => {};
+    onClick: () => identity;
+    onDrag: () => identity;
+    onDragEnd: () => identity;
+    onPaginationButtonClick: () => identity;
   };
 
   constructor(public selector: HTMLElement | string, public options: VirchualOptions = {}) {
@@ -77,7 +77,7 @@ export class Virchual {
 
     this.slides = this.hydrate();
 
-    this.slides = this.slides.concat((rawSlides || []).map((slide, index) => new Slide(slide, this.frame, this.options)));
+    this.slides = this.slides.concat((rawSlides || []).map(slide => new Slide(slide, this.frame, this.options)));
 
     this.bindEvents();
 
@@ -105,7 +105,7 @@ export class Virchual {
    * @param elm     - Optional. Native event will be listened to when this arg is provided.
    * @param options - Optional. Options for addEventListener.
    */
-  on(events: string, handler: any, elm: (Window & typeof globalThis) | Element = null, options: object = {}) {
+  on(events: string, handler: identity, elm: (Window & typeof globalThis) | Element = null, options: Record<string, unknown> = {}) {
     this.event.on(events, handler, elm, options);
   }
 
@@ -181,7 +181,7 @@ export class Virchual {
         this.slides[this.currentIndex].isActive = false;
       }
 
-      let realIndex = mountableSlideIndices.indexOf(index);
+      const realIndex = mountableSlideIndices.indexOf(index);
 
       // unmount
       if (realIndex < 0) {

@@ -9,12 +9,12 @@ function isNode() {
 }
 
 function getWindow(): Window {
-  return (global as any) as Window;
+  return (global as unknown) as Window;
 }
 
 // browser env
 if (isBrowser()) {
-  // tslint:disable-next-line: no-empty
+  // eslint-disable-next-line no-empty
 } else if (isNode()) {
 }
 

@@ -1,3 +1,4 @@
+import { identity } from './types';
 import { debounce } from './utils/debouncer';
 import { Event } from './utils/event';
 import { VirchualOptions } from './virchual';
@@ -21,9 +22,9 @@ export class Drag {
 
   // bound event handlers (to keep `this` context)
   private eventBindings: {
-    onStart: () => {};
-    onMove: () => {};
-    onEnd: () => {};
+    onStart: identity;
+    onMove: identity;
+    onEnd: identity;
   };
 
   constructor(private frame: HTMLElement, private options: VirchualOptions, { event }: { event: Event }) {
@@ -46,7 +47,7 @@ export class Drag {
       this.event.on(
         'dragstart',
         e => {
-          e.preventDefault();
+          (e as MouseEvent).preventDefault();
         },
         element,
         { passive: false },
@@ -96,7 +97,7 @@ export class Drag {
    * @return True if the track should be moved or false if not.
    */
   private shouldMove({ offset }) {
-    let angle = (Math.atan(Math.abs(offset.y) / Math.abs(offset.x)) * 180) / Math.PI;
+    const angle = (Math.atan(Math.abs(offset.y) / Math.abs(offset.x)) * 180) / Math.PI;
 
     const dragAngleThreshold = 45;
 
@@ -126,16 +127,6 @@ export class Drag {
     const absV = Math.abs(velocity);
 
     if (absV > 0) {
-      const options = this.options;
-      const sign = velocity < 0 ? -1 : 1;
-
-      // let destination = this.track.position;
-      let destinationIndex = 0;
-
-      if (absV > options.flickVelocityThreshold && Math.abs(info.offset['x']) < options.swipeDistanceThreshold) {
-        destinationIndex += sign;
-      }
-
       this.event.emit('dragend', this.currentInfo);
     }
   }

@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+docs
+website
+.eslintrc.js
+jest.config.js
+rollup.config.js

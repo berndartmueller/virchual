@@ -2,7 +2,12 @@ export class Event {
   /**
    * Store all event this.data.
    */
-  private data: Array<any> = [];
+  private data: Array<{
+    event: string;
+    handler: (...args: unknown[]) => void;
+    elm: (Window & typeof globalThis) | Element;
+    options: boolean | AddEventListenerOptions;
+  }> = [];
 
   /**
    * Subscribe the given event(s).
@@ -15,7 +20,7 @@ export class Event {
    */
   on(
     events: string,
-    handler: (event: any) => void,
+    handler: (...args: unknown[]) => void,
     element?: (Window & typeof globalThis) | Element,
     options: boolean | AddEventListenerOptions = {},
   ) {
@@ -49,7 +54,7 @@ export class Event {
    * @param event - An event name.
    * @param args  - Any number of arguments passed to handlers.
    */
-  emit(event: string, ...args: any[]) {
+  emit(event: string, ...args: unknown[]) {
     this.data.forEach(item => {
       if (!item.elm && item.event.split('.')[0] === event) {
         item.handler(...args);

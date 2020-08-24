@@ -15,7 +15,7 @@ export function mapActiveIndex(index: number, center: number, total: number) {
 
 export class Pagination {
   private ref: HTMLElement;
-  private currentIndex: number = 0;
+  private currentIndex = 0;
   private centerIndex: number;
 
   constructor(private container: HTMLElement, private count: number, private options: { size?: number; bullets?: number } = {}) {
