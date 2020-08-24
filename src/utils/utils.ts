@@ -14,10 +14,15 @@ export function range(start: number, end: number): number[] {
  */
 export function rewind(index: number, edge: number): number {
   if (index > edge) {
-    index = 0;
-  } else if (index < 0) {
-    index = edge;
+    return 0;
+  }
+
+  if (index < 0) {
+    return edge;
   }
 
   return index;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const noop = () => {};

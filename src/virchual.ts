@@ -4,7 +4,7 @@ import { Pagination } from './pagination';
 import { Slide } from './slide';
 import { Sign, identity } from './types';
 import { assert } from './utils/error';
-import { Event } from './utils/event';
+import { Event, stop } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
 
@@ -30,7 +30,6 @@ export class Virchual {
   private isBusy = false;
   private pagination: Pagination;
 
-  // bound event handlers (to keep `this` context)
   private eventBindings: {
     onClick: () => identity;
     onDrag: () => identity;
@@ -81,7 +80,7 @@ export class Virchual {
 
     this.bindEvents();
 
-    new Drag(this.frame, this.options, { event: this.event }).start();
+    new Drag(this.frame, { event: this.event }).start();
     this.pagination = new Pagination(this.container, this.slides.length);
 
     this.pagination.render();
@@ -150,17 +149,15 @@ export class Virchual {
 
     this.mountAndUnmountSlides({ direction });
 
-    this.pagination[direction]();
+    const move = direction === 'prev' ? this.pagination.prev.bind(this.pagination) : this.pagination.next.bind(this.pagination);
+
+    move();
   }
 
   private hydrate(): Slide[] {
-    const slideElements = [].slice.call(this.frame.querySelectorAll('div'));
+    const slideElements = [].slice.call(this.frame.querySelectorAll('div')) as HTMLDivElement[];
 
-    const slides = slideElements.map(element => {
-      return new Slide(element, this.frame, this.options);
-    });
-
-    return slides;
+    return slideElements.map(element => new Slide(element, this.frame, this.options));
   }
 
   /**
@@ -168,17 +165,18 @@ export class Virchual {
    */
   private mountAndUnmountSlides({ direction }: { direction?: 'prev' | 'next' } = {}) {
     const currentSlide = this.slides[this.currentIndex];
+    const indices = range(0, this.slides.length - 1);
 
-    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.options.window);
-    const mountableSlideIndicesWithOffset = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.options.window + 1);
+    const mountableSlideIndices = slidingWindow(indices, this.currentIndex, this.options.window);
+    const mountableSlideIndicesWithOffset = slidingWindow(indices, this.currentIndex, this.options.window + 1);
 
     mountableSlideIndicesWithOffset.forEach(index => {
       const slide = this.slides[index];
 
       if (index === this.currentIndex) {
-        currentSlide.isActive = true;
+        currentSlide.set('isActive', true);
       } else {
-        this.slides[this.currentIndex].isActive = false;
+        currentSlide.set('isActive', false);
       }
 
       const realIndex = mountableSlideIndices.indexOf(index);
@@ -188,7 +186,7 @@ export class Virchual {
         return slide.unmount();
       }
 
-      slide.position = (this.options.window - realIndex) * -100;
+      slide.set('position', (this.options.window - realIndex) * -100);
 
       const prepend = direction === 'prev' || (direction == null && this.slides[0].isMounted && realIndex - this.options.window < 0);
 
@@ -199,13 +197,9 @@ export class Virchual {
   private bindEvents() {
     this.event.on('drag', this.eventBindings.onDrag);
     this.event.on('dragend', this.eventBindings.onDragEnd);
+    this.event.on('click', this.eventBindings.onClick, this.frame, { capture: true });
 
-    this.paginationButtons.forEach(button => {
-      this.event.on('click', this.eventBindings.onPaginationButtonClick, button);
-    });
-
-    // Disable clicks on slides
-    this.frame.addEventListener('click', this.eventBindings.onClick, { capture: true });
+    this.paginationButtons.forEach(button => this.event.on('click', this.eventBindings.onPaginationButtonClick, button));
   }
 
   /**
@@ -214,18 +208,16 @@ export class Virchual {
    * @param event A click event.
    */
   private onClick(event: MouseEvent) {
-    if (this.isBusy) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-    }
+    this.isBusy && stop(event);
   }
 
   private onPaginationButtonClick(event: MouseEvent) {
     const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
     const direction = button.dataset.controls as 'prev' | 'next';
 
-    this[direction]();
+    const move = direction === 'prev' ? this.prev.bind(this) : this.next.bind(this);
+
+    move();
   }
 
   /**

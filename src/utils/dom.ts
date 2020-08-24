@@ -1,19 +1,4 @@
 /**
- * Convert HTML string to DOM node.
- *
- * @param html - HTML string.
- *
- * @return A created node.
- */
-export function domify(html: string): HTMLElement {
-  const div = document.createElement('div');
-
-  div.innerHTML = html;
-
-  return div.firstChild as HTMLElement;
-}
-
-/**
  * Remove a given element from a DOM tree.
  *
  * @param elms - Element(s) to be removed.
@@ -46,4 +31,21 @@ export function prepend(parent: HTMLElement, element: HTMLElement) {
   if (parent && parent.firstChild && element) {
     parent.insertBefore(element, parent.firstChild);
   }
+}
+
+/**
+ * Add or remove css class to given element.
+ *
+ * @param element Element to add class tp.
+ * @param klass CSS classname.
+ * @param remove Remove class instead of adding.
+ */
+export function addOrRemoveClass(element: HTMLElement, klass: string, remove = false) {
+  if (!remove) {
+    element.classList.add(klass);
+
+    return;
+  }
+
+  element.classList.remove(klass);
 }

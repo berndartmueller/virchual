@@ -1,5 +1,5 @@
 import { Sign } from './types';
-import { append, domify, prepend, remove } from './utils/dom';
+import { addOrRemoveClass, append, prepend, remove } from './utils/dom';
 import { range, rewind } from './utils/utils';
 
 /**
@@ -31,14 +31,14 @@ export class Pagination {
   }
 
   render() {
-    this.ref = domify(
-      `<div class="virchual__pagination" style="width: ${this.options.bullets * this.options.size}px; height: ${
-        this.options.size
-      }px;"></div>`,
-    );
+    this.ref = document.createElement('div');
+
+    this.ref.className = 'virchual__pagination';
+    this.ref.style.width = `${this.options.bullets * this.options.size}px`;
+    this.ref.style.height = `${this.options.size}px`;
 
     range(0, Math.min(this.options.bullets, this.count) - 1).forEach(index => {
-      const bullet = this.renderBullet(index, { isActive: index === this.currentIndex });
+      const bullet = this.renderBullet(index, { isActive: index === this.currentIndex, isEdge: false });
 
       append(this.ref, bullet);
     });
@@ -96,30 +96,30 @@ export class Pagination {
     // shift index due to remove bulled
     index = index - (removeBullet ? sign : 0);
 
-    bullet.classList.remove('virchual__pagination-bullet--active');
-    bullet.classList.remove('virchual__pagination-bullet--edge');
-
-    if (index === activeIndex) {
-      bullet.classList.add('virchual__pagination-bullet--active');
-    }
-
-    if (index === removeBulletIndex) {
-      bullet.classList.add('virchual__pagination-bullet--edge');
-    }
-
-    if (removeBullet) {
-      bullet.style.transform = `translateX(${index * this.options.size}px)`;
-    }
+    this.setAttributes(bullet, {
+      isActive: index === activeIndex,
+      isEdge: index === removeBulletIndex,
+      position: removeBullet ? index * this.options.size : undefined,
+    });
   }
 
   private renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
-    const html = `<span class="virchual__pagination-bullet ${isActive ? 'virchual__pagination-bullet--active' : ''} ${
-      isEdge ? 'virchual__pagination-bullet--edge' : ''
-    }" style="transform: translateX(${this.options.size * index}px)"></span>`;
+    const element = document.createElement('span');
 
-    const bullet = domify(html) as HTMLElement;
+    element.className = 'virchual__pagination-bullet';
 
-    return bullet;
+    this.setAttributes(element, { isActive, isEdge, position: index * this.options.size });
+
+    return element;
+  }
+
+  private setAttributes(bullet: HTMLElement, { isActive, isEdge, position }: { isActive: boolean; isEdge: boolean; position?: number }) {
+    addOrRemoveClass(bullet, 'virchual__pagination-bullet--active', !isActive);
+    addOrRemoveClass(bullet, 'virchual__pagination-bullet--edge', !isEdge);
+
+    if (position != null) {
+      bullet.style.transform = `translateX(${position}px)`;
+    }
   }
 
   private insertBullet(sign: Sign, bullet: HTMLElement) {

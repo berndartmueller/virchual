@@ -46,7 +46,7 @@
   "bugs": {
     "url": "https://github.com/berndartmueller/virchual/issues"
   },
-  "homepage": "https://github.com/berndartmueller/virchual#readme",
+  "homepage": "https://www.virchual.xyz",
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",

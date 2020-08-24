@@ -1,74 +1,48 @@
 import { identity } from './types';
+import { addOrRemoveClass, append, prepend as prependFn, remove } from './utils/dom';
+import { noop } from './utils/utils';
 import { VirchualOptions } from './virchual';
-import { prepend as prependFn, domify, append, remove } from './utils/dom';
 
 /**
  * Virtual slide component.
  */
 export class Slide {
   isMounted = false;
-  hasChanged = false;
+  isActive = false;
+  position: number;
 
+  private hasChanged = false;
   private content: string;
   private ref: HTMLElement;
   private transitionEndCallback: identity;
-  private _isActive = false;
-  private _position: number;
 
   constructor(content: string | HTMLElement, private frame: HTMLElement, private options: VirchualOptions) {
     if (typeof content === 'string') {
       this.content = content;
-    } else {
-      this.ref = content;
-      this.content = this.ref.innerHTML;
-      this.isMounted = true;
+
+      return;
     }
+
+    this.ref = content;
+    this.content = this.ref.innerHTML;
+    this.isMounted = true;
   }
 
-  get isActive() {
-    return this._isActive;
-  }
-
-  set isActive(value: boolean) {
-    this._isActive = value;
-
-    this.hasChanged = true;
-  }
-
-  get position() {
-    return this._position;
-  }
-
-  set position(value: number) {
-    this._position = value;
+  set<T extends Extract<keyof this, 'isActive' | 'position'>>(property: T, value: this[T]) {
+    this[property] = value;
 
     this.hasChanged = true;
   }
 
   render(): HTMLElement {
-    const html = `<div class="virchual-slide ${this.isActive ? 'virchual-slide--active' : ''}" style="transform: translate3d(${
-      this.position
-    }%, 0, 0)">${this.content}</div>`;
+    const element = document.createElement('div');
 
-    return domify(html) as HTMLElement;
-  }
+    element.className = 'virchual-slide';
+    element.innerHTML = this.content;
 
-  update() {
-    if (!this.ref) {
-      return;
-    }
+    this.setAttributes(element);
 
-    console.debug('[Update] Slide', { ref: this.ref });
-
-    if (this.isActive) {
-      this.ref.classList.add('virchual-slide--active');
-    } else {
-      this.ref.classList.remove('virchual-slide--active');
-    }
-
-    if (this.position != null) {
-      this.ref.style.transform = `translate3d(${this.position}%, 0, 0)`;
-    }
+    return element;
   }
 
   mount(prepend = false) {
@@ -83,15 +57,11 @@ export class Slide {
 
     console.debug('[Mount] Slide', { ref: this.ref, prepend });
 
-    this.isMounted = true;
-
     this.ref = this.render();
 
-    this.ref.addEventListener('transitionend', e => {
-      if (e.target === this.ref && this.transitionEndCallback) {
-        this.transitionEndCallback();
-      }
-    });
+    this.isMounted = true;
+
+    this.ref.addEventListener('transitionend', this.transitionEndCallback);
 
     const insert = prepend ? prependFn : append;
 
@@ -112,12 +82,22 @@ export class Slide {
    * @param value
    * @param done
    */
-  translate(value: number, done?: identity) {
-    value = Math.round(value);
-
+  translate(value: number, done = noop) {
     this.transitionEndCallback = done;
 
     this.ref.style.transition = `transform ${this.options.speed}ms ${this.options.easing}`;
-    this.ref.style.transform = `translate3d(calc(${this.position}% + ${value}px), 0, 0)`;
+    this.ref.style.transform = `translate3d(calc(${this.position}% + ${Math.round(value)}px), 0, 0)`;
+  }
+
+  private update() {
+    this.hasChanged = false;
+
+    this.setAttributes(this.ref);
+  }
+
+  private setAttributes(element: HTMLElement) {
+    addOrRemoveClass(element, 'virchual-slide--active', !this.isActive);
+
+    element.style.transform = `translate3d(${this.position}%, 0, 0)`;
   }
 }
