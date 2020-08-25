@@ -1,7 +1,7 @@
 import { identity } from './types';
-import { addOrRemoveClass, append, prepend as prependFn, remove } from './utils/dom';
+import { addOrRemoveClass, append, prepend as prependFn, remove, createElement } from './utils/dom';
 import { noop } from './utils/utils';
-import { VirchualOptions } from './virchual';
+import { VirchualSettings } from './virchual';
 
 /**
  * Virtual slide component.
@@ -12,19 +12,19 @@ export class Slide {
   position: number;
 
   private hasChanged = false;
-  private content: string;
+  private html: string;
   private ref: HTMLElement;
   private transitionEndCallback: identity;
 
-  constructor(content: string | HTMLElement, private frame: HTMLElement, private options: VirchualOptions) {
-    if (typeof content === 'string') {
-      this.content = content;
+  constructor(html: string | HTMLElement, private frame: HTMLElement, private settings: VirchualSettings) {
+    if (typeof html === 'string') {
+      this.html = html;
 
       return;
     }
 
-    this.ref = content;
-    this.content = this.ref.innerHTML;
+    this.ref = html;
+    this.html = this.ref.innerHTML;
     this.isMounted = true;
   }
 
@@ -35,10 +35,7 @@ export class Slide {
   }
 
   render(): HTMLElement {
-    const element = document.createElement('div');
-
-    element.className = 'virchual-slide';
-    element.innerHTML = this.content;
+    const element = createElement('div', { classNames: 'virchual__slide', html: this.html });
 
     this.setAttributes(element);
 
@@ -85,7 +82,7 @@ export class Slide {
   translate(value: number, done = noop) {
     this.transitionEndCallback = done;
 
-    this.ref.style.transition = `transform ${this.options.speed}ms ${this.options.easing}`;
+    this.ref.style.transition = `transform ${this.settings.speed}ms ${this.settings.easing}`;
     this.ref.style.transform = `translate3d(calc(${this.position}% + ${Math.round(value)}px), 0, 0)`;
   }
 
@@ -96,7 +93,7 @@ export class Slide {
   }
 
   private setAttributes(element: HTMLElement) {
-    addOrRemoveClass(element, 'virchual-slide--active', !this.isActive);
+    addOrRemoveClass(element, 'virchual__slide--active', !this.isActive);
 
     element.style.transform = `translate3d(${this.position}%, 0, 0)`;
   }

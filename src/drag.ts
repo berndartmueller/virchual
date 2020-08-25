@@ -3,9 +3,6 @@ import { debounce } from './utils/debouncer';
 import { Event, stop } from './utils/event';
 
 export class Drag {
-  // Coordinate of the track on starting drag.
-  private startCoord: { x: number; y: number };
-
   // Analyzed info on starting drag.
   private startInfo;
 
@@ -15,9 +12,7 @@ export class Drag {
   // Determine whether slides are being dragged or not.
   private isDragging = false;
 
-  private isDisabled = false;
-
-  private event: Event;
+  private eventBus: Event;
 
   // bound event handlers (to keep `this` context)
   private eventBindings: {
@@ -27,7 +22,7 @@ export class Drag {
   };
 
   constructor(private frame: HTMLElement, { event }: { event: Event }) {
-    this.event = event;
+    this.eventBus = event;
 
     this.eventBindings = {
       onStart: this.onStart.bind(this),
@@ -36,10 +31,10 @@ export class Drag {
     };
   }
 
-  start() {
-    this.event.on('touchstart mousedown', this.eventBindings.onStart, this.frame);
-    this.event.on('touchmove mousemove', this.eventBindings.onMove, this.frame, { passive: false });
-    this.event.on('touchend touchcancel mouseleave mouseup dragend', this.eventBindings.onEnd, this.frame);
+  mount() {
+    this.eventBus.on('touchstart mousedown', this.eventBindings.onStart, this.frame);
+    this.eventBus.on('touchmove mousemove', this.eventBindings.onMove, this.frame, { passive: false });
+    this.eventBus.on('touchend touchcancel mouseleave mouseup dragend', this.eventBindings.onEnd, this.frame);
   }
 
   /**
@@ -48,12 +43,12 @@ export class Drag {
   private onStart(event: MouseEvent & TouchEvent) {
     stop(event);
 
-    if (!this.isDisabled && !this.isDragging) {
+    if (!this.isDragging) {
       this.startInfo = this.analyze(event, {});
 
       this.currentInfo = this.startInfo;
 
-      this.event.emit('dragstart', this.currentInfo);
+      this.eventBus.emit('dragstart', this.currentInfo);
     }
   }
 
@@ -69,10 +64,10 @@ export class Drag {
     if (this.isDragging) {
       stop(event);
 
-      this.event.emit('drag', this.currentInfo);
+      this.eventBus.emit('drag', this.currentInfo);
     } else {
       if (this.shouldMove(this.currentInfo)) {
-        this.event.emit('drag', this.currentInfo);
+        this.eventBus.emit('drag', this.currentInfo);
 
         this.isDragging = true;
       }
@@ -101,7 +96,7 @@ export class Drag {
     this.startInfo = null;
 
     if (this.isDragging) {
-      this.go(this.currentInfo);
+      this.goTo(this.currentInfo);
 
       this.isDragging = false;
     }
@@ -112,12 +107,12 @@ export class Drag {
    *
    * @param info - An info object.
    */
-  private go(info) {
+  private goTo(info) {
     const velocity = info.velocity['x'];
     const absV = Math.abs(velocity);
 
     if (absV > 0) {
-      this.event.emit('dragend', this.currentInfo);
+      this.eventBus.emit('dragend', this.currentInfo);
     }
   }
 
@@ -137,7 +132,7 @@ export class Drag {
     offset: { x: number; y: number };
     velocity: { x: number; y: number };
     time: number;
-    direction: 'prev' | 'next';
+    control: 'prev' | 'next';
   } {
     const { timeStamp, touches } = event;
     const { clientX, clientY } = touches ? touches[0] : event;
@@ -153,7 +148,7 @@ export class Drag {
       velocity,
       to: { x: clientX, y: clientY },
       time: timeStamp,
-      direction: velocity.x < 0 ? 'next' : 'prev',
+      control: velocity.x < 0 ? 'next' : 'prev',
     };
   }
 }

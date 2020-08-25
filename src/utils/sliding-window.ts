@@ -5,12 +5,12 @@ import { range } from './utils';
  *
  * @param source Source array.
  * @param start The start of the specified portion of the array. Acts as the center of the sliding window.
- * @param size The window size. Specifies how many items the window has on each sides.
+ * @param len The window size/length. Specifies how many items the window has on each sides.
  */
-export function slidingWindow(source: number[], start: number, size: number): number[] {
-  const left = range(start - size, start - 1).map(index => get(source, index));
+export function slidingWindow(source: number[], start: number, len: number): number[] {
+  const left = range(start - len, start - 1).map(index => get(source, index));
   const center = [source[start]];
-  const right = range(start + 1, start + size).map(index => get(source, index));
+  const right = range(start + 1, start + len).map(index => get(source, index));
 
   const window = [...left, ...center, ...right];
 

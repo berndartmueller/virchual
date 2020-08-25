@@ -31,7 +31,7 @@
   transform: translate3d(0px, 0, 0);
 }
 
-.virchual-slide {
+.virchual__slide {
   background-color: #fff;
   flex-shrink: 0;
   width: 100%;
@@ -44,7 +44,7 @@
   will-change: transform;
 }
 
-.virchual-slide * {
+.virchual__slide * {
   -webkit-user-drag: none;
   -ms-user-drag: none;
   -moz-user-drag: none;
@@ -53,7 +53,7 @@
   pointer-events: none;
 }
 
-.virchual-slide--active {
+.virchual__slide--active {
   z-index: 10;
 }
 

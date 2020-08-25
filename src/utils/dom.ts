@@ -1,3 +1,12 @@
+export function createElement(tagName: string, { classNames, html }: { classNames?: string; html?: string }) {
+  const element = document.createElement(tagName);
+
+  element.className = classNames;
+  element.innerHTML = html || '';
+
+  return element;
+}
+
 /**
  * Remove a given element from a DOM tree.
  *

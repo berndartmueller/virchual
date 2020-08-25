@@ -35,8 +35,16 @@ export default {
       typescript: require('typescript'),
     }),
     terser({
+      compress: {
+        drop_console: !isDevelopment,
+        keep_fargs: false,
+        passes: 2,
+      },
+      keep_fnames: false,
+      ecma: 6,
       mangle: {
         properties: true,
+        toplevel: true,
       },
     }), // minifies generated bundles
     bundleSize(),

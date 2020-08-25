@@ -8,7 +8,7 @@ import { Event, stop } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
 
-export type VirchualOptions = {
+export type VirchualSettings = {
   slides?: string[] | (() => string[]);
   speed?: number;
   easing?: string;
@@ -26,7 +26,7 @@ export class Virchual {
   currentIndex = 0;
 
   private slides: Slide[] = [];
-  private event: Event;
+  private eventBus: Event;
   private isBusy = false;
   private pagination: Pagination;
 
@@ -37,15 +37,15 @@ export class Virchual {
     onPaginationButtonClick: () => identity;
   };
 
-  constructor(public selector: HTMLElement | string, public options: VirchualOptions = {}) {
-    this.container = selector instanceof Element ? selector : document.querySelector(selector);
+  constructor(element: HTMLElement | string, public settings: VirchualSettings = {}) {
+    this.container = element instanceof Element ? element : document.querySelector(element);
     this.frame = this.container.querySelector('.virchual__frame');
     this.paginationButtons = [].slice.call(this.container.querySelectorAll('.virchual__control'));
 
-    assert(this.frame, 'Invalid element/selector');
+    assert(this.frame, 'Invalid element');
 
     this.currentIndex = 0;
-    this.options = {
+    this.settings = {
       slides: [],
       speed: 200,
       swipeDistanceThreshold: 150,
@@ -54,10 +54,10 @@ export class Virchual {
       easing: 'ease-out',
       pagination: true,
       window: 1,
-      ...options,
+      ...settings,
     };
 
-    this.event = new Event();
+    this.eventBus = new Event();
 
     this.eventBindings = {
       onClick: this.onClick.bind(this),
@@ -68,19 +68,19 @@ export class Virchual {
 
     let rawSlides;
 
-    if (typeof this.options.slides === 'function') {
-      rawSlides = this.options.slides();
+    if (typeof this.settings.slides === 'function') {
+      rawSlides = this.settings.slides();
     } else {
-      rawSlides = this.options.slides;
+      rawSlides = this.settings.slides;
     }
 
     this.slides = this.hydrate();
 
-    this.slides = this.slides.concat((rawSlides || []).map(slide => new Slide(slide, this.frame, this.options)));
+    this.slides = this.slides.concat((rawSlides || []).map(slide => new Slide(slide, this.frame, this.settings)));
 
     this.bindEvents();
 
-    new Drag(this.frame, { event: this.event }).start();
+    new Drag(this.frame, { event: this.eventBus }).mount();
     this.pagination = new Pagination(this.container, this.slides.length);
 
     this.pagination.render();
@@ -90,7 +90,7 @@ export class Virchual {
    * Mount components.
    */
   mount() {
-    this.event.emit('mounted');
+    this.eventBus.emit('mounted');
 
     this.mountAndUnmountSlides();
   }
@@ -98,14 +98,14 @@ export class Virchual {
   /**
    * Register callback fired on the given event(s).
    *
-   * @param events  - An event name. Use space to separate multiple events.
+   * @param events An event name. Use space to separate multiple events.
    *                             Also, namespace is accepted by dot, such as 'resize.{namespace}'.
-   * @param handler - A callback function.
-   * @param elm     - Optional. Native event will be listened to when this arg is provided.
-   * @param options - Optional. Options for addEventListener.
+   * @param handler A callback function.
+   * @param elm  Optional. Native event will be listened to when this arg is provided.
+   * @param opts Optional. Options for addEventListener.
    */
-  on(events: string, handler: identity, elm: (Window & typeof globalThis) | Element = null, options: Record<string, unknown> = {}) {
-    this.event.on(events, handler, elm, options);
+  on(events: string, handler: identity, elm: (Window & typeof globalThis) | Element = null, opts: Record<string, unknown> = {}) {
+    this.eventBus.on(events, handler, elm, opts);
   }
 
   /**
@@ -115,7 +115,7 @@ export class Virchual {
    * @param elm    - Optional. removeEventListener() will be called when this arg is provided.
    */
   off(events: string, elm: (Window & typeof globalThis) | Element = null) {
-    this.event.off(events, elm);
+    this.eventBus.off(events, elm);
   }
 
   /**
@@ -124,7 +124,7 @@ export class Virchual {
   prev() {
     console.debug('[Controls] Previous');
 
-    this.go('prev');
+    this.goTo('prev');
   }
 
   /**
@@ -133,23 +133,23 @@ export class Virchual {
   next() {
     console.debug('[Controls] Next');
 
-    this.go('next');
+    this.goTo('next');
   }
 
-  private go(direction: 'prev' | 'next') {
+  private goTo(control: 'prev' | 'next') {
     const slide = this.slides[this.currentIndex];
 
     slide.translate(-100, () => {
       this.isBusy = false;
     });
 
-    const sign: Sign = direction === 'prev' ? -1 : +1;
+    const sign: Sign = control === 'prev' ? -1 : +1;
 
     this.currentIndex = rewind(this.currentIndex + sign * 1, this.slides.length - 1);
 
-    this.mountAndUnmountSlides({ direction });
+    this.mountAndUnmountSlides({ control: control });
 
-    const move = direction === 'prev' ? this.pagination.prev.bind(this.pagination) : this.pagination.next.bind(this.pagination);
+    const move = control === 'prev' ? this.pagination.prev.bind(this.pagination) : this.pagination.next.bind(this.pagination);
 
     move();
   }
@@ -157,18 +157,18 @@ export class Virchual {
   private hydrate(): Slide[] {
     const slideElements = [].slice.call(this.frame.querySelectorAll('div')) as HTMLDivElement[];
 
-    return slideElements.map(element => new Slide(element, this.frame, this.options));
+    return slideElements.map(element => new Slide(element, this.frame, this.settings));
   }
 
   /**
    * Mount and unmount slides.
    */
-  private mountAndUnmountSlides({ direction }: { direction?: 'prev' | 'next' } = {}) {
+  private mountAndUnmountSlides({ control }: { control?: 'prev' | 'next' } = {}) {
     const currentSlide = this.slides[this.currentIndex];
     const indices = range(0, this.slides.length - 1);
 
-    const mountableSlideIndices = slidingWindow(indices, this.currentIndex, this.options.window);
-    const mountableSlideIndicesWithOffset = slidingWindow(indices, this.currentIndex, this.options.window + 1);
+    const mountableSlideIndices = slidingWindow(indices, this.currentIndex, this.settings.window);
+    const mountableSlideIndicesWithOffset = slidingWindow(indices, this.currentIndex, this.settings.window + 1);
 
     mountableSlideIndicesWithOffset.forEach(index => {
       const slide = this.slides[index];
@@ -186,20 +186,20 @@ export class Virchual {
         return slide.unmount();
       }
 
-      slide.set('position', (this.options.window - realIndex) * -100);
+      slide.set('position', (this.settings.window - realIndex) * -100);
 
-      const prepend = direction === 'prev' || (direction == null && this.slides[0].isMounted && realIndex - this.options.window < 0);
+      const prepend = control === 'prev' || (control == null && this.slides[0].isMounted && realIndex - this.settings.window < 0);
 
       slide.mount(prepend);
     });
   }
 
   private bindEvents() {
-    this.event.on('drag', this.eventBindings.onDrag);
-    this.event.on('dragend', this.eventBindings.onDragEnd);
-    this.event.on('click', this.eventBindings.onClick, this.frame, { capture: true });
+    this.eventBus.on('drag', this.eventBindings.onDrag);
+    this.eventBus.on('dragend', this.eventBindings.onDragEnd);
+    this.eventBus.on('click', this.eventBindings.onClick, this.frame, { capture: true });
 
-    this.paginationButtons.forEach(button => this.event.on('click', this.eventBindings.onPaginationButtonClick, button));
+    this.paginationButtons.forEach(button => this.eventBus.on('click', this.eventBindings.onPaginationButtonClick, button));
   }
 
   /**
@@ -213,9 +213,9 @@ export class Virchual {
 
   private onPaginationButtonClick(event: MouseEvent) {
     const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
-    const direction = button.dataset.controls as 'prev' | 'next';
+    const control = button.dataset.controls as 'prev' | 'next';
 
-    const move = direction === 'prev' ? this.prev.bind(this) : this.next.bind(this);
+    const move = control === 'prev' ? this.prev.bind(this) : this.next.bind(this);
 
     move();
   }
@@ -225,12 +225,12 @@ export class Virchual {
    *
    * @param event
    */
-  private onDrag(event: { offset: { x: number; y: number }; direction: 'prev' | 'next' }) {
+  private onDrag(event: { offset: { x: number; y: number }; control: 'prev' | 'next' }) {
     this.isBusy = true;
 
-    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.options.window);
+    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.settings.window);
 
-    const sign = event.direction === 'prev' ? +1 : -1;
+    const sign = event.control === 'prev' ? +1 : -1;
 
     mountableSlideIndices.forEach(index => {
       const slide = this.slides[index];
@@ -246,10 +246,10 @@ export class Virchual {
    *
    * @param event
    */
-  private onDragEnd(event: { direction: 'prev' | 'next' }) {
+  private onDragEnd(event: { control: 'prev' | 'next' }) {
     console.debug('[Drag] Drag end', event);
 
-    this.go(event.direction);
+    this.goTo(event.control);
   }
 }
 

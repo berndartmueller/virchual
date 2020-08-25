@@ -10,11 +10,11 @@ export class Event {
   /**
    * Store all event this.data.
    */
-  private data: Array<{
+  private handlers: Array<{
     event: string;
     handler: (...args: unknown[]) => void;
     elm: (Window & typeof globalThis) | Element;
-    options: boolean | AddEventListenerOptions;
+    opts: boolean | AddEventListenerOptions;
   }> = [];
 
   /**
@@ -24,18 +24,18 @@ export class Event {
    *                  Also, namespace is accepted by dot, such as 'resize.{namespace}'.
    * @param handler - A callback function.
    * @param element - Optional. Native event will be listened to when this arg is provided.
-   * @param options - Optional. Options for addEventListener.
+   * @param opts - Optional. Options for addEventListener.
    */
   on(
     events: string,
     handler: (...args: unknown[]) => void,
     element?: (Window & typeof globalThis) | Element,
-    options: boolean | AddEventListenerOptions = {},
+    opts: boolean | AddEventListenerOptions = {},
   ) {
     events.split(' ').forEach(event => {
-      element && element.addEventListener(event, handler, options);
+      element && element.addEventListener(event, handler, opts);
 
-      this.data.push({ event, handler, elm: element, options });
+      this.handlers.push({ event, handler, elm: element, opts: opts });
     });
   }
 
@@ -47,9 +47,9 @@ export class Event {
    */
   off(events: string, element?: (Window & typeof globalThis) | Element) {
     events.split(' ').forEach(event => {
-      this.data = this.data.filter(item => {
+      this.handlers = this.handlers.filter(item => {
         if (item && item.event === event && item.elm === element) {
-          this.unsubscribe(item);
+          this.unroll(item);
         }
       });
     });
@@ -63,7 +63,7 @@ export class Event {
    * @param args  - Any number of arguments passed to handlers.
    */
   emit(event: string, ...args: unknown[]) {
-    this.data.forEach(item => {
+    this.handlers.forEach(item => {
       if (!item.elm && item.event.split('.')[0] === event) {
         item.handler(...args);
       }
@@ -74,8 +74,8 @@ export class Event {
    * Clear event this.data.
    */
   destroy() {
-    this.data.forEach(this.unsubscribe);
-    this.data = [];
+    this.handlers.forEach(this.unroll);
+    this.handlers = [];
   }
 
   /**
@@ -83,7 +83,7 @@ export class Event {
    *
    * @param item - An object containing event this.data.
    */
-  private unsubscribe(item) {
-    item.elm && item.elm.removeEventListener(item.event, item.handler, item.options);
+  private unroll(item) {
+    item.elm && item.elm.removeEventListener(item.event, item.handler, item.opts);
   }
 }

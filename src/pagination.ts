@@ -1,5 +1,5 @@
 import { Sign } from './types';
-import { addOrRemoveClass, append, prepend, remove } from './utils/dom';
+import { addOrRemoveClass, append, prepend, remove, createElement } from './utils/dom';
 import { range, rewind } from './utils/utils';
 
 /**
@@ -18,26 +18,25 @@ export class Pagination {
   private currentIndex = 0;
   private centerIndex: number;
 
-  constructor(private container: HTMLElement, private count: number, private options: { size?: number; bullets?: number } = {}) {
+  constructor(private container: HTMLElement, private len: number, private settings: { diameter?: number; bullets?: number } = {}) {
     this.ref = container.querySelector('.virchual__pagination');
 
-    this.options = {
+    this.settings = {
       bullets: 5,
-      size: 16,
-      ...options,
+      diameter: 16,
+      ...settings,
     };
 
-    this.centerIndex = Math.floor(this.options.bullets / 2);
+    this.centerIndex = Math.floor(this.settings.bullets / 2);
   }
 
   render() {
-    this.ref = document.createElement('div');
+    this.ref = createElement('div', { classNames: 'virchual__pagination' });
 
-    this.ref.className = 'virchual__pagination';
-    this.ref.style.width = `${this.options.bullets * this.options.size}px`;
-    this.ref.style.height = `${this.options.size}px`;
+    this.ref.style.width = `${this.settings.bullets * this.settings.diameter}px`;
+    this.ref.style.height = `${this.settings.diameter}px`;
 
-    range(0, Math.min(this.options.bullets, this.count) - 1).forEach(index => {
+    range(0, Math.min(this.settings.bullets, this.len) - 1).forEach(index => {
       const bullet = this.renderBullet(index, { isActive: index === this.currentIndex, isEdge: false });
 
       append(this.ref, bullet);
@@ -47,19 +46,19 @@ export class Pagination {
   }
 
   next() {
-    this.go(+1);
+    this.goTo(+1);
   }
 
   prev() {
-    this.go(-1);
+    this.goTo(-1);
   }
 
-  private go(sign: Sign) {
-    this.currentIndex = rewind(this.currentIndex + sign, this.count - 1);
+  private goTo(sign: Sign) {
+    this.currentIndex = rewind(this.currentIndex + sign, this.len - 1);
 
-    const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.count);
+    const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.len);
     const removeBullet = mappedActiveIndex === this.centerIndex;
-    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this.options.bullets - 1) : -1;
+    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this.settings.bullets - 1) : -1;
 
     const bullets = [].slice.call(this.ref.querySelectorAll('span')) as HTMLElement[];
 
@@ -67,7 +66,7 @@ export class Pagination {
       this.handleBulletMovement({ bullet, index, sign, removeBullet, removeBulletIndex, activeIndex: mappedActiveIndex }),
     );
 
-    const insertBulletIndex = -1 + this.options.bullets - removeBulletIndex;
+    const insertBulletIndex = -1 + this.settings.bullets - removeBulletIndex;
     const bullet = this.renderBullet(insertBulletIndex, { isEdge: true });
 
     // append or prepend new bullet
@@ -93,22 +92,20 @@ export class Pagination {
       return remove(bullet);
     }
 
-    // shift index due to remove bulled
+    // shift index due to remove bullet
     index = index - (removeBullet ? sign : 0);
 
     this.setAttributes(bullet, {
       isActive: index === activeIndex,
       isEdge: index === removeBulletIndex,
-      position: removeBullet ? index * this.options.size : undefined,
+      position: removeBullet ? index * this.settings.diameter : undefined,
     });
   }
 
   private renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
-    const element = document.createElement('span');
+    const element = createElement('span', { classNames: 'virchual__pagination-bullet' });
 
-    element.className = 'virchual__pagination-bullet';
-
-    this.setAttributes(element, { isActive, isEdge, position: index * this.options.size });
+    this.setAttributes(element, { isActive, isEdge, position: index * this.settings.diameter });
 
     return element;
   }
