@@ -5,6 +5,12 @@
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "browser": "dist/index.bundle.js",
+  "source": "src/virchual.ts",
+  "types": "dist/virchual.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "keywords": [
     "slider",
     "carousel",
