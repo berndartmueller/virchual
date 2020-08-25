@@ -154,4 +154,4 @@ Huge credits to [https://github.com/Splidejs/splide](https://github.com/Splidejs
 [twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=flat-square&logo=twitter&colorB=555
 [twitter-url]: https://www.twitter.com/berndartmueller
 [product-screenshot]: images/screenshot.png
-[size-shield]: https://img.shields.io/bundlephobia/minzip/mailgo.svg?color=%23477998&style=flat-square
+[size-shield]: https://img.shields.io/bundlephobia/minzip/virchual@1.0.0-alpha.5.svg?color=%23477998&style=flat-square

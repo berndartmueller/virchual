@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "noImplicitAny": false,
+    "outDir": "./dist",
+    "target": "esnext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "types": ["node"],
+    "sourceMap": true
+  },
+  "include": ["src/index.ts"],
+  "exclude": ["node_modules"]
+}
