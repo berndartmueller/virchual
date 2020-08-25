@@ -11,6 +11,6 @@
     "types": ["node", "jest"],
     "sourceMap": true
   },
-  "include": ["src/virchual.ts"],
+  "include": ["src/index.ts"],
   "exclude": ["node_modules"]
 }
