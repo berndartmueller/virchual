@@ -11,7 +11,7 @@ import bundleSize from 'rollup-plugin-bundle-size';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export default {
-  input: 'src/virchual.ts', // our source file
+  input: 'src/index.ts', // our source file
   output: [
     {
       file: pkg.main,
