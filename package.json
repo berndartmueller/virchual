@@ -29,7 +29,7 @@
     "build:prod": "NODE_ENV=production rollup -c && tsc",
     "dev": "NODE_ENV=development rollup -cw && tsc",
     "lint-staged": "lint-staged",
-    "typecheck": "tsc --noUnusedParameters false --noUnusedLocals false && rm -rf dist",
+    "typecheck": "tsc --noUnusedParameters false --noUnusedLocals false --outDir ./tmpDist --declarationDir ./tmpDist && rm -rf tmpDist",
     "publish-docs": "cd website && GIT_USER=berndartmueller CURRENT_BRANCH=master npm run publish-gh-pages"
   },
   "lint-staged": {
