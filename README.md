@@ -24,6 +24,15 @@
   </p>
 </p>
 
+## Why Virchual?
+
+- Lightweight. Only **<2.8kB** (gzipped).
+- **Virtual slides** to keep DOM elements at a minimum (Lighthouse ❤️ it)
+- Instagram like **pagination bullets**.
+- **0 dependencies**. Everything included.
+
+<br />
+
 <!-- TABLE OF CONTENTS -->
 
 ## Table of Contents
@@ -70,11 +79,16 @@ Example HTML:
 ```
 
 ```ts
+import 'virchual/dist/index.css';
+
 import { Virchual } from 'virchual';
 
 const slider = new Virchual(document.querySelector('.virchual'), {
   slides: () => {
-    return [];
+    return [
+      '<img src="image.jpg"/>', // slide 1
+      '<img src="image2.jpg"/>', // slide 2
+    ];
   },
 });
 
@@ -108,7 +122,7 @@ slider.mount();
 Virchual(element: HTMLElement, settings: VirchualSettings): Virchual
 ```
 
-Virchual constructor. It creates a new Virchual slider instance.
+Virchual constructor. Creates a new Virchual slider instance.
 
 ---
 
@@ -120,20 +134,28 @@ Virchual constructor. It creates a new Virchual slider instance.
 Virchual.mount();
 ```
 
-### Virchual#unmount
-
----
-
-```ts
-Virchual.unmount();
-```
+Mount slider and bind DOM events.
 
 ### Virchual#on
 
 ---
 
 ```ts
-Virchual.on();
+Virchual.on(events: string, handler: () => {}, elm: HTMLElement);
+```
+
+Add event listener for given event(s).
+
+```ts
+instance.on('mount', () => {
+  console.log('Slider mounted.');
+});
+
+// multiple events can be defined by seperating with a whitespace
+
+instance.on('mount unmounted', () => {
+  console.log('Slider mounted/unmounted.');
+});
 ```
 
 ### Virchual#off
@@ -141,7 +163,17 @@ Virchual.on();
 ---
 
 ```ts
-Virchual.off();
+Virchual.off(events: string);
+```
+
+Remove event listener for given event(s).
+
+```ts
+instance.off('mount');
+
+// multiple events can be defined by seperating with a whitespace
+
+instance.off('mount unmounted');
 ```
 
 ### Virchual#prev
@@ -152,6 +184,8 @@ Virchual.off();
 Virchual.prev();
 ```
 
+Move to previous slide. Rewind in case first slide is currently shown.
+
 ### Virchual#next
 
 ---
@@ -159,6 +193,18 @@ Virchual.prev();
 ```ts
 Virchual.next();
 ```
+
+Move to next slide. Rewind in case last slide is currently shown.
+
+### Virchual#destroy
+
+---
+
+```ts
+Virchual.destroy();
+```
+
+Unmount slider, remove DOM events for this instance.
 
 <br/>
 

@@ -94,12 +94,21 @@ export class Virchual {
   }
 
   /**
-   * Unmount components and cleanup events.
+   * Disable Virchual instance and all user interactions (changing slides)
+   *
+   * @TODO
    */
-  unmount() {
-    this.eventBus.destroy();
+  disable() {
+    return;
+  }
 
-    this.eventBus.emit('unmounted');
+  /**
+   * Enable previously disabled Virchual instance. Enable user interaction.
+   *
+   * @TODO
+   */
+  enable() {
+    return;
   }
 
   /**
@@ -111,8 +120,8 @@ export class Virchual {
    * @param elm  Optional. Native event will be listened to when this arg is provided.
    * @param opts Optional. Options for addEventListener.
    */
-  on(events: string, handler: identity, elm: (Window & typeof globalThis) | Element = null, opts: Record<string, unknown> = {}) {
-    this.eventBus.on(events, handler, elm, opts);
+  on(events: string, handler: identity) {
+    this.eventBus.on(events, handler);
   }
 
   /**
@@ -121,8 +130,8 @@ export class Virchual {
    * @param events - A event name.
    * @param elm    - Optional. removeEventListener() will be called when this arg is provided.
    */
-  off(events: string, elm: (Window & typeof globalThis) | Element = null) {
-    this.eventBus.off(events, elm);
+  off(events: string) {
+    this.eventBus.off(events);
   }
 
   /**
@@ -141,6 +150,15 @@ export class Virchual {
     console.debug('[Controls] Next');
 
     this.goTo('next');
+  }
+
+  /**
+   * Destroy instance, remove DOM events.
+   */
+  destroy() {
+    this.eventBus.destroy();
+
+    this.eventBus.emit('destroy');
   }
 
   private goTo(control: 'prev' | 'next') {
