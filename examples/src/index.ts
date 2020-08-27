@@ -1,3 +1,5 @@
+import './../../dist/index.css';
+
 import { Virchual } from './../../src/virchual';
 
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {

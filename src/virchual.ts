@@ -96,6 +96,15 @@ export class Virchual {
   }
 
   /**
+   * Unmount components and cleanup events.
+   */
+  unmount() {
+    this.eventBus.destroy();
+
+    this.eventBus.emit('unmounted');
+  }
+
+  /**
    * Register callback fired on the given event(s).
    *
    * @param events An event name. Use space to separate multiple events.
