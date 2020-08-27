@@ -1,13 +1,8 @@
-<!-- PROJECT SHIELDS -->
-
-![size][size-shield]
-[![Build Status](https://travis-ci.org/berndartmueller/virchual.svg?branch=master)](https://travis-ci.org/berndartmueller/virchual)
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://github.com/berndartmueller/virchual">
-    <img src="images/logo.png" alt="Logo" width="400">
+    <img src="images/logo.png" alt="Logo" width="400px" height="96px">
   </a>
   <br />
   <br />
@@ -23,6 +18,20 @@
     <br />
   </p>
 </p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/virchual" target="_blank">
+    <img alt="npm (tag)" src="https://img.shields.io/npm/v/virchual/latest">
+  </a>
+
+  <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/virchual@next">
+
+  <a href="https://travis-ci.org/berndartmueller/virchual" target="_blank">
+    <img alt="Travis (.org)" src="https://img.shields.io/travis/berndartmueller/virchual">
+  </a>
+</p>
+
+<br />
 
 ## Why Virchual?
 
@@ -53,6 +62,28 @@ This image swiper/slider/carousel library, written in TypeScript, aims to provid
 Virchual uses virtual slides to only render visible slides. No unnecessary DOM elements.
 
 ## Installation
+
+### CDN
+
+To get Virchual up and running as fast as possible, you can serve all necessary files via a CDN.
+
+- https://cdn.jsdelivr.net/npm/virchual@next/dist/index.bundle.js
+
+#### jsDelivr
+
+Just add a link to the css file in your `<head>`:
+
+```html
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/virchual@next/dist/index.css" />
+```
+
+Then, before your closing `<body>` tag add:
+
+```html
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/virchual@next/dist/index.bundle.js"></script>
+```
+
+### NPM & Yarn
 
 ```sh
 $ npm install virchual
@@ -257,6 +288,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 Bernd Artmüller - [@berndartmueller](https://twitter.com/berndartmueller) - hello@berndartmueller.com
+
+## Sponsor
+
+If you want to support me, you can buy me a coffee to keep me coding -> https://www.buymeacoffee.com/berndartmueller
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
