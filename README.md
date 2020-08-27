@@ -1,12 +1,8 @@
 <!-- PROJECT SHIELDS -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
 ![size][size-shield]
 [![Build Status](https://travis-ci.org/berndartmueller/virchual.svg?branch=master)](https://travis-ci.org/berndartmueller/virchual)
+[![twitter][twitter-shield]][twitter-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -15,20 +11,15 @@
     <img src="images/logo.png" alt="Logo" width="400">
   </a>
 
-  <h3 align="center" style="font-weight: bold;">virchual</h3>
+  <h3 align="center" style="font-weight: bold;">virchual [virtual]</h3>
 
   <p align="center">
-    Super-fast, lightweight (6kB) image slider and carousel, written in TypeScript without any dependencies.
+    Super-fast, lightweight (<2.8kB) slider/carousel with virtual slides. Written in TypeScript. Tree-shakeable. 0 dependencies!
     <br />
     <br />
-    <a href="https://github.com/berndartmueller/virchual"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/berndartmueller/virchual"><strong>View Demo »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/berndartmueller/virchual">View Demo</a>
-    ·
-    <a href="https://github.com/berndartmueller/virchual/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/berndartmueller/virchual/issues">Request Feature</a>
   </p>
 </p>
 
@@ -36,49 +27,74 @@
 
 ## Table of Contents
 
-- [About the Project](#about-the-project)
-  - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
+- [About](#about)
+- [Installation](#installation)
 - [Usage](#usage)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+## About
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+This image swiper/slider/carousel library, written in TypeScript, aims to provide a high-performance slider best used when having many instances on a page (e.g. list of cards where each card has a swiper gallery - like Airbnb or hometogo).
 
-This swiper library written in TypeScript aims to provide a high-performance swiper carousel best used when multiple instances on a page are necessary (e.g. list of cards where each card has a swiper gallery - Airbnb, Hometogo,...).
+Virchual uses virtual slides to only render visible slides. No unnecessary DOM elements.
 
-To achieve this goal, this swiper carousel uses virtual slides to only render those slides which are really necessary.
-
-### Built With
-
-- TypeScript
-
-<!-- GETTING STARTED -->
-
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-
-- npm
+## Installation
 
 ```sh
-npm install virchual
+$ npm install virchual
+
+or
+
+$ yarn install virchual
 ```
 
-### Installation
+<!-- USAGE EXAMPLES -->
+
+## Usage
+
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+
+Example HTML:
+
+```html
+<div class="virchual">
+  <div class="virchual__frame"></div>
+</div>
+```
+
+```javascript
+import { Virchual } from 'virchual';
+
+const slider = new Virchual(document.querySelector('.virchual'), {
+  slides: () => {
+    return [];
+  },
+});
+
+slider.mount();
+```
+
+## Options
+
+| Name                 | Type     | Description                                  | Required | Default  |
+| -------------------- | -------- | -------------------------------------------- | -------- | -------- |
+| `slides`             | `Array   | Function`                                    | Slides   | Yes      |
+| `speed`              | `Number` | Slide transition speed                       | No       | 200      |
+| `easing`             | `String` | Slide transition easing                      | No       | ease-out |
+| `transitionDuration` | `Number` | staying duration of per slide/swipe item     | No       | 200ms    |
+| `window`             | `Number` | How many slide clones on left and right side | No       | 1        |
+
+<br/>
+
+<!-- CONTRIBUTING -->
+
+## Contributing
+
+### Getting Started
 
 1. Clone the repo
 
@@ -91,24 +107,6 @@ git clone github.com/berndartmueller/virchual.git
 ```sh
 npm install
 ```
-
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<!-- ROADMAP -->
-
-## Roadmap
-
-See the [open issues](https://github.com/berndartmueller/virchual/issues) for a list of proposed features (and known issues).
-
-<!-- CONTRIBUTING -->
-
-## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -130,27 +128,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Bernd Artmüller - [@berndartmueller](https://twitter.com/berndartmueller) - hello@berndartmueller.com
 
-Project Link: [https://github.com/berndartmueller/virchual](https://github.com/berndartmueller/virchual)
-
-<!-- ACKNOWLEDGEMENTS -->
-
-## Acknowledgements
-
-Huge credits to [https://github.com/Splidejs/splide](https://github.com/Splidejs/splide) by NaotoshiFujita. Splide was used as a boilerplate for my TypeScript implementation. Great slider and very well implemented!
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/berndartmueller/virchual.svg?style=flat-square
-[contributors-url]: https://github.com/berndartmueller/virchual/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/berndartmueller/virchual.svg?style=flat-square
-[forks-url]: https://github.com/berndartmueller/virchual/network/members
-[stars-shield]: https://img.shields.io/github/stars/berndartmueller/virchual.svg?style=flat-square
-[stars-url]: https://github.com/berndartmueller/virchual/stargazers
-[issues-shield]: https://img.shields.io/github/issues/berndartmueller/virchual.svg?style=flat-square
-[issues-url]: https://github.com/berndartmueller/virchual/issues
-[license-shield]: https://img.shields.io/github/license/berndartmueller/virchual.svg?style=flat-square
-[license-url]: https://github.com/berndartmueller/virchual/blob/master/LICENSE
 [twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=flat-square&logo=twitter&colorB=555
 [twitter-url]: https://www.twitter.com/berndartmueller
 [product-screenshot]: images/screenshot.png
