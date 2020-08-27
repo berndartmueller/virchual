@@ -110,11 +110,11 @@ slider.mount();
 - [Virchual](#virchual)
 
   - [Virchual#mount](#virchualmount)
-  - [Virchual#unmount](#virchualunmount)
   - [Virchual#on](#virchualon)
   - [Virchual#off](#virchualoff)
   - [Virchual#prev](#virchualprev)
   - [Virchual#next](#virchualnext)
+  - [Virchual#destroy](#virchualdestroy)
 
 ## Virchual
 
@@ -153,8 +153,8 @@ instance.on('mount', () => {
 
 // multiple events can be defined by seperating with a whitespace
 
-instance.on('mount unmounted', () => {
-  console.log('Slider mounted/unmounted.');
+instance.on('mount destroy', () => {
+  console.log('Slider mounted/destroy.');
 });
 ```
 
@@ -173,7 +173,7 @@ instance.off('mount');
 
 // multiple events can be defined by seperating with a whitespace
 
-instance.off('mount unmounted');
+instance.off('mount destroy');
 ```
 
 ### Virchual#prev
