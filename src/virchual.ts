@@ -20,7 +20,6 @@ export type VirchualSettings = {
 };
 
 export class Virchual {
-  container: HTMLElement;
   frame: HTMLElement;
   paginationButtons: HTMLButtonElement[];
   currentIndex = 0;
@@ -37,8 +36,7 @@ export class Virchual {
     onPaginationButtonClick: () => identity;
   };
 
-  constructor(element: HTMLElement | string, public settings: VirchualSettings = {}) {
-    this.container = element instanceof Element ? element : document.querySelector(element);
+  constructor(public container: HTMLElement, public settings: VirchualSettings = {}) {
     this.frame = this.container.querySelector('.virchual__frame');
     this.paginationButtons = [].slice.call(this.container.querySelectorAll('.virchual__control'));
 

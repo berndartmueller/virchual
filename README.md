@@ -47,9 +47,11 @@ Virchual uses virtual slides to only render visible slides. No unnecessary DOM e
 
 ```sh
 $ npm install virchual
+```
 
 or
 
+```sh
 $ yarn install virchual
 ```
 
@@ -67,7 +69,7 @@ Example HTML:
 </div>
 ```
 
-```javascript
+```ts
 import { Virchual } from 'virchual';
 
 const slider = new Virchual(document.querySelector('.virchual'), {
@@ -91,6 +93,73 @@ slider.mount();
 
 ## API
 
+- [Virchual](#virchual)
+
+  - [Virchual#mount](#virchualmount)
+  - [Virchual#unmount](#virchualunmount)
+  - [Virchual#on](#virchualon)
+  - [Virchual#off](#virchualoff)
+  - [Virchual#prev](#virchualprev)
+  - [Virchual#next](#virchualnext)
+
+## Virchual
+
+```ts
+Virchual(element: HTMLElement, settings: VirchualSettings): Virchual
+```
+
+Virchual constructor. It creates a new Virchual slider instance.
+
+---
+
+### Virchual#mount
+
+---
+
+```ts
+Virchual.mount();
+```
+
+### Virchual#unmount
+
+---
+
+```ts
+Virchual.unmount();
+```
+
+### Virchual#on
+
+---
+
+```ts
+Virchual.on();
+```
+
+### Virchual#off
+
+---
+
+```ts
+Virchual.off();
+```
+
+### Virchual#prev
+
+---
+
+```ts
+Virchual.prev();
+```
+
+### Virchual#next
+
+---
+
+```ts
+Virchual.next();
+```
+
 <br/>
 
 <!-- CONTRIBUTING -->
@@ -109,6 +178,18 @@ git clone github.com/berndartmueller/virchual.git
 
 ```sh
 npm install
+```
+
+2. Run
+
+```sh
+npm run dev
+```
+
+### Running Tests
+
+```sh
+npm run test
 ```
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
