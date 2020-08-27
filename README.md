@@ -2,7 +2,6 @@
 
 ![size][size-shield]
 [![Build Status](https://travis-ci.org/berndartmueller/virchual.svg?branch=master)](https://travis-ci.org/berndartmueller/virchual)
-[![twitter][twitter-shield]][twitter-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -10,6 +9,8 @@
   <a href="https://github.com/berndartmueller/virchual">
     <img src="images/logo.png" alt="Logo" width="400">
   </a>
+  <br />
+  <br />
 
   <h3 align="center" style="font-weight: bold;">virchual [virtual]</h3>
 
@@ -88,6 +89,8 @@ slider.mount();
 | `transitionDuration` | `Number` | staying duration of per slide/swipe item     | No       | 200ms    |
 | `window`             | `Number` | How many slide clones on left and right side | No       | 1        |
 
+## API
+
 <br/>
 
 <!-- CONTRIBUTING -->
@@ -131,7 +134,4 @@ Bernd Artmüller - [@berndartmueller](https://twitter.com/berndartmueller) - hel
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[twitter-shield]: https://img.shields.io/badge/-Twitter-black.svg?style=flat-square&logo=twitter&colorB=555
-[twitter-url]: https://www.twitter.com/berndartmueller
-[product-screenshot]: images/screenshot.png
 [size-shield]: https://img.shields.io/bundlephobia/minzip/virchual@1.0.0-alpha.5.svg?color=%23477998&style=flat-square
