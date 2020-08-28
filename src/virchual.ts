@@ -1,8 +1,9 @@
+import { ComponentConstructor } from './components/component';
 import './css/styles.css';
 import { Drag } from './drag';
 import { Pagination } from './pagination';
 import { Slide } from './slide';
-import { Sign, identity } from './types';
+import { identity, Sign } from './types';
 import { assert } from './utils/error';
 import { Event, stop } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
@@ -21,7 +22,6 @@ export type VirchualSettings = {
 
 export class Virchual {
   frame: HTMLElement;
-  paginationButtons: HTMLButtonElement[];
   currentIndex = 0;
 
   private slides: Slide[] = [];
@@ -33,12 +33,10 @@ export class Virchual {
     onClick: () => identity;
     onDrag: () => identity;
     onDragEnd: () => identity;
-    onPaginationButtonClick: () => identity;
   };
 
   constructor(public container: HTMLElement, public settings: VirchualSettings = {}) {
     this.frame = this.container.querySelector('.virchual__frame');
-    this.paginationButtons = [].slice.call(this.container.querySelectorAll('.virchual__control'));
 
     assert(this.frame, 'Invalid element');
 
@@ -61,7 +59,6 @@ export class Virchual {
       onClick: this.onClick.bind(this),
       onDrag: this.onDrag.bind(this),
       onDragEnd: this.onDragEnd.bind(this),
-      onPaginationButtonClick: this.onPaginationButtonClick.bind(this),
     };
 
     let rawSlides;
@@ -87,7 +84,13 @@ export class Virchual {
   /**
    * Mount components.
    */
-  mount() {
+  mount(components: Array<ComponentConstructor> = []) {
+    console.debug('[Mount] Virchual', components);
+
+    components.forEach(component => {
+      new component({ virchual: this, eventBus: this.eventBus }).mount();
+    });
+
     this.eventBus.emit('mounted');
 
     this.mountAndUnmountSlides();
@@ -226,8 +229,6 @@ export class Virchual {
     this.eventBus.on('drag', this.eventBindings.onDrag);
     this.eventBus.on('dragend', this.eventBindings.onDragEnd);
     this.eventBus.on('click', this.eventBindings.onClick, this.frame, { capture: true });
-
-    this.paginationButtons.forEach(button => this.eventBus.on('click', this.eventBindings.onPaginationButtonClick, button));
   }
 
   /**
@@ -237,17 +238,6 @@ export class Virchual {
    */
   private onClick(event: MouseEvent) {
     this.isBusy && stop(event);
-  }
-
-  private onPaginationButtonClick(event: MouseEvent) {
-    stop(event);
-
-    const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
-    const control = button.dataset.controls as 'prev' | 'next';
-
-    const move = control === 'prev' ? this.prev.bind(this) : this.next.bind(this);
-
-    move();
   }
 
   /**

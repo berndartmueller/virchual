@@ -1,7 +1,9 @@
 import './../../dist/index.css';
 
 import { Virchual } from './../../src/virchual';
+import { Controls } from './../../src/components';
 
+console.log(Virchual, Controls);
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
   const instance = new Virchual(slider, {
     slides: () => {
@@ -32,5 +34,5 @@ import { Virchual } from './../../src/virchual';
     },
   });
 
-  instance.mount();
+  instance.mount([Controls]);
 });
