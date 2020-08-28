@@ -1,6 +1,6 @@
 {
   "name": "virchual",
-  "version": "1.0.0-alpha.6",
+  "version": "1.0.0-alpha.7",
   "description": "Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
