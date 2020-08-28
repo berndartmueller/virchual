@@ -3,11 +3,11 @@ import { identity } from '../../types';
 import { stop } from '../../utils/event';
 
 export class Controls implements Component {
-  private buttons: HTMLButtonElement[];
+  private controls: HTMLButtonElement[];
   private onClickBound: () => identity;
 
   constructor(private dependencies: ComponentDependencies) {
-    this.buttons = [].slice.call(dependencies.virchual.container.querySelectorAll('.virchual__control'));
+    this.controls = [].slice.call(dependencies.virchual.container.querySelectorAll('.virchual__control'));
 
     dependencies.eventBus.on('destroy', () => {
       console.log('controls component destroy');
@@ -17,7 +17,7 @@ export class Controls implements Component {
   }
 
   mount(): void {
-    this.buttons.forEach(button => this.dependencies.eventBus.on('click', this.onClickBound, button));
+    this.controls.forEach(button => this.dependencies.eventBus.on('click', this.onClickBound, button));
   }
 
   private onClick(event: MouseEvent) {

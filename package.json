@@ -21,7 +21,8 @@
     "responsive",
     "image-slider",
     "image-swiper",
-    "swiper"
+    "swiper",
+    "virchual"
   ],
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
