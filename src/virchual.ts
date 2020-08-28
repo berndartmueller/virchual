@@ -237,6 +237,8 @@ export class Virchual {
   }
 
   private onPaginationButtonClick(event: MouseEvent) {
+    stop(event);
+
     const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
     const control = button.dataset.controls as 'prev' | 'next';
 

@@ -33,14 +33,13 @@
 
 <br />
 
-## Why Virchual?
+## Highlights
 
 - Lightweight. Only **<2.8kB** (gzipped).
 - **Virtual slides** to keep DOM elements at a minimum (Lighthouse ❤️ it)
 - Instagram like **pagination bullets**.
 - **0 dependencies**. Everything included.
-
-<br />
+- **Written in TypeScript**.
 
 <!-- TABLE OF CONTENTS -->
 

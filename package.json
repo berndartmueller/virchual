@@ -45,6 +45,7 @@
       "pre-commit": "npm run lint-staged && npm run typecheck"
     }
   },
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/berndartmueller/virchual.git"
