@@ -164,8 +164,11 @@ export class Virchual {
   private goTo(control: 'prev' | 'next') {
     const slide = this.slides[this.currentIndex];
 
-    slide.translate(-100, () => {
-      this.isBusy = false;
+    slide.translate(-100, {
+      easing: true,
+      done: () => {
+        this.isBusy = false;
+      },
     });
 
     const sign: Sign = control === 'prev' ? -1 : +1;

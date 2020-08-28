@@ -76,13 +76,14 @@ export class Slide {
   /**
    * Start transition.
    *
-   * @param value
-   * @param done
+   * @param value Position to translate to.
+   * @param easing Enable or disable transition easing.
+   * @param done Callback function after transition has ended.
    */
-  translate(value: number, done = noop) {
-    this.transitionEndCallback = done;
+  translate(value: number, { easing, done }: { easing?: boolean; done?: identity } = {}) {
+    this.transitionEndCallback = done || noop;
 
-    this.ref.style.transition = `transform ${this.settings.speed}ms ${this.settings.easing}`;
+    this.ref.style.transition = `transform ${this.settings.speed}ms ${easing ? this.settings.easing : 'ease'}`;
     this.ref.style.transform = `translate3d(calc(${this.position}% + ${Math.round(value)}px), 0, 0)`;
   }
 
