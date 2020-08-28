@@ -70,7 +70,6 @@ export default [
         // very much
         extract: true,
         sourceMap: true,
-        //minimize: true, // Causes an error at the moment for some reason
       }),
     ],
   },

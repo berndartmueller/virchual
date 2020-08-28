@@ -7,9 +7,10 @@ import { Virchual } from './../../src/virchual';
     slides: () => {
       const slides: string[] = [];
 
-      for (let i = 0; i < 10; i++) {
+      // add 9 more slides to a total of 10
+      for (let i = 1; i < 10; i++) {
         slides.push(`
-          <picture>
+          <picture data-id="${i}">
             <source
               type="image/webp"
               srcset="
