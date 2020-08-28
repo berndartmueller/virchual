@@ -1,23 +1,25 @@
-import { Component, ComponentDependencies } from './../component';
 import { identity } from '../../types';
 import { stop } from '../../utils/event';
+import { ComponentDependencies } from './../component';
 
-export class Controls implements Component {
+export class Controls {
   private controls: HTMLButtonElement[];
   private onClickBound: () => identity;
 
-  constructor(private dependencies: ComponentDependencies) {
-    this.controls = [].slice.call(dependencies.virchual.container.querySelectorAll('.virchual__control'));
+  constructor(private imports: ComponentDependencies, private settings?: { isEnabled?: boolean }) {
+    this.controls = [].slice.call(imports.virchual.container.querySelectorAll('.virchual__control'));
 
-    dependencies.eventBus.on('destroy', () => {
+    imports.eventBus.on('destroy', () => {
       console.log('controls component destroy');
     });
 
     this.onClickBound = this.onClick.bind(this);
+
+    this.mount();
   }
 
   mount(): void {
-    this.controls.forEach(button => this.dependencies.eventBus.on('click', this.onClickBound, button));
+    this.controls.forEach(button => this.imports.eventBus.on('click', this.onClickBound, button));
   }
 
   private onClick(event: MouseEvent) {
@@ -27,11 +29,11 @@ export class Controls implements Component {
     const control = button.dataset.controls as 'prev' | 'next';
 
     if (control === 'prev') {
-      this.dependencies.virchual.prev();
+      this.imports.virchual.prev();
 
       return;
     }
 
-    this.dependencies.virchual.next();
+    this.imports.virchual.next();
   }
 }

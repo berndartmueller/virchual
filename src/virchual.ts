@@ -1,3 +1,4 @@
+import { Component, ComponentDependencies } from './../dist/src/components/component.d';
 import { ComponentConstructor } from './components/component';
 import './css/styles.css';
 import { Drag } from './drag';
@@ -28,6 +29,7 @@ export class Virchual {
   private eventBus: Event;
   private isBusy = false;
   private pagination: Pagination;
+  private components: [];
 
   private eventBindings: {
     onClick: () => identity;
@@ -82,14 +84,24 @@ export class Virchual {
   }
 
   /**
+   * Register component class.
+   *
+   * @param cls Component class.
+   * @param settings Optional settings.
+   */
+  register<T, U>(cls: ComponentConstructor<T, U>, settings?: U) {
+    new cls({ virchual: this, eventBus: this.eventBus }, settings);
+  }
+
+  /**
    * Mount components.
    */
-  mount(components: Array<ComponentConstructor> = []) {
-    console.debug('[Mount] Virchual', components);
+  mount() {
+    console.debug('[Mount] Virchual');
 
-    components.forEach(component => {
-      new component({ virchual: this, eventBus: this.eventBus }).mount();
-    });
+    // components.forEach(component => {
+    //   // new component({ virchual: this, eventBus: this.eventBus }).mount();
+    // });
 
     this.eventBus.emit('mounted');
 

@@ -6,10 +6,6 @@ export type ComponentDependencies = {
   eventBus: Event;
 };
 
-export interface ComponentConstructor {
-  new (dependencies: ComponentDependencies): Component;
-}
-
-export interface Component {
-  mount(): void;
+export interface ComponentConstructor<T, U> {
+  new (imports: ComponentDependencies, settings: U): T;
 }

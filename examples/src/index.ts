@@ -1,9 +1,7 @@
 import './../../dist/index.css';
 
-import { Virchual } from './../../src/virchual';
-import { Controls } from './../../src/components';
+import { Virchual, Controls } from './../../src/index';
 
-console.log(Virchual, Controls);
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
   const instance = new Virchual(slider, {
     slides: () => {
@@ -12,7 +10,7 @@ console.log(Virchual, Controls);
       // add 9 more slides to a total of 10
       for (let i = 1; i < 10; i++) {
         slides.push(`
-          <picture data-id="${i}">
+          <picture>
             <source
               type="image/webp"
               srcset="
@@ -34,5 +32,7 @@ console.log(Virchual, Controls);
     },
   });
 
-  instance.mount([Controls]);
+  instance.register(Controls, { isEnabled: true });
+
+  instance.mount();
 });
