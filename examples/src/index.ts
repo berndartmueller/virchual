@@ -1,7 +1,7 @@
-import { Lazy } from './../../src/components/lazy/lazy';
-import './../../dist/index.css';
+import Virchual from '@virchual/index';
+import { Controls } from '@virchual/components/controls/controls';
 
-import Virchual from './../../src/index';
+import './../../src/css/styles.css';
 
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
   const instance = new Virchual(slider, {
@@ -33,8 +33,7 @@ import Virchual from './../../src/index';
     },
   });
 
-  // instance.register(Controls, { isEnabled: true });
-  instance.register(Lazy, { threshold: 300 });
+  instance.register(Controls, { isEnabled: true });
 
-  // instance.mount();
+  instance.mount();
 });

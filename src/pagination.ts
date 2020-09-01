@@ -51,30 +51,30 @@ export class Pagination {
   private ref: HTMLElement;
   private currentIndex = 0;
   private centerIndex: number;
+  private bulletsLength: number;
+  private diameter: number;
 
-  constructor(private container: HTMLElement, private len: number, private settings: { diameter?: number; bullets?: number } = {}) {
+  constructor(
+    private container: HTMLElement,
+    private totalSlides: number,
+    { diameter, bullets }: { diameter?: number; bullets?: number } = {},
+  ) {
     this.ref = container.querySelector('.virchual__pagination');
 
-    this.settings = {
-      bullets: 5,
-      diameter: 16,
-      ...settings,
-    };
+    this.bulletsLength = Math.min(totalSlides, bullets ?? 5);
+    this.diameter = diameter ?? 16;
 
-    this.centerIndex = Math.floor(this.settings['bullets'] / 2);
+    this.centerIndex = Math.floor(this.bulletsLength / 2);
   }
 
   render() {
-    const bullets = this.settings['bullets'];
-    const diameter = this.settings['diameter'];
-
     this.ref = createElement('div', { classNames: 'virchual__pagination' });
 
-    this.ref.style.width = `${bullets * diameter}px`;
-    this.ref.style.height = `${diameter}px`;
+    this.ref.style.width = `${this.bulletsLength * this.diameter}px`;
+    this.ref.style.height = `${this.diameter}px`;
 
-    range(0, Math.min(bullets, this.len) - 1).forEach(index => {
-      const isEdge = isEdgeBullet(index, index, bullets, this.len);
+    range(0, Math.min(this.bulletsLength, this.totalSlides) - 1).forEach(index => {
+      const isEdge = isEdgeBullet(index, index, this.bulletsLength, this.totalSlides);
 
       const bullet = this.renderBullet(index, { isEdge, isActive: index === this.currentIndex });
 
@@ -93,13 +93,11 @@ export class Pagination {
   }
 
   private goTo(sign: Sign) {
-    const bulletsLength = this.settings['bullets'];
+    this.currentIndex = rewind(this.currentIndex + sign, this.totalSlides - 1);
 
-    this.currentIndex = rewind(this.currentIndex + sign, this.len - 1);
-
-    const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.len);
+    const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.totalSlides);
     const removeBullet = mappedActiveIndex === this.centerIndex && this.currentIndex > this.centerIndex;
-    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : bulletsLength - 1) : -1;
+    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this.bulletsLength - 1) : -1;
 
     const bullets = [].slice.call(this.ref.querySelectorAll('span')) as HTMLElement[];
 
@@ -109,9 +107,9 @@ export class Pagination {
 
     // append or prepend new bullet
     if (removeBullet) {
-      const insertBulletIndex = -1 + bulletsLength - removeBulletIndex;
+      const insertBulletIndex = -1 + this.bulletsLength - removeBulletIndex;
       const realIndex = getRealIndex(insertBulletIndex, this.currentIndex, mappedActiveIndex);
-      const isEdge = isEdgeBullet(insertBulletIndex, realIndex, bulletsLength, this.len);
+      const isEdge = isEdgeBullet(insertBulletIndex, realIndex, this.bulletsLength, this.totalSlides);
 
       const bullet = this.renderBullet(insertBulletIndex, { isEdge });
 
@@ -142,19 +140,19 @@ export class Pagination {
     index = index - (removeBullet ? sign : 0);
 
     const realIndex = getRealIndex(index, this.currentIndex, activeIndex);
-    const isEdge = isEdgeBullet(index, realIndex, this.settings['bullets'], this.len);
+    const isEdge = isEdgeBullet(index, realIndex, this.bulletsLength, this.totalSlides);
 
     this.setAttributes(bullet, {
       isEdge,
       isActive: index === activeIndex,
-      position: removeBullet ? index * this.settings['diameter'] : undefined,
+      position: removeBullet ? index * this.diameter : undefined,
     });
   }
 
   private renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
     const element = createElement('span', { classNames: 'virchual__pagination-bullet' });
 
-    this.setAttributes(element, { isActive, isEdge, position: index * this.settings['diameter'] });
+    this.setAttributes(element, { isActive, isEdge, position: index * this.diameter });
 
     return element;
   }

@@ -9,8 +9,13 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "types": ["node", "jest"],
-    "sourceMap": true
+    "lib": ["es6", "dom"],
+    "baseUrl": "./",
+    "sourceMap": true,
+    "paths": {
+      "@virchual/*": ["src/*"]
+    }
   },
-  "include": ["src/index.ts"],
+  "include": ["./src/**/*", "./examples/src/**/*"],
   "exclude": ["node_modules"]
 }

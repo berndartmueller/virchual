@@ -11,6 +11,6 @@ export class Lazy {
       ...settings,
     };
 
-    this.imports.virchual.mount();
+    this.imports.virchual.mount.apply(this.imports.virchual);
   }
 }
