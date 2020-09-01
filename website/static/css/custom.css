@@ -19,6 +19,19 @@
   bottom: auto;
 }
 
+.demoSection .image-swiper {
+  border: 1px solid #ccc;
+  background-color: #333;
+  height: 265px;
+  width: 400px;
+  margin: 0 auto;
+}
+
+.demoSection .image-slide {
+  height: 100%;
+  display: block;
+}
+
 .demoSection .image-swiper .virchual__control svg {
   height: 20px;
   width: 20px;
