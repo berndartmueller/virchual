@@ -5,7 +5,6 @@ import { terser } from 'rollup-plugin-terser';
 import postcss from 'rollup-plugin-postcss';
 import postcss_import from 'postcss-import';
 import postcss_copy from 'postcss-copy';
-import visualizer from 'rollup-plugin-visualizer';
 import bundleSize from 'rollup-plugin-bundle-size';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -26,12 +25,10 @@ export default [
       {
         file: pkg.browser,
         format: 'iife',
-        name: 'MyPackage', // the global which can be used in a browser,
-        sourcemap: true,
+        name: 'Virchual', // the global which can be used in a browser,
       },
     ],
     plugins: [
-      visualizer(),
       typescript({
         typescript: require('typescript'),
       }),
@@ -44,8 +41,12 @@ export default [
         keep_fnames: false,
         ecma: 6,
         mangle: {
-          properties: true,
-          toplevel: true,
+          properties: {
+            keep_quoted: true,
+            builtins: false,
+            reserved: ['next', 'prev', 'register'],
+          },
+          toplevel: false,
         },
       }), // minifies generated bundles
       bundleSize(),

@@ -2,4 +2,6 @@ docs/* linguist-documentation
 website/* linguist-documentation
 .eslintrc.js linguist-vendored
 jest.config.js linguist-vendored
+postcss.config.js linguist-vendored
 rollup.config.js linguist-vendored
+build/* linguist-vendored

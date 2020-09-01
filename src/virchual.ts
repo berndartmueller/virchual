@@ -1,6 +1,4 @@
-import { Component, ComponentDependencies } from './../dist/src/components/component.d';
 import { ComponentConstructor } from './components/component';
-import './css/styles.css';
 import { Drag } from './drag';
 import { Pagination } from './pagination';
 import { Slide } from './slide';
@@ -29,7 +27,6 @@ export class Virchual {
   private eventBus: Event;
   private isBusy = false;
   private pagination: Pagination;
-  private components: [];
 
   private eventBindings: {
     onClick: () => identity;
@@ -65,10 +62,12 @@ export class Virchual {
 
     let rawSlides;
 
-    if (typeof this.settings.slides === 'function') {
-      rawSlides = this.settings.slides();
+    const slides = this.settings['slides'];
+
+    if (typeof slides === 'function') {
+      rawSlides = slides();
     } else {
-      rawSlides = this.settings.slides;
+      rawSlides = slides;
     }
 
     this.slides = this.hydrate();
@@ -206,9 +205,10 @@ export class Virchual {
   private mountAndUnmountSlides({ control }: { control?: 'prev' | 'next' } = {}) {
     const currentSlide = this.slides[this.currentIndex];
     const indices = range(0, this.slides.length - 1);
+    const window = this.settings['window'];
 
-    const mountableSlideIndices = slidingWindow(indices, this.currentIndex, this.settings.window);
-    const mountableSlideIndicesWithOffset = slidingWindow(indices, this.currentIndex, this.settings.window + 1);
+    const mountableSlideIndices = slidingWindow(indices, this.currentIndex, window);
+    const mountableSlideIndicesWithOffset = slidingWindow(indices, this.currentIndex, window + 1);
 
     mountableSlideIndicesWithOffset.forEach(index => {
       const slide = this.slides[index];
@@ -226,9 +226,9 @@ export class Virchual {
         return slide.unmount();
       }
 
-      slide.set('position', (this.settings.window - realIndex) * -100);
+      slide.set('position', (window - realIndex) * -100);
 
-      const prepend = control === 'prev' || (control == null && this.slides[0].isMounted && realIndex - this.settings.window < 0);
+      const prepend = control === 'prev' || (control == null && this.slides[0].isMounted && realIndex - window < 0);
 
       slide.mount(prepend);
     });
@@ -257,7 +257,7 @@ export class Virchual {
   private onDrag(event: { offset: { x: number; y: number }; control: 'prev' | 'next' }) {
     this.isBusy = true;
 
-    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.settings.window);
+    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.settings['window']);
 
     const sign = event.control === 'prev' ? +1 : -1;
 

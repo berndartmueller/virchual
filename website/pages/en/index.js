@@ -155,7 +155,7 @@ class Index extends React.Component {
     );
 
     const Demo = () => (
-      <div className="demoSection paddingBottom" style={{ textAlign: 'center' }}>
+      <div className="demoSection paddingBottom">
         <div className="virchual image-swiper">
           <div className="virchual__frame" style={{ height: '100%' }}>
             <div className="virchual__slide">

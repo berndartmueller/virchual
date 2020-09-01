@@ -83,7 +83,7 @@ export class Slide {
   translate(value: number, { easing, done }: { easing?: boolean; done?: identity } = {}) {
     this.transitionEndCallback = done || noop;
 
-    this.ref.style.transition = `transform ${this.settings.speed}ms ${easing ? this.settings.easing : 'ease'}`;
+    this.ref.style.transition = `transform ${this.settings['speed']}ms ${easing ? this.settings['easing'] : 'ease'}`;
     this.ref.style.transform = `translate3d(calc(${this.position}% + ${Math.round(value)}px), 0, 0)`;
   }
 

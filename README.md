@@ -69,7 +69,7 @@ Virchual uses virtual slides to only render visible slides. No unnecessary DOM e
 Just add a link to the css file in your `<head>`:
 
 ```html
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/virchual@next/dist/index.css" />
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/virchual@next/dist/virchual.css" />
 ```
 
 Then, before your closing `<body>` tag add:

@@ -1,6 +1,7 @@
-export { Controls } from './components/controls/controls';
-export { Virchual } from './virchual';
+// export { Controls } from './components/controls/controls';
+import { Virchual } from './virchual';
 
-// For CommonJS default export support
-// exports = { Virchual, Controls };
+export default Virchual;
+// // For CommonJS default export support
+// exports = Virchual;
 // exports.__esModule = true;

@@ -61,17 +61,20 @@ export class Pagination {
       ...settings,
     };
 
-    this.centerIndex = Math.floor(this.settings.bullets / 2);
+    this.centerIndex = Math.floor(this.settings['bullets'] / 2);
   }
 
   render() {
+    const bullets = this.settings['bullets'];
+    const diameter = this.settings['diameter'];
+
     this.ref = createElement('div', { classNames: 'virchual__pagination' });
 
-    this.ref.style.width = `${this.settings.bullets * this.settings.diameter}px`;
-    this.ref.style.height = `${this.settings.diameter}px`;
+    this.ref.style.width = `${bullets * diameter}px`;
+    this.ref.style.height = `${diameter}px`;
 
-    range(0, Math.min(this.settings.bullets, this.len) - 1).forEach(index => {
-      const isEdge = isEdgeBullet(index, index, this.settings.bullets, this.len);
+    range(0, Math.min(bullets, this.len) - 1).forEach(index => {
+      const isEdge = isEdgeBullet(index, index, bullets, this.len);
 
       const bullet = this.renderBullet(index, { isEdge, isActive: index === this.currentIndex });
 
@@ -90,11 +93,13 @@ export class Pagination {
   }
 
   private goTo(sign: Sign) {
+    const bulletsLength = this.settings['bullets'];
+
     this.currentIndex = rewind(this.currentIndex + sign, this.len - 1);
 
     const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.len);
     const removeBullet = mappedActiveIndex === this.centerIndex && this.currentIndex > this.centerIndex;
-    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this.settings.bullets - 1) : -1;
+    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : bulletsLength - 1) : -1;
 
     const bullets = [].slice.call(this.ref.querySelectorAll('span')) as HTMLElement[];
 
@@ -104,9 +109,9 @@ export class Pagination {
 
     // append or prepend new bullet
     if (removeBullet) {
-      const insertBulletIndex = -1 + this.settings.bullets - removeBulletIndex;
+      const insertBulletIndex = -1 + bulletsLength - removeBulletIndex;
       const realIndex = getRealIndex(insertBulletIndex, this.currentIndex, mappedActiveIndex);
-      const isEdge = isEdgeBullet(insertBulletIndex, realIndex, this.settings.bullets, this.len);
+      const isEdge = isEdgeBullet(insertBulletIndex, realIndex, bulletsLength, this.len);
 
       const bullet = this.renderBullet(insertBulletIndex, { isEdge });
 
@@ -137,19 +142,19 @@ export class Pagination {
     index = index - (removeBullet ? sign : 0);
 
     const realIndex = getRealIndex(index, this.currentIndex, activeIndex);
-    const isEdge = isEdgeBullet(index, realIndex, this.settings.bullets, this.len);
+    const isEdge = isEdgeBullet(index, realIndex, this.settings['bullets'], this.len);
 
     this.setAttributes(bullet, {
       isEdge,
       isActive: index === activeIndex,
-      position: removeBullet ? index * this.settings.diameter : undefined,
+      position: removeBullet ? index * this.settings['diameter'] : undefined,
     });
   }
 
   private renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
     const element = createElement('span', { classNames: 'virchual__pagination-bullet' });
 
-    this.setAttributes(element, { isActive, isEdge, position: index * this.settings.diameter });
+    this.setAttributes(element, { isActive, isEdge, position: index * this.settings['diameter'] });
 
     return element;
   }
