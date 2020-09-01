@@ -1,11 +1,38 @@
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+.fixedHeaderContainer {
+  display: none;
+}
 
-/* your custom css */
+.homeWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.projectLogo {
+  display: block !important;
+  position: relative !important;
+  padding: 2em 100px 2em !important;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+}
+
+.demoSection .image-swiper .virchual__control svg {
+  height: 20px;
+  width: 20px;
+  display: block;
+  fill: currentcolor;
+}
+
+.nav-footer {
+  background: transparent;
+}
+
+.nav-footer .copyright {
+  color: #202020;
+}
 
 @media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
 }

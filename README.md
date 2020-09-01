@@ -48,8 +48,10 @@
 - [About](#about)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Browser Support](#browsersupport)
 - [Contributing](#contributing)
 - [License](#license)
+- [Related](#related)
 - [Contact](#contact)
 
 <!-- ABOUT THE PROJECT -->
@@ -62,13 +64,7 @@ Virchual uses virtual slides to only render visible slides. No unnecessary DOM e
 
 ## Installation
 
-### CDN
-
-To get Virchual up and running as fast as possible, you can serve all necessary files via a CDN.
-
-- https://cdn.jsdelivr.net/npm/virchual@next/dist/index.bundle.js
-
-#### jsDelivr
+#### CDN
 
 Just add a link to the css file in your `<head>`:
 
@@ -82,7 +78,7 @@ Then, before your closing `<body>` tag add:
 <script type="text/javascript" src="//cdn.jsdelivr.net/npm/virchual@next/dist/index.bundle.js"></script>
 ```
 
-### NPM & Yarn
+#### NPM & Yarn
 
 ```sh
 $ npm install virchual
@@ -238,6 +234,17 @@ Unmount slider, remove DOM events for this instance.
 
 <br/>
 
+## Browser Support
+
+Virchual was tested in the following browsers:
+
+- Safari
+- Mobile Safari
+- Opera
+- Edge
+- Firefox
+- Internet Explorer 11
+
 <!-- CONTRIBUTING -->
 
 ## Contributing
@@ -282,13 +289,17 @@ Contributions are what make the open source community such an amazing place to b
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
+## Related
+
+tbd
+
 <!-- CONTACT -->
 
 ## Contact
 
 Bernd Artmüller - [@berndartmueller](https://twitter.com/berndartmueller) - hello@berndartmueller.com
 
-## Sponsor
+## Donate
 
 If you want to support me, you can buy me a coffee to keep me coding -> https://www.buymeacoffee.com/berndartmueller
 

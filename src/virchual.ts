@@ -75,9 +75,6 @@ export class Virchual {
 
     this.slides = this.slides.concat((rawSlides || []).map(slide => new Slide(slide, this.frame, this.settings)));
 
-    this.bindEvents();
-
-    new Drag(this.frame, { event: this.eventBus }).mount();
     this.pagination = new Pagination(this.container, this.slides.length);
 
     this.pagination.render();
@@ -99,13 +96,13 @@ export class Virchual {
   mount() {
     console.debug('[Mount] Virchual');
 
-    // components.forEach(component => {
-    //   // new component({ virchual: this, eventBus: this.eventBus }).mount();
-    // });
-
     this.eventBus.emit('mounted');
 
     this.mountAndUnmountSlides();
+
+    this.bindEvents();
+
+    new Drag(this.frame, { event: this.eventBus }).mount();
   }
 
   /**

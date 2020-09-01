@@ -1,3 +1,4 @@
+import { Lazy } from './../../src/components/lazy/lazy';
 import './../../dist/index.css';
 
 import { Virchual, Controls } from './../../src/index';
@@ -33,6 +34,7 @@ import { Virchual, Controls } from './../../src/index';
   });
 
   instance.register(Controls, { isEnabled: true });
+  instance.register(Lazy, { threshold: 300 });
 
-  instance.mount();
+  // instance.mount();
 });
