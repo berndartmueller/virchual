@@ -7,13 +7,13 @@ import { VirchualSettings } from './virchual';
  * Virtual slide component.
  */
 export class Slide {
+  ref: HTMLElement;
   isMounted = false;
   isActive = false;
   position: number;
 
   private hasChanged = false;
   private html: string;
-  private ref: HTMLElement;
   private transitionEndCallback: identity;
 
   constructor(html: string | HTMLElement, private frame: HTMLElement, private settings: VirchualSettings) {

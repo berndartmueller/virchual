@@ -22,8 +22,8 @@ export type VirchualSettings = {
 export class Virchual {
   frame: HTMLElement;
   currentIndex = 0;
+  slides: Slide[] = [];
 
-  private slides: Slide[] = [];
   private eventBus: Event;
   private isBusy = false;
   private pagination: Pagination;
@@ -95,13 +95,13 @@ export class Virchual {
   mount() {
     console.debug('[Mount] Virchual');
 
-    this.eventBus.emit('mounted');
-
     this.mountAndUnmountSlides();
 
     this.bindEvents();
 
     new Drag(this.frame, { event: this.eventBus }).mount();
+
+    this.eventBus.emit('mounted');
   }
 
   /**
@@ -191,6 +191,8 @@ export class Virchual {
     const move = control === 'prev' ? this.pagination.prev.bind(this.pagination) : this.pagination.next.bind(this.pagination);
 
     move();
+
+    this.eventBus.emit('move', { index: this.currentIndex, control });
   }
 
   private hydrate(): Slide[] {

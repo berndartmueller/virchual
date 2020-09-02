@@ -1,3 +1,4 @@
+import { LazyLoadImage } from './../../src/components/lazyload-image/lazyload-image';
 import Virchual from '@virchual/index';
 import { Controls } from '@virchual/components/controls/controls';
 
@@ -24,15 +25,15 @@ import './../../src/css/styles.css';
         const imageId = unsplashImageIds[i - 1];
 
         slides.push(`
-          <picture>
+          <picture class="virchual__lazy-img">
             <source
               type="image/jpeg"
-              srcSet="
+              data-srcSet="
                 https://source.unsplash.com/${imageId}/400x265,
                 https://source.unsplash.com/${imageId}/800x530 2x
               "
             />
-            <img src="https://source.unsplash.com/${imageId}/400x265" itemProp="image" />
+            <img data-src="https://source.unsplash.com/${imageId}/400x265" />
           </picture>
         `);
       }
@@ -42,6 +43,7 @@ import './../../src/css/styles.css';
   });
 
   instance.register(Controls, { isEnabled: true });
+  instance.register(LazyLoadImage);
 
   instance.mount();
 });

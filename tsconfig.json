@@ -16,6 +16,6 @@
       "@virchual/*": ["src/*"]
     }
   },
-  "include": ["./src/**/*", "./examples/src/**/*"],
+  "include": ["./src/**/*", "./examples/src/**/*", "./entry/*"],
   "exclude": ["node_modules"]
 }
