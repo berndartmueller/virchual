@@ -24,12 +24,12 @@ document.addEventListener(
             <picture>
               <source
                 type="image/jpeg"
-                srcSet="
+                data-srcSet="
                   https://source.unsplash.com/${imageId}/400x265,
                   https://source.unsplash.com/${imageId}/800x530 2x
                 "
               />
-              <img src="https://source.unsplash.com/${imageId}/400x265" itemProp="image" />
+              <img data-src="https://source.unsplash.com/${imageId}/400x265" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" />
             </picture>
           `);
         }

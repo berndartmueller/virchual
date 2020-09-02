@@ -7,7 +7,7 @@ export type LazyLoadImageSettings = {
   lazyload?: boolean;
 
   /**
-   * The CSS selector for lazyloaded images. Default 'virchual__lazy-img'
+   * The CSS selector for lazyloaded images. Default 'img,picture'
    */
   lazyloadSelector?: string;
 
@@ -25,7 +25,7 @@ export class LazyLoadImage {
   constructor(private imports: ComponentDependencies, settings: LazyLoadImageSettings) {
     const { lazyload, lazyloadSelector, loadEager } = {
       lazyload: true,
-      lazyloadSelector: '.virchual__lazy-img',
+      lazyloadSelector: 'img,picture',
       loadEager: 1,
       ...settings,
     };

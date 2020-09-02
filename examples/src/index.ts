@@ -25,7 +25,7 @@ import './../../src/css/styles.css';
         const imageId = unsplashImageIds[i - 1];
 
         slides.push(`
-          <picture class="virchual__lazy-img">
+          <picture>
             <source
               type="image/jpeg"
               data-srcSet="
@@ -33,7 +33,7 @@ import './../../src/css/styles.css';
                 https://source.unsplash.com/${imageId}/800x530 2x
               "
             />
-            <img data-src="https://source.unsplash.com/${imageId}/400x265" />
+            <img data-src="https://source.unsplash.com/${imageId}/400x265" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" />
           </picture>
         `);
       }

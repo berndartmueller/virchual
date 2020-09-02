@@ -1,3 +1,7 @@
+.navPusher:after {
+  content: unset;
+}
+
 .fixedHeaderContainer {
   display: none;
 }
@@ -9,10 +13,19 @@
   justify-content: center;
 }
 
+.homeContainer .homeWrapper {
+  padding: 0 2em;
+}
+
+.projectTitle {
+  margin-top: 0;
+  line-height: 1.4em;
+}
+
 .projectLogo {
   display: block !important;
   position: relative !important;
-  padding: 2em 100px 2em !important;
+  padding: 2em 2em 2em !important;
   left: auto;
   right: auto;
   top: auto;

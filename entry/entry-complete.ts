@@ -10,7 +10,7 @@ export default class Virchual extends VirchualCore {
     super(container, settings);
 
     this.register(Controls, { isEnabled: true });
-    this.register(Lazy, { threshold: 300 });
+    // this.register(Lazy, { threshold: 300 }); @TODO
     this.register(LazyLoadImage, { lazyload: false });
   }
 }
