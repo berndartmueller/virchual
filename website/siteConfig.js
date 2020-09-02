@@ -58,8 +58,8 @@ const siteConfig = {
 
   // Add custom scripts here that would be placed in <script> tags.
   // '//cdn.jsdelivr.net/npm/virchual@next/dist/index.bundle.js'
-  scripts: ['https://buttons.github.io/buttons.js', 'js/index.bundle.js', 'js/index.js'],
-  stylesheets: ['//cdn.jsdelivr.net/npm/virchual@next/dist/index.css'],
+  scripts: ['https://buttons.github.io/buttons.js', 'js/virchual.bundle.min.js', 'js/index.js'],
+  stylesheets: ['css/virchual.css'],
 
   // On page navigation for the current documentation page.
   onPageNav: 'separate',

@@ -22,48 +22,48 @@ class HomeSplash extends React.Component {
         <svg width="300" viewBox="0 0 799 193" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient x1="50%" y1="-52%" x2="50%" y2="210.6%" id="a">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="50%" y1="-111.3%" x2="50%" y2="253.9%" id="b">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="50%" y1="-107.6%" x2="50%" y2="246.1%" id="c">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="50%" y1="-52.7%" x2="50%" y2="211.1%" id="d">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="50%" y1="-114.9%" x2="50%" y2="253.6%" id="e">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="50%" y1="-108.4%" x2="50%" y2="246.8%" id="f">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="50%" y1="-52.9%" x2="50%" y2="211.3%" id="g">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="84%" y1="-.7%" x2="-104.9%" y2="161.8%" id="h">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="96.5%" y1="-18.6%" x2="-30.9%" y2="136%" id="i">
-              <stop stop-color="#ED3557" offset="0%" />
-              <stop stop-color="#8A479A" offset="100%" />
+              <stop stopColor="#ED3557" offset="0%" />
+              <stop stopColor="#8A479A" offset="100%" />
             </linearGradient>
             <linearGradient x1="43.9%" y1="20.6%" x2="73.6%" y2="90.3%" id="j">
-              <stop stop-color="#ED3557" stop-opacity="0" offset="0%" />
-              <stop stop-color="#B43F7E" stop-opacity=".6" offset="40.9%" />
-              <stop stop-color="#8A479A" stop-opacity=".9" offset="100%" />
+              <stop stopColor="#ED3557" stopOpacity="0" offset="0%" />
+              <stop stopColor="#B43F7E" stopOpacity=".6" offset="40.9%" />
+              <stop stopColor="#8A479A" stopOpacity=".9" offset="100%" />
             </linearGradient>
           </defs>
-          <g fill-rule="nonzero" fill="none">
+          <g fillRule="nonzero" fill="none">
             <path
               d="M250 39.9c0 17.8-27 17.8-27 0 0-18 27-18 27 0zm-25 25.8v93.2h23V65.7h-23z"
               fill="url(#a)"
@@ -161,20 +161,13 @@ class Index extends React.Component {
             <div className="virchual__slide">
               <picture>
                 <source
-                  type="image/webp"
-                  srcset="
-                    https://i.findheim.at/images/sm/zatt2jPaRYBCocC0BJvE4.webp,
-                    https://i.findheim.at/images/md/zatt2jPaRYBCocC0BJvE4.webp 2x
-                  "
-                />
-                <source
                   type="image/jpeg"
-                  srcset="
-                    https://i.findheim.at/images/sm/zatt2jPaRYBCocC0BJvE4.jpg,
-                    https://i.findheim.at/images/md/zatt2jPaRYBCocC0BJvE4.jpg 2x
+                  srcSet="
+                    https://source.unsplash.com/L7hI4WkbEZY/400x265,
+                    https://source.unsplash.com/L7hI4WkbEZY/800x530 2x
                   "
                 />
-                <img src="https://i.findheim.at/images/md/zatt2jPaRYBCocC0BJvE4.jpg" itemprop="image" />
+                <img src="https://source.unsplash.com/L7hI4WkbEZY/400x265" itemProp="image" />
               </picture>
             </div>
           </div>

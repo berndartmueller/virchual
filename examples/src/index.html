@@ -4,12 +4,15 @@
     <link rel="stylesheet" href="dist/index.css" />
     <style>
       .image-swiper {
-        border: 1px solid #ccc;
-        background-color: #333;
+        background-color: #fff;
         height: 265px;
         width: 400px;
         margin: 0 auto;
         margin-top: 50px;
+      }
+
+      .image-swiper .virchual__frame {
+        border-radius: 4px;
       }
 
       .image-slide {
@@ -22,20 +25,11 @@
     <div class="virchual image-swiper">
       <div class="virchual__frame" style="height: 100%">
         <div class="virchual__slide">
-          <picture
-            ><source
-              type="image/webp"
-              srcset="
-                https://i.findheim.at/images/sm/zatt2jPaRYBCocC0BJvE4.webp,
-                https://i.findheim.at/images/md/zatt2jPaRYBCocC0BJvE4.webp 2x
-              " />
+          <picture>
             <source
               type="image/jpeg"
-              srcset="
-                https://i.findheim.at/images/sm/zatt2jPaRYBCocC0BJvE4.jpg,
-                https://i.findheim.at/images/md/zatt2jPaRYBCocC0BJvE4.jpg 2x
-              " />
-            <img src="https://i.findheim.at/images/md/zatt2jPaRYBCocC0BJvE4.jpg" itemprop="image"
+              srcset="https://source.unsplash.com/L7hI4WkbEZY/400x265, https://source.unsplash.com/L7hI4WkbEZY/800x530 2x" />
+            <img src="https://source.unsplash.com/L7hI4WkbEZY/400x265" itemprop="image"
           /></picture>
         </div>
       </div>

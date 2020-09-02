@@ -63,6 +63,9 @@
   border: none;
   background-color: transparent;
   top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 40px;
   position: absolute;
   z-index: 1;
@@ -87,7 +90,8 @@
   width: 20px;
   display: block;
   fill: currentcolor;
-  color: #000;
+  color: #fff;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
 }
 
 .virchual__pagination {
