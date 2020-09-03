@@ -6,15 +6,19 @@ export function stop(event: MouseEvent | TouchEvent) {
   event.preventDefault();
 }
 
+export type EventHandler = (...args: unknown[]) => void;
+export type EventTarget = (Window & typeof globalThis) | Element;
+export type EventOptions = boolean | AddEventListenerOptions;
+
 export class Event {
   /**
    * Store all event this.data.
    */
   private handlers: Array<{
     event: string;
-    handler: (...args: unknown[]) => void;
-    elm: (Window & typeof globalThis) | Element;
-    opts: boolean | AddEventListenerOptions;
+    handler: EventHandler;
+    elm: EventTarget;
+    opts: EventOptions;
   }> = [];
 
   /**
@@ -26,17 +30,21 @@ export class Event {
    * @param element - Optional. Native event will be listened to when this arg is provided.
    * @param opts - Optional. Options for addEventListener.
    */
+  on(events: string, handler: EventHandler, element?: EventTarget, opts?: EventOptions): void;
+  on(events: { [event: string]: EventHandler }, element?: EventTarget, opts?: EventOptions): void;
   on(
-    events: string,
-    handler: (...args: unknown[]) => void,
-    element?: (Window & typeof globalThis) | Element,
-    opts: boolean | AddEventListenerOptions = {},
-  ) {
-    events.split(' ').forEach(event => {
-      element && element.addEventListener(event, handler, opts);
-
-      this.handlers.push({ event, handler, elm: element, opts: opts });
-    });
+    events: string | { [event: string]: EventHandler },
+    handler?: EventHandler | EventTarget,
+    element?: EventTarget | EventOptions,
+    opts: EventOptions = {},
+  ): void {
+    if (typeof events === 'string') {
+      events.split(' ').forEach(event => this.addEvent(event, element as EventTarget, handler as EventHandler, opts));
+    } else {
+      for (const event in events) {
+        this.addEvent(event, handler as EventTarget, events[event], opts);
+      }
+    }
   }
 
   /**
@@ -45,14 +53,16 @@ export class Event {
    * @param events - A event name or names split by space.
    * @param element - Optional. removeEventListener() will be called when this arg is provided.
    */
-  off(events: string, element?: (Window & typeof globalThis) | Element) {
-    events.split(' ').forEach(event => {
-      this.handlers = this.handlers.filter(item => {
-        if (item && item.event === event && item.elm === element) {
-          this.unroll(item);
-        }
-      });
-    });
+  off(events: string, element?: EventTarget): void;
+  off(events: { [event: string]: EventHandler }, element?: EventTarget): void;
+  off(events: string | { [event: string]: EventHandler }, element?: EventTarget) {
+    if (typeof events === 'string') {
+      events.split(' ').forEach(event => this.removeEvent(event, element));
+    } else {
+      for (const event in events) {
+        this.removeEvent(event, element);
+      }
+    }
   }
 
   /**
@@ -83,7 +93,25 @@ export class Event {
    *
    * @param item - An object containing event this.data.
    */
-  private unroll(item) {
+  private unroll(item: Event['handlers'][0]) {
     item.elm && item.elm.removeEventListener(item.event, item.handler, item.opts);
+  }
+
+  private addEvent(event: string, element: EventTarget, handler: EventHandler, opts: EventOptions) {
+    element && element.addEventListener(event, handler, opts);
+
+    this.handlers.push({ event, handler: handler as EventHandler, elm: element as EventTarget, opts: opts });
+  }
+
+  private removeEvent(event: string, element: EventTarget) {
+    this.handlers = this.handlers.filter(item => {
+      if (item && item.event === event && item.elm === element) {
+        this.unroll(item);
+
+        return false;
+      }
+
+      return true;
+    });
   }
 }

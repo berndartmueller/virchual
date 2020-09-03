@@ -43,7 +43,7 @@ import './../../src/css/styles.css';
   });
 
   instance.register(Controls, { isEnabled: true });
-  instance.register(LazyLoadImage);
+  instance.register(LazyLoadImage, { lazyload: true });
 
   instance.mount();
 });

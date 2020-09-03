@@ -136,3 +136,12 @@
   transition-duration: inherit;
   opacity: 1;
 }
+
+.virchual__lazy {
+  opacity: 0.4;
+  transition: opacity 0.5s;
+}
+
+.virchual__lazy--loaded {
+  opacity: 1;
+}

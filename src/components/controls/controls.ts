@@ -2,11 +2,13 @@ import { identity } from '../../types';
 import { stop } from '../../utils/event';
 import { ComponentDependencies } from './../component';
 
+export type ControlsSettings = { isEnabled?: boolean };
+
 export class Controls {
   private controls: HTMLButtonElement[];
   private onClickBound: () => identity;
 
-  constructor(private imports: ComponentDependencies, private settings?: { isEnabled?: boolean }) {
+  constructor(private imports: ComponentDependencies, private settings?: ControlsSettings) {
     this.controls = [].slice.call(imports.virchual.container.querySelectorAll('.virchual__control'));
 
     imports.eventBus.on('destroy', () => {
