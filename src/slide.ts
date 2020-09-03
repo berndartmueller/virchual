@@ -35,11 +35,11 @@ export class Slide {
   }
 
   render(): HTMLElement {
-    const element = createElement('div', { classNames: 'virchual__slide', html: this.html });
+    this.ref = createElement('div', { classNames: 'virchual__slide', html: this.html });
 
-    this.setAttributes(element);
+    this.setAttributes();
 
-    return element;
+    return this.ref;
   }
 
   mount(prepend = false) {
@@ -54,11 +54,15 @@ export class Slide {
 
     console.debug('[Mount] Slide', { ref: this.ref, prepend });
 
-    this.ref = this.render();
+    this.render();
 
     this.isMounted = true;
 
-    this.ref.addEventListener('transitionend', this.transitionEndCallback);
+    this.ref.addEventListener('transitionend', () => {
+      this.ref.style.transition = '';
+
+      this.transitionEndCallback();
+    });
 
     const insert = prepend ? prependFn : append;
 
@@ -83,19 +87,24 @@ export class Slide {
   translate(value: number, { easing, done }: { easing?: boolean; done?: identity } = {}) {
     this.transitionEndCallback = done || noop;
 
-    this.ref.style.transition = `transform ${this.settings['speed']}ms ${easing ? this.settings['easing'] : 'ease'}`;
+    if (easing) {
+      this.ref.style.transition = `transform ${this.settings['speed']}ms ${this.settings['easing']}`;
+    } else {
+      this.ref.style.transition = '';
+    }
+
     this.ref.style.transform = `translate3d(calc(${this.position}% + ${Math.round(value)}px), 0, 0)`;
   }
 
   private update() {
     this.hasChanged = false;
 
-    this.setAttributes(this.ref);
+    this.setAttributes();
   }
 
-  private setAttributes(element: HTMLElement) {
-    addOrRemoveClass(element, 'virchual__slide--active', !this.isActive);
+  private setAttributes() {
+    addOrRemoveClass(this.ref, 'virchual__slide--active', !this.isActive);
 
-    element.style.transform = `translate3d(${this.position}%, 0, 0)`;
+    this.translate(0, { easing: true });
   }
 }
