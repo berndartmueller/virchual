@@ -1,3 +1,5 @@
+import { raf, delay as delayFn } from './utils';
+
 /**
  * Handles debouncing of events via requestAnimationFrame
  *
@@ -9,14 +11,12 @@ export function debounce(callback: (...args: unknown[]) => unknown, delay = 100)
   return (...args: unknown[]) => {
     clearTimeout(timeoutId);
 
-    timeoutId = setTimeout(
-      () =>
-        requestAnimationFrame(() => {
-          timeoutId = null;
+    timeoutId = delayFn(() => {
+      raf(() => {
+        timeoutId = null;
 
-          callback(...args);
-        }),
-      delay,
-    );
+        callback(...args);
+      });
+    }, delay);
   };
 }

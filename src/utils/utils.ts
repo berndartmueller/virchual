@@ -1,3 +1,4 @@
+import { identity } from './../types';
 export function range(start: number, end: number): number[] {
   return Array(end - start + 1)
     .fill(0)
@@ -22,6 +23,24 @@ export function rewind(index: number, edge: number): number {
   }
 
   return index;
+}
+
+/**
+ * Request animation frame wrapper.
+ */
+export function raf(callback: identity) {
+  return requestAnimationFrame(callback);
+}
+
+/**
+ * Delay execution of given callback function.
+ * Basically a wrapper around `window.setTimeout()`
+ *
+ * @param callback Callback function.
+ * @param ms Delay in milliseconds.
+ */
+export function delay(callback: identity, ms: number) {
+  return setTimeout(callback, ms);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function

@@ -1,6 +1,6 @@
 import { Sign } from './types';
 import { addOrRemoveClass, append, prepend, remove, createElement } from './utils/dom';
-import { range, rewind } from './utils/utils';
+import { range, rewind, delay } from './utils/utils';
 
 /**
  * Map current index to bullet elements index.
@@ -133,7 +133,9 @@ export class Pagination {
     removeBulletIndex: number;
   }) {
     if (removeBulletIndex === index) {
-      return remove(bullet);
+      remove(bullet);
+
+      return;
     }
 
     // shift index due to remove bullet
