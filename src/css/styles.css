@@ -61,6 +61,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.virchual__control:focus {
+  outline: none;
+}
+
 .virchual__control--prev {
   left: 0;
 }

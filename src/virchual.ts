@@ -196,7 +196,7 @@ export class Virchual {
   }
 
   private hydrate(): Slide[] {
-    const slideElements = [].slice.call(this.frame.querySelectorAll('div')) as HTMLDivElement[];
+    const slideElements = [].slice.call(this.frame.children) as HTMLDivElement[];
 
     return slideElements.map(element => new Slide(element, this.frame, this.settings));
   }
