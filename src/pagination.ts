@@ -1,15 +1,20 @@
 import { Sign } from './types';
-import { addOrRemoveClass, append, prepend, remove, createElement } from './utils/dom';
-import { range, rewind, delay } from './utils/utils';
+import { addOrRemoveClass, append, createElement, prepend, remove } from './utils/dom';
+import { range, rewind } from './utils/utils';
 
 /**
  * Map current index to bullet elements index.
  *
  * @param index Current index.
  * @param center Center index of bullets (5 bullets -> center: 2).
+ * @param bullets Amount of bullets.
  * @param total Total bullets. Same as amount of slides.
  */
-export function mapActiveIndex(index: number, center: number, total: number) {
+export function mapActiveIndex(index: number, center: number, bullets: number, total: number) {
+  if (bullets >= total) {
+    return index;
+  }
+
   return index - Math.max(index - center, 0) + Math.max(index - (-1 + total - center), 0);
 }
 
@@ -53,21 +58,30 @@ export class Pagination {
   private centerIndex: number;
   private bulletsLength: number;
   private diameter: number;
+  private isActive = true;
 
   constructor(
     private container: HTMLElement,
     private totalSlides: number,
-    { diameter, bullets }: { diameter?: number; bullets?: number } = {},
+    { diameter, bullets, isActive }: { diameter?: number; bullets?: number; isActive?: boolean } = {},
   ) {
     this.ref = container.querySelector('.virchual__pagination');
 
     this.bulletsLength = Math.min(totalSlides, bullets ?? 5);
     this.diameter = diameter ?? 16;
+    this.isActive = isActive ?? true;
 
     this.centerIndex = Math.floor(this.bulletsLength / 2);
   }
 
   render() {
+    // quit early, no pagination bullets for less than 2 slides
+    if (!this.isActive || this.totalSlides < 2) {
+      this.isActive = false;
+
+      return;
+    }
+
     this.ref = createElement('div', { classNames: 'virchual__pagination' });
 
     this.ref.style.width = `${this.bulletsLength * this.diameter}px`;
@@ -93,9 +107,13 @@ export class Pagination {
   }
 
   private goTo(sign: Sign) {
+    if (!this.isActive) {
+      return;
+    }
+
     this.currentIndex = rewind(this.currentIndex + sign, this.totalSlides - 1);
 
-    const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.totalSlides);
+    const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.bulletsLength, this.totalSlides);
     const removeBullet = mappedActiveIndex === this.centerIndex && this.currentIndex > this.centerIndex;
     const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this.bulletsLength - 1) : -1;
 
@@ -132,6 +150,7 @@ export class Pagination {
     removeBullet: boolean;
     removeBulletIndex: number;
   }) {
+    console.log('handleBulletMovement', bullet, index, activeIndex, removeBullet, removeBulletIndex);
     if (removeBulletIndex === index) {
       remove(bullet);
 

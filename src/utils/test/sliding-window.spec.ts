@@ -36,4 +36,22 @@ describe('Utils / sliding-window()', () => {
 
     expect(window).toStrictEqual([3, 4, 5, 1, 2]);
   });
+
+  it('returns single item if length = 1 (size: 1)', () => {
+    const window = slidingWindow([0], 0, 1);
+
+    expect(window).toStrictEqual([0]);
+  });
+
+  it('returns correct window for items with length = 2 (size: 2)', () => {
+    const window = slidingWindow([0, 1], 0, 2);
+
+    expect(window).toStrictEqual([0, 1, 0, 1, 0]);
+  });
+
+  it('returns correct window for items with length = 3 (size: 1)', () => {
+    const window = slidingWindow([0, 1, 2], 0, 1);
+
+    expect(window).toStrictEqual([2, 0, 1]);
+  });
 });

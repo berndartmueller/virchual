@@ -4,6 +4,7 @@ coverage
 docs
 website
 .eslintrc.js
+babel.config.js
 jest.config.js
 rollup.config.js
 build

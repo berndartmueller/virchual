@@ -8,6 +8,23 @@ import { Event, stop } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
 
+type DiffActionMount = {
+  type: 'mount';
+  centerDistance: number;
+};
+
+type DiffActionUnmount = {
+  type: 'unmount';
+};
+
+type DiffAction = DiffActionMount | DiffActionUnmount;
+
+type Diff = {
+  index: number;
+  slideIndex: number;
+  action: DiffAction;
+};
+
 export type VirchualSettings = {
   slides?: string[] | (() => string[]);
   speed?: number;
@@ -19,11 +36,16 @@ export type VirchualSettings = {
   window?: number;
 };
 
+export function getSlideByIndex(index: number, slides: Slide[]): Slide {
+  return slides.find(slide => slide.idx === index);
+}
+
 export class Virchual {
   frame: HTMLElement;
   currentIndex = 0;
-  slides: Slide[] = [];
 
+  private slides: Slide[] = [];
+  private virtualSlidesWindow: number[] = [];
   private eventBus: Event;
   private isBusy = false;
   private pagination: Pagination;
@@ -60,23 +82,40 @@ export class Virchual {
       onDragEnd: this.onDragEnd.bind(this),
     };
 
-    let rawSlides;
+    const hydratedSlides = this.hydrate();
+    const initializedSlides = this.initSlides();
 
-    const slides = this.settings['slides'];
+    this.slides = [...hydratedSlides, ...initializedSlides];
 
-    if (typeof slides === 'function') {
-      rawSlides = slides();
-    } else {
-      rawSlides = slides;
-    }
+    const clonedSlides = this.createClones();
 
-    this.slides = this.hydrate();
+    this.slides = [...this.slides, ...clonedSlides];
 
-    this.slides = this.slides.concat((rawSlides || []).map(slide => new Slide(slide, this.frame, this.settings)));
+    this.settings['window'] = Math.min(this.settings['window'], Math.max(this.getSlidesLength() - 1, 0));
 
-    this.pagination = new Pagination(this.container, this.slides.length);
+    this.pagination = new Pagination(this.container, this.getSlidesLength(), { isActive: this.settings.pagination });
 
     this.pagination.render();
+  }
+
+  /**
+   * Return all slides.
+   *
+   * @param includeClones Whether to include cloned slides or not.
+   * @return Slide objects.
+   */
+  getSlides(includeClones = false): Slide[] {
+    return includeClones ? this.slides : this.slides.filter(slide => !slide.isClone);
+  }
+
+  /**
+   * Return total number of slides.
+   *
+   * @param includeClones Whether to include cloned slides or not.
+   * @return Total number of slides.
+   */
+  getSlidesLength(includeClones = false): number {
+    return this.getSlides(includeClones).length;
   }
 
   /**
@@ -93,6 +132,10 @@ export class Virchual {
    * Mount components.
    */
   mount() {
+    if (this.getSlidesLength() < 2) {
+      return;
+    }
+
     console.debug('[Mount] Virchual');
 
     this.mountAndUnmountSlides();
@@ -173,67 +216,201 @@ export class Virchual {
   }
 
   private goTo(control: 'prev' | 'next') {
-    const slide = this.slides[this.currentIndex];
-
-    slide.translate(-100, {
-      easing: true,
-      done: () => {
-        this.isBusy = false;
-      },
-    });
-
     const sign: Sign = control === 'prev' ? -1 : +1;
+    const nextIndex = this.currentIndex + sign * 1;
+    const newIndex = rewind(nextIndex, this.getSlidesLength() - 1);
+    const isRewind = newIndex !== nextIndex;
+    const positionX = `${sign * -100}%`;
 
-    this.currentIndex = rewind(this.currentIndex + sign * 1, this.slides.length - 1);
+    const handleGoTo = () => {
+      this.isBusy = false;
+      this.currentIndex = newIndex;
 
-    this.mountAndUnmountSlides({ control: control });
+      this.mountAndUnmountSlides({
+        control: control,
+      });
 
-    const move = control === 'prev' ? this.pagination.prev.bind(this.pagination) : this.pagination.next.bind(this.pagination);
+      const move = control === 'prev' ? this.pagination.prev.bind(this.pagination) : this.pagination.next.bind(this.pagination);
 
-    move();
+      move();
 
-    this.eventBus.emit('move', { index: this.currentIndex, control });
+      this.eventBus.emit('move', { index: this.currentIndex, control });
+    };
+
+    // if rewind necessary, delay further processing until movement has finished
+    if (isRewind) {
+      this.move(positionX, sign, { callback: handleGoTo });
+    } else {
+      this.move(positionX, sign);
+
+      handleGoTo();
+    }
   }
 
+  /**
+   * Initialize slides.
+   */
+  private initSlides(): Slide[] {
+    let rawSlides;
+
+    const slides = this.settings['slides'];
+
+    if (typeof slides === 'function') {
+      rawSlides = slides();
+    } else {
+      rawSlides = slides;
+    }
+
+    return (rawSlides || []).map(slide => new Slide(slide, this.frame, { virchual: this, eventBus: this.eventBus }));
+  }
+
+  /**
+   * Hydrate existing slides from DOM.
+   */
   private hydrate(): Slide[] {
     const slideElements = [].slice.call(this.frame.children) as HTMLDivElement[];
 
-    return slideElements.map(element => new Slide(element, this.frame, this.settings));
+    return slideElements.map(element => new Slide(element, this.frame, { virchual: this, eventBus: this.eventBus }));
+  }
+
+  /**
+   * Create clones of slides in case there are less slides than window size.
+   */
+  private createClones(): Slide[] {
+    const slidesLength = this.getSlidesLength();
+    const totalSlidingWindowLength = this.settings['window'] * 2 + 1;
+    const clones: Slide[] = [];
+
+    // no need to clones slides
+    if (slidesLength >= totalSlidingWindowLength) {
+      return clones;
+    }
+
+    for (let index = slidesLength - 1; index >= slidesLength - this.settings['window']; index--) {
+      const slide = this.slides[index];
+
+      const clone = slide.clone();
+
+      clones.push(clone);
+    }
+
+    return clones;
   }
 
   /**
    * Mount and unmount slides.
    */
   private mountAndUnmountSlides({ control }: { control?: 'prev' | 'next' } = {}) {
-    const currentSlide = this.slides[this.currentIndex];
-    const indices = range(0, this.slides.length - 1);
     const window = this.settings['window'];
+    const indicesWithoutClones = range(0, this.getSlidesLength() - 1);
+    const indices = range(0, this.getSlidesLength(true) - 1);
 
-    const mountableSlideIndices = slidingWindow(indices, this.currentIndex, window);
-    const mountableSlideIndicesWithOffset = slidingWindow(indices, this.currentIndex, window + 1);
+    const virtualSlidesWindow = slidingWindow(indices, this.currentIndex, window);
+    const virtualSlidesWindowWithoutClones = slidingWindow(indicesWithoutClones, this.currentIndex, window);
 
-    mountableSlideIndicesWithOffset.forEach(index => {
-      const slide = this.slides[index];
+    const diffs = this.diff(virtualSlidesWindow, this.virtualSlidesWindow);
 
-      if (index === this.currentIndex) {
-        currentSlide.set('isActive', true);
+    console.log('DIFF:', diffs);
+
+    console.log('current index -> ', this.currentIndex);
+
+    console.log('virtual slides (old)', this.virtualSlidesWindow);
+    console.log('virtual slides (new):', virtualSlidesWindow);
+    console.log('virtual slides (new withOUT clones):', virtualSlidesWindowWithoutClones, indicesWithoutClones, this.currentIndex);
+
+    console.log('START ITERATING...', 'control: ', control);
+    console.log(' ');
+
+    diffs.forEach(diff => {
+      const slideIndex = diff['slideIndex'];
+      const realSlideIndex = virtualSlidesWindowWithoutClones[diff.index];
+      const isActive = slideIndex === this.currentIndex;
+      let slide = getSlideByIndex(slideIndex, this.slides) || this.slides[slideIndex];
+
+      console.log('diff: ', diff);
+      console.log('slideIndex:', slideIndex, 'real slide index:', realSlideIndex, slide);
+
+      // mount
+      if (diff.action.type === 'mount') {
+        const prepend = control === 'prev' || diff.action.centerDistance < 0;
+
+        console.log('prepend?', prepend);
+
+        // clone new slide
+        if (slide == null) {
+          console.log('clone new slide!', realSlideIndex);
+          slide = this.slides[realSlideIndex].clone();
+
+          this.slides.splice(slideIndex, 0, slide);
+        }
+
+        slide.idx = slideIndex;
+        slide.set('isActive', isActive);
+        slide.set('position', diff.action.centerDistance * 100);
+
+        slide.mount(prepend);
+
+        // unmount
       } else {
-        currentSlide.set('isActive', false);
+        slide.unmount();
+
+        if (slide.isClone) {
+          console.log('Unmount was clone -> remove!', slide.idx);
+
+          this.slides.splice(slideIndex, 1);
+        }
       }
-
-      const realIndex = mountableSlideIndices.indexOf(index);
-
-      // unmount
-      if (realIndex < 0) {
-        return slide.unmount();
-      }
-
-      slide.set('position', (window - realIndex) * -100);
-
-      const prepend = control === 'prev' || (control == null && this.slides[0].isMounted && realIndex - window < 0);
-
-      slide.mount(prepend);
     });
+
+    console.log('STOP ITERATING', this.getSlides(), ', w/ clones:', this.slides);
+    console.log(' ');
+
+    this.virtualSlidesWindow = virtualSlidesWindow;
+  }
+
+  private diff(current: number[], previous: number[]): Diff[] {
+    previous = previous || [];
+
+    const diffs: Diff[] = [
+      // unmount
+      ...this.calculateDiff(previous, current, (isFound, diff) => {
+        if (!isFound) {
+          diff.action.type = 'unmount';
+
+          return diff;
+        }
+      }),
+
+      // mount
+      ...this.calculateDiff(current, []),
+    ];
+
+    return diffs;
+  }
+
+  private calculateDiff(arrayA: number[], arrayB: number[], condition?: (isFound: boolean, diff: Diff) => Diff): Diff[] {
+    const diffs: Diff[] = [];
+
+    arrayA.forEach((slideIndex, index) => {
+      let diff: Diff = {
+        index,
+        slideIndex,
+        action: {
+          type: 'mount',
+          centerDistance: index - Math.floor(arrayA.length / 2),
+        },
+      };
+
+      const left = arrayB[index - 1] - slideIndex;
+      const right = arrayB[index + 1] - slideIndex;
+      const isFound = left === 0 || right === 0;
+
+      diff = condition != null ? condition(isFound, diff) : diff;
+
+      diff && diffs.push(diff);
+    });
+
+    return diffs;
   }
 
   private bindEvents() {
@@ -259,16 +436,41 @@ export class Virchual {
   private onDrag(event: { offset: { x: number; y: number }; control: 'prev' | 'next' }) {
     this.isBusy = true;
 
-    const mountableSlideIndices = slidingWindow(range(0, this.slides.length - 1), this.currentIndex, this.settings['window']);
+    const sign = event.control === 'prev' ? -1 : +1;
+    const positionX = -1 * sign * Math.abs(event.offset.x);
 
-    const sign = event.control === 'prev' ? +1 : -1;
+    this.move(`${Math.round(positionX)}px`, sign, { easing: false });
+  }
 
-    mountableSlideIndices.forEach(index => {
-      const slide = this.slides[index];
+  /**
+   * Move slides to their new position.
+   *
+   * @param xPosition New slide position. Unit (px, %,..) has to be given.
+   * @param sign Direction. Either -1 or +1.
+   * @param callback Callback function which is called after moving has finished.
+   */
+  private move(xPosition: string, sign: Sign, { easing, callback }: { easing?: boolean; callback?: identity } = {}) {
+    let mountableSlideIndices = slidingWindow(range(0, this.getSlidesLength(true) - 1), this.currentIndex, this.settings['window']);
 
-      const x = sign * Math.abs(event.offset.x);
+    if (sign > 0) {
+      mountableSlideIndices = mountableSlideIndices.slice(-1 * (this.settings['window'] + 1));
+    } else {
+      mountableSlideIndices = mountableSlideIndices.slice(0, this.settings['window'] + 1);
+    }
 
-      slide.translate(x);
+    mountableSlideIndices.forEach(slideIndex => {
+      const slide = this.slides[slideIndex];
+
+      slide.translate(xPosition, {
+        easing: easing ?? true,
+        done: () => {
+          if (callback) {
+            callback();
+
+            callback = null;
+          }
+        },
+      });
     });
   }
 

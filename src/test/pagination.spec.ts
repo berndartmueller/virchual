@@ -10,7 +10,7 @@ describe('Pagination', () => {
       ];
 
       tests.map(test => {
-        const index = mapActiveIndex(test.input, 1, 3);
+        const index = mapActiveIndex(test.input, 1, 5, 3);
 
         expect(index).toBe(test.result);
       });
@@ -26,7 +26,7 @@ describe('Pagination', () => {
       ];
 
       tests.map(test => {
-        const index = mapActiveIndex(test.input, 2, 5);
+        const index = mapActiveIndex(test.input, 2, 5, 5);
 
         expect(index).toBe(test.result);
       });
@@ -45,7 +45,7 @@ describe('Pagination', () => {
       ];
 
       tests.map(test => {
-        const index = mapActiveIndex(test.input, 2, 8);
+        const index = mapActiveIndex(test.input, 2, 5, 8);
 
         expect(index).toBe(test.result);
       });
@@ -66,7 +66,7 @@ describe('Pagination', () => {
       ];
 
       tests.map(test => {
-        const index = mapActiveIndex(test.input, 2, 10);
+        const index = mapActiveIndex(test.input, 2, 5, 10);
 
         expect(index).toBe(test.result);
       });

@@ -8,6 +8,10 @@ import { range } from './utils';
  * @param len The window size/length. Specifies how many items the window has on each sides.
  */
 export function slidingWindow(source: number[], start: number, len: number): number[] {
+  if (source.length < 2) {
+    return source;
+  }
+
   const left = range(start - len, start - 1).map(index => get(source, index));
   const center = [source[start]];
   const right = range(start + 1, start + len).map(index => get(source, index));
