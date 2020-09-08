@@ -48,6 +48,7 @@ export class Virchual {
   private _virtualSlidesWindow: number[] = [];
   private _eventBus: Event;
   private _isBusy = false;
+  private _isEnabled = true;
   private _pagination: Pagination;
 
   private _eventBindings: {
@@ -149,20 +150,16 @@ export class Virchual {
 
   /**
    * Disable Virchual instance and all user interactions (changing slides)
-   *
-   * @TODO
    */
   disable() {
-    return;
+    this._isEnabled = false;
   }
 
   /**
    * Enable previously disabled Virchual instance. Enable user interaction.
-   *
-   * @TODO
    */
   enable() {
-    return;
+    this._isEnabled = false;
   }
 
   /**
@@ -216,6 +213,10 @@ export class Virchual {
   }
 
   private _goTo(control: 'prev' | 'next') {
+    if (!this._isEnabled) {
+      return;
+    }
+
     const sign: Sign = control === 'prev' ? -1 : +1;
     const nextIndex = this.currentIndex + sign * 1;
     const newIndex = rewind(nextIndex, this.getSlidesLength() - 1);
@@ -434,6 +435,10 @@ export class Virchual {
    * @param event
    */
   private _onDrag(event: { offset: { x: number; y: number }; control: 'prev' | 'next' }) {
+    if (!this._isEnabled) {
+      return;
+    }
+
     this._isBusy = true;
 
     const sign = event.control === 'prev' ? -1 : +1;

@@ -150,8 +150,6 @@ export class Slide {
   private _setAttributes() {
     addOrRemoveClass(this.ref, ELEMENT_CLASSES.slideActive, !this.isActive);
 
-    this.ref.setAttribute('data-idx', this.idx + '');
-
     this.translate('0%');
   }
 

@@ -115,8 +115,15 @@ export class Pagination {
     this._currentIndex = rewind(this._currentIndex + sign, this._totalSlides - 1);
 
     const mappedActiveIndex = mapActiveIndex(this._currentIndex, this._centerIndex, this._bulletsLength, this._totalSlides);
-    const removeBullet = mappedActiveIndex === this._centerIndex && this._currentIndex > this._centerIndex;
-    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this._bulletsLength - 1) : -1;
+    const overflowRight = this._currentIndex + this._centerIndex + (sign > 0 ? 0 : 1) < this._totalSlides;
+    const overflowLeft = this._currentIndex - this._centerIndex > 0;
+    const removeBullet = mappedActiveIndex === this._centerIndex && (sign > 0 ? overflowLeft : overflowRight);
+
+    let removeBulletIndex = -1;
+
+    if (removeBullet) {
+      removeBulletIndex = sign === 1 ? 0 : this._bulletsLength - 1;
+    }
 
     const bullets = [].slice.call(this._ref.querySelectorAll('span')) as HTMLElement[];
 
@@ -151,7 +158,6 @@ export class Pagination {
     removeBullet: boolean;
     removeBulletIndex: number;
   }) {
-    console.log('handleBulletMovement', bullet, index, activeIndex, removeBullet, removeBulletIndex);
     if (removeBulletIndex === index) {
       remove(bullet);
 
