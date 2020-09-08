@@ -14,7 +14,7 @@ export class Event {
   /**
    * Store all event this.data.
    */
-  private handlers: Array<{
+  private _handlers: Array<{
     event: string;
     handler: EventHandler;
     elm: EventTarget;
@@ -39,10 +39,10 @@ export class Event {
     opts: EventOptions = {},
   ): void {
     if (typeof events === 'string') {
-      events.split(' ').forEach(event => this.addEvent(event, element as EventTarget, handler as EventHandler, opts));
+      events.split(' ').forEach(event => this._addEvent(event, element as EventTarget, handler as EventHandler, opts));
     } else {
       for (const event in events) {
-        this.addEvent(event, handler as EventTarget, events[event], opts);
+        this._addEvent(event, handler as EventTarget, events[event], opts);
       }
     }
   }
@@ -57,10 +57,10 @@ export class Event {
   off(events: { [event: string]: EventHandler }, element?: EventTarget): void;
   off(events: string | { [event: string]: EventHandler }, element?: EventTarget) {
     if (typeof events === 'string') {
-      events.split(' ').forEach(event => this.removeEvent(event, element));
+      events.split(' ').forEach(event => this._removeEvent(event, element));
     } else {
       for (const event in events) {
-        this.removeEvent(event, element);
+        this._removeEvent(event, element);
       }
     }
   }
@@ -73,7 +73,7 @@ export class Event {
    * @param args  - Any number of arguments passed to handlers.
    */
   emit(event: string, ...args: unknown[]) {
-    this.handlers.forEach(item => {
+    this._handlers.forEach(item => {
       if (!item.elm && item.event.split('.')[0] === event) {
         item.handler(...args);
       }
@@ -84,8 +84,8 @@ export class Event {
    * Clear event this.data.
    */
   destroy() {
-    this.handlers.forEach(this.unroll);
-    this.handlers = [];
+    this._handlers.forEach(this._unroll);
+    this._handlers = [];
   }
 
   /**
@@ -93,20 +93,20 @@ export class Event {
    *
    * @param item - An object containing event this.data.
    */
-  private unroll(item: Event['handlers'][0]) {
+  private _unroll(item: Event['_handlers'][0]) {
     item.elm && item.elm.removeEventListener(item.event, item.handler, item.opts);
   }
 
-  private addEvent(event: string, element: EventTarget, handler: EventHandler, opts: EventOptions) {
+  private _addEvent(event: string, element: EventTarget, handler: EventHandler, opts: EventOptions) {
     element && element.addEventListener(event, handler, opts);
 
-    this.handlers.push({ event, handler: handler as EventHandler, elm: element as EventTarget, opts: opts });
+    this._handlers.push({ event, handler: handler as EventHandler, elm: element as EventTarget, opts: opts });
   }
 
-  private removeEvent(event: string, element: EventTarget) {
-    this.handlers = this.handlers.filter(item => {
+  private _removeEvent(event: string, element: EventTarget) {
+    this._handlers = this._handlers.filter(item => {
       if (item && item.event === event && item.elm === element) {
-        this.unroll(item);
+        this._unroll(item);
 
         return false;
       }

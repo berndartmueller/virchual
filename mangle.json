@@ -6,7 +6,7 @@
   "minify": {
     "mangle": {
       "properties": {
-        "regex": "^_[^_]",
+        "regex": "^__?",
         "reserved": [
           "__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED",
           "__REACT_DEVTOOLS_GLOBAL_HOOK__",
@@ -19,7 +19,10 @@
     },
     "compress": {
       "hoist_vars": true,
-      "reduce_funcs": false
+      "reduce_funcs": false,
+      "drop_console": true,
+      "keep_fargs": false,
+      "passes": 2
     }
   },
   "props": {

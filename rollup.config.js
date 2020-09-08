@@ -4,6 +4,7 @@ import postcss from 'rollup-plugin-postcss';
 import postcss_import from 'postcss-import';
 import postcss_copy from 'postcss-copy';
 
+console.log('ROLLU');
 export default [
   {
     input: './examples/src/index.ts', // our source file

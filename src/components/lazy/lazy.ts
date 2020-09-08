@@ -5,12 +5,12 @@ export type LazySettings = {
 };
 
 export class Lazy {
-  constructor(private imports: ComponentDependencies, private settings?: { threshold?: number }) {
-    this.settings = {
+  constructor(private _imports: ComponentDependencies, private _settings?: { threshold?: number }) {
+    this._settings = {
       threshold: 300,
-      ...settings,
+      ..._settings,
     };
 
-    this.imports.virchual.mount.apply(this.imports.virchual);
+    this._imports.virchual.mount.apply(this._imports.virchual);
   }
 }

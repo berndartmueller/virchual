@@ -1,6 +1,7 @@
 import { Sign } from './types';
 import { addOrRemoveClass, append, createElement, prepend, remove } from './utils/dom';
 import { range, rewind } from './utils/utils';
+import { ELEMENT_CLASSES } from './constants';
 
 /**
  * Map current index to bullet elements index.
@@ -53,89 +54,89 @@ function getRealIndex(index: number, currentIndex: number, activeBulletIndex: nu
 }
 
 export class Pagination {
-  private ref: HTMLElement;
-  private currentIndex = 0;
-  private centerIndex: number;
-  private bulletsLength: number;
-  private diameter: number;
-  private isActive = true;
+  private _ref: HTMLElement;
+  private _currentIndex = 0;
+  private _centerIndex: number;
+  private _bulletsLength: number;
+  private _diameter: number;
+  private _isActive = true;
 
   constructor(
-    private container: HTMLElement,
-    private totalSlides: number,
+    private _container: HTMLElement,
+    private _totalSlides: number,
     { diameter, bullets, isActive }: { diameter?: number; bullets?: number; isActive?: boolean } = {},
   ) {
-    this.ref = container.querySelector('.virchual__pagination');
+    this._ref = _container.querySelector(`.${ELEMENT_CLASSES.pagination}`);
 
-    this.bulletsLength = Math.min(totalSlides, bullets ?? 5);
-    this.diameter = diameter ?? 16;
-    this.isActive = isActive ?? true;
+    this._bulletsLength = Math.min(_totalSlides, bullets ?? 5);
+    this._diameter = diameter ?? 16;
+    this._isActive = isActive ?? true;
 
-    this.centerIndex = Math.floor(this.bulletsLength / 2);
+    this._centerIndex = Math.floor(this._bulletsLength / 2);
   }
 
   render() {
     // quit early, no pagination bullets for less than 2 slides
-    if (!this.isActive || this.totalSlides < 2) {
-      this.isActive = false;
+    if (!this._isActive || this._totalSlides < 2) {
+      this._isActive = false;
 
       return;
     }
 
-    this.ref = createElement('div', { classNames: 'virchual__pagination' });
+    this._ref = createElement('div', { classNames: ELEMENT_CLASSES.pagination });
 
-    this.ref.style.width = `${this.bulletsLength * this.diameter}px`;
-    this.ref.style.height = `${this.diameter}px`;
+    this._ref.style.width = `${this._bulletsLength * this._diameter}px`;
+    this._ref.style.height = `${this._diameter}px`;
 
-    range(0, Math.min(this.bulletsLength, this.totalSlides) - 1).forEach(index => {
-      const isEdge = isEdgeBullet(index, index, this.bulletsLength, this.totalSlides);
+    range(0, Math.min(this._bulletsLength, this._totalSlides) - 1).forEach(index => {
+      const isEdge = isEdgeBullet(index, index, this._bulletsLength, this._totalSlides);
 
-      const bullet = this.renderBullet(index, { isEdge, isActive: index === this.currentIndex });
+      const bullet = this._renderBullet(index, { isEdge, isActive: index === this._currentIndex });
 
-      append(this.ref, bullet);
+      append(this._ref, bullet);
     });
 
-    append(this.container, this.ref);
+    append(this._container, this._ref);
   }
 
   next() {
-    this.goTo(+1);
+    this._goTo(+1);
   }
 
   prev() {
-    this.goTo(-1);
+    this._goTo(-1);
   }
 
-  private goTo(sign: Sign) {
-    if (!this.isActive) {
+  private _goTo(sign: Sign) {
+    if (!this._isActive) {
       return;
     }
 
-    this.currentIndex = rewind(this.currentIndex + sign, this.totalSlides - 1);
+    this._currentIndex = rewind(this._currentIndex + sign, this._totalSlides - 1);
 
-    const mappedActiveIndex = mapActiveIndex(this.currentIndex, this.centerIndex, this.bulletsLength, this.totalSlides);
-    const removeBullet = mappedActiveIndex === this.centerIndex && this.currentIndex > this.centerIndex;
-    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this.bulletsLength - 1) : -1;
+    const mappedActiveIndex = mapActiveIndex(this._currentIndex, this._centerIndex, this._bulletsLength, this._totalSlides);
+    const removeBullet = mappedActiveIndex === this._centerIndex && this._currentIndex > this._centerIndex;
+    const removeBulletIndex = removeBullet ? (sign === 1 ? 0 : this._bulletsLength - 1) : -1;
 
-    const bullets = [].slice.call(this.ref.querySelectorAll('span')) as HTMLElement[];
+    const bullets = [].slice.call(this._ref.querySelectorAll('span')) as HTMLElement[];
 
     bullets.forEach((bullet, index) => {
-      this.handleBulletMovement({ bullet, index, sign, removeBullet, removeBulletIndex, activeIndex: mappedActiveIndex });
+      this._handleBulletMovement({ bullet, index, sign, removeBullet, removeBulletIndex, activeIndex: mappedActiveIndex });
     });
 
     // append or prepend new bullet
     if (removeBullet) {
-      const insertBulletIndex = -1 + this.bulletsLength - removeBulletIndex;
-      const realIndex = getRealIndex(insertBulletIndex, this.currentIndex, mappedActiveIndex);
-      const isEdge = isEdgeBullet(insertBulletIndex, realIndex, this.bulletsLength, this.totalSlides);
+      const insertBulletIndex = -1 + this._bulletsLength - removeBulletIndex;
+      const realIndex = getRealIndex(insertBulletIndex, this._currentIndex, mappedActiveIndex);
+      const isEdge = isEdgeBullet(insertBulletIndex, realIndex, this._bulletsLength, this._totalSlides);
 
-      const bullet = this.renderBullet(insertBulletIndex, { isEdge });
+      const bullet = this._renderBullet(insertBulletIndex, { isEdge });
 
-      this.insertBullet(sign, bullet);
+      this._insertBullet(sign, bullet);
     }
   }
 
-  private handleBulletMovement({
+  private _handleBulletMovement({
     bullet,
     index,
     activeIndex,
@@ -160,36 +161,36 @@ export class Pagination {
     // shift index due to remove bullet
     index = index - (removeBullet ? sign : 0);
 
-    const realIndex = getRealIndex(index, this.currentIndex, activeIndex);
-    const isEdge = isEdgeBullet(index, realIndex, this.bulletsLength, this.totalSlides);
+    const realIndex = getRealIndex(index, this._currentIndex, activeIndex);
+    const isEdge = isEdgeBullet(index, realIndex, this._bulletsLength, this._totalSlides);
 
-    this.setAttributes(bullet, {
+    this._setAttributes(bullet, {
       isEdge,
       isActive: index === activeIndex,
-      position: removeBullet ? index * this.diameter : undefined,
+      position: removeBullet ? index * this._diameter : undefined,
     });
   }
 
-  private renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
-    const element = createElement('span', { classNames: 'virchual__pagination-bullet' });
+  private _renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
+    const element = createElement('span', { classNames: ELEMENT_CLASSES.paginationBullet });
 
-    this.setAttributes(element, { isActive, isEdge, position: index * this.diameter });
+    this._setAttributes(element, { isActive, isEdge, position: index * this._diameter });
 
     return element;
   }
 
-  private setAttributes(bullet: HTMLElement, { isActive, isEdge, position }: { isActive: boolean; isEdge: boolean; position?: number }) {
-    addOrRemoveClass(bullet, 'virchual__pagination-bullet--active', !isActive);
-    addOrRemoveClass(bullet, 'virchual__pagination-bullet--edge', !isEdge);
+  private _setAttributes(bullet: HTMLElement, { isActive, isEdge, position }: { isActive: boolean; isEdge: boolean; position?: number }) {
+    addOrRemoveClass(bullet, ELEMENT_CLASSES.paginationBulletActive, !isActive);
+    addOrRemoveClass(bullet, ELEMENT_CLASSES.paginationBulletEdge, !isEdge);
 
     if (position != null) {
       bullet.style.transform = `translateX(${position}px)`;
     }
   }
 
-  private insertBullet(sign: Sign, bullet: HTMLElement) {
+  private _insertBullet(sign: Sign, bullet: HTMLElement) {
     const insert = sign === 1 ? append : prepend;
 
-    insert(this.ref, bullet);
+    insert(this._ref, bullet);
   }
 }

@@ -44,13 +44,13 @@ export class Virchual {
   frame: HTMLElement;
   currentIndex = 0;
 
-  private slides: Slide[] = [];
-  private virtualSlidesWindow: number[] = [];
-  private eventBus: Event;
-  private isBusy = false;
-  private pagination: Pagination;
+  private _slides: Slide[] = [];
+  private _virtualSlidesWindow: number[] = [];
+  private _eventBus: Event;
+  private _isBusy = false;
+  private _pagination: Pagination;
 
-  private eventBindings: {
+  private _eventBindings: {
     onClick: () => identity;
     onDrag: () => identity;
     onDragEnd: () => identity;
@@ -74,28 +74,28 @@ export class Virchual {
       ...settings,
     };
 
-    this.eventBus = new Event();
+    this._eventBus = new Event();
 
-    this.eventBindings = {
-      onClick: this.onClick.bind(this),
-      onDrag: this.onDrag.bind(this),
-      onDragEnd: this.onDragEnd.bind(this),
+    this._eventBindings = {
+      onClick: this._onClick.bind(this),
+      onDrag: this._onDrag.bind(this),
+      onDragEnd: this._onDragEnd.bind(this),
     };
 
-    const hydratedSlides = this.hydrate();
-    const initializedSlides = this.initSlides();
+    const hydratedSlides = this._hydrate();
+    const initializedSlides = this._initSlides();
 
-    this.slides = [...hydratedSlides, ...initializedSlides];
+    this._slides = [...hydratedSlides, ...initializedSlides];
 
-    const clonedSlides = this.createClones();
+    const clonedSlides = this._createClones();
 
-    this.slides = [...this.slides, ...clonedSlides];
+    this._slides = [...this._slides, ...clonedSlides];
 
     this.settings['window'] = Math.min(this.settings['window'], Math.max(this.getSlidesLength() - 1, 0));
 
-    this.pagination = new Pagination(this.container, this.getSlidesLength(), { isActive: this.settings.pagination });
+    this._pagination = new Pagination(this.container, this.getSlidesLength(), { isActive: this.settings.pagination });
 
-    this.pagination.render();
+    this._pagination.render();
   }
 
   /**
@@ -105,7 +105,7 @@ export class Virchual {
    * @return Slide objects.
    */
   getSlides(includeClones = false): Slide[] {
-    return includeClones ? this.slides : this.slides.filter(slide => !slide.isClone);
+    return includeClones ? this._slides : this._slides.filter(slide => !slide.isClone);
   }
 
   /**
@@ -125,7 +125,7 @@ export class Virchual {
    * @param settings Optional settings.
    */
   register<T, U>(cls: ComponentConstructor<T, U>, settings?: U) {
-    new cls({ virchual: this, eventBus: this.eventBus }, settings);
+    new cls({ virchual: this, eventBus: this._eventBus }, settings);
   }
 
   /**
@@ -138,13 +138,13 @@ export class Virchual {
 
     console.debug('[Mount] Virchual');
 
-    this.mountAndUnmountSlides();
+    this._mountAndUnmountSlides();
 
-    this.bindEvents();
+    this._bindEvents();
 
-    new Drag(this.frame, { event: this.eventBus }).mount();
+    new Drag(this.frame, { event: this._eventBus }).mount();
 
-    this.eventBus.emit('mounted');
+    this._eventBus.emit('mounted');
   }
 
   /**
@@ -175,7 +175,7 @@ export class Virchual {
    * @param opts Optional. Options for addEventListener.
    */
   on(events: string, handler: identity) {
-    this.eventBus.on(events, handler);
+    this._eventBus.on(events, handler);
   }
 
   /**
@@ -185,7 +185,7 @@ export class Virchual {
    * @param elm    - Optional. removeEventListener() will be called when this arg is provided.
    */
   off(events: string) {
-    this.eventBus.off(events);
+    this._eventBus.off(events);
   }
 
   /**
@@ -194,7 +194,7 @@ export class Virchual {
   prev() {
     console.debug('[Controls] Previous');
 
-    this.goTo('prev');
+    this._goTo('prev');
   }
 
   /**
@@ -203,19 +203,19 @@ export class Virchual {
   next() {
     console.debug('[Controls] Next');
 
-    this.goTo('next');
+    this._goTo('next');
   }
 
   /**
    * Destroy instance, remove DOM events.
    */
   destroy() {
-    this.eventBus.destroy();
+    this._eventBus.destroy();
 
-    this.eventBus.emit('destroy');
+    this._eventBus.emit('destroy');
   }
 
-  private goTo(control: 'prev' | 'next') {
+  private _goTo(control: 'prev' | 'next') {
     const sign: Sign = control === 'prev' ? -1 : +1;
     const nextIndex = this.currentIndex + sign * 1;
     const newIndex = rewind(nextIndex, this.getSlidesLength() - 1);
@@ -223,25 +223,25 @@ export class Virchual {
     const positionX = `${sign * -100}%`;
 
     const handleGoTo = () => {
-      this.isBusy = false;
+      this._isBusy = false;
       this.currentIndex = newIndex;
 
-      this.mountAndUnmountSlides({
+      this._mountAndUnmountSlides({
         control: control,
       });
 
-      const move = control === 'prev' ? this.pagination.prev.bind(this.pagination) : this.pagination.next.bind(this.pagination);
+      const move = control === 'prev' ? this._pagination.prev.bind(this._pagination) : this._pagination.next.bind(this._pagination);
 
       move();
 
-      this.eventBus.emit('move', { index: this.currentIndex, control });
+      this._eventBus.emit('move', { index: this.currentIndex, control });
     };
 
     // if rewind necessary, delay further processing until movement has finished
     if (isRewind) {
-      this.move(positionX, sign, { callback: handleGoTo });
+      this._move(positionX, sign, { callback: handleGoTo });
     } else {
-      this.move(positionX, sign);
+      this._move(positionX, sign);
 
       handleGoTo();
     }
@@ -250,7 +250,7 @@ export class Virchual {
   /**
    * Initialize slides.
    */
-  private initSlides(): Slide[] {
+  private _initSlides(): Slide[] {
     let rawSlides;
 
     const slides = this.settings['slides'];
@@ -261,22 +261,22 @@ export class Virchual {
       rawSlides = slides;
     }
 
-    return (rawSlides || []).map(slide => new Slide(slide, this.frame, { virchual: this, eventBus: this.eventBus }));
+    return (rawSlides || []).map(slide => new Slide(slide, this.frame, { virchual: this, eventBus: this._eventBus }));
   }
 
   /**
    * Hydrate existing slides from DOM.
    */
-  private hydrate(): Slide[] {
+  private _hydrate(): Slide[] {
     const slideElements = [].slice.call(this.frame.children) as HTMLDivElement[];
 
-    return slideElements.map(element => new Slide(element, this.frame, { virchual: this, eventBus: this.eventBus }));
+    return slideElements.map(element => new Slide(element, this.frame, { virchual: this, eventBus: this._eventBus }));
   }
 
   /**
    * Create clones of slides in case there are less slides than window size.
    */
-  private createClones(): Slide[] {
+  private _createClones(): Slide[] {
     const slidesLength = this.getSlidesLength();
     const totalSlidingWindowLength = this.settings['window'] * 2 + 1;
     const clones: Slide[] = [];
@@ -287,7 +287,7 @@ export class Virchual {
     }
 
     for (let index = slidesLength - 1; index >= slidesLength - this.settings['window']; index--) {
-      const slide = this.slides[index];
+      const slide = this._slides[index];
 
       const clone = slide.clone();
 
@@ -300,7 +300,7 @@ export class Virchual {
   /**
    * Mount and unmount slides.
    */
-  private mountAndUnmountSlides({ control }: { control?: 'prev' | 'next' } = {}) {
+  private _mountAndUnmountSlides({ control }: { control?: 'prev' | 'next' } = {}) {
     const window = this.settings['window'];
     const indicesWithoutClones = range(0, this.getSlidesLength() - 1);
     const indices = range(0, this.getSlidesLength(true) - 1);
@@ -308,13 +308,13 @@ export class Virchual {
     const virtualSlidesWindow = slidingWindow(indices, this.currentIndex, window);
     const virtualSlidesWindowWithoutClones = slidingWindow(indicesWithoutClones, this.currentIndex, window);
 
-    const diffs = this.diff(virtualSlidesWindow, this.virtualSlidesWindow);
+    const diffs = this._diff(virtualSlidesWindow, this._virtualSlidesWindow);
 
     console.log('DIFF:', diffs);
 
     console.log('current index -> ', this.currentIndex);
 
-    console.log('virtual slides (old)', this.virtualSlidesWindow);
+    console.log('virtual slides (old)', this._virtualSlidesWindow);
     console.log('virtual slides (new):', virtualSlidesWindow);
     console.log('virtual slides (new withOUT clones):', virtualSlidesWindowWithoutClones, indicesWithoutClones, this.currentIndex);
 
@@ -325,7 +325,7 @@ export class Virchual {
       const slideIndex = diff['slideIndex'];
       const realSlideIndex = virtualSlidesWindowWithoutClones[diff.index];
       const isActive = slideIndex === this.currentIndex;
-      let slide = getSlideByIndex(slideIndex, this.slides) || this.slides[slideIndex];
+      let slide = getSlideByIndex(slideIndex, this._slides) || this._slides[slideIndex];
 
       console.log('diff: ', diff);
       console.log('slideIndex:', slideIndex, 'real slide index:', realSlideIndex, slide);
@@ -339,9 +339,9 @@ export class Virchual {
         // clone new slide
         if (slide == null) {
           console.log('clone new slide!', realSlideIndex);
-          slide = this.slides[realSlideIndex].clone();
+          slide = this._slides[realSlideIndex].clone();
 
-          this.slides.splice(slideIndex, 0, slide);
+          this._slides.splice(slideIndex, 0, slide);
         }
 
         slide.idx = slideIndex;
@@ -357,23 +357,23 @@ export class Virchual {
         if (slide.isClone) {
           console.log('Unmount was clone -> remove!', slide.idx);
 
-          this.slides.splice(slideIndex, 1);
+          this._slides.splice(slideIndex, 1);
         }
       }
     });
 
-    console.log('STOP ITERATING', this.getSlides(), ', w/ clones:', this.slides);
+    console.log('STOP ITERATING', this.getSlides(), ', w/ clones:', this._slides);
     console.log(' ');
 
-    this.virtualSlidesWindow = virtualSlidesWindow;
+    this._virtualSlidesWindow = virtualSlidesWindow;
   }
 
-  private diff(current: number[], previous: number[]): Diff[] {
+  private _diff(current: number[], previous: number[]): Diff[] {
     previous = previous || [];
 
     const diffs: Diff[] = [
       // unmount
-      ...this.calculateDiff(previous, current, (isFound, diff) => {
+      ...this._calculateDiff(previous, current, (isFound, diff) => {
         if (!isFound) {
           diff.action.type = 'unmount';
 
@@ -382,13 +382,13 @@ export class Virchual {
       }),
 
       // mount
-      ...this.calculateDiff(current, []),
+      ...this._calculateDiff(current, []),
     ];
 
     return diffs;
   }
 
-  private calculateDiff(arrayA: number[], arrayB: number[], condition?: (isFound: boolean, diff: Diff) => Diff): Diff[] {
+  private _calculateDiff(arrayA: number[], arrayB: number[], condition?: (isFound: boolean, diff: Diff) => Diff): Diff[] {
     const diffs: Diff[] = [];
 
     arrayA.forEach((slideIndex, index) => {
@@ -413,10 +413,10 @@ export class Virchual {
     return diffs;
   }
 
-  private bindEvents() {
-    this.eventBus.on('drag', this.eventBindings.onDrag);
-    this.eventBus.on('dragend', this.eventBindings.onDragEnd);
-    this.eventBus.on('click', this.eventBindings.onClick, this.frame, { capture: true });
+  private _bindEvents() {
+    this._eventBus.on('drag', this._eventBindings.onDrag);
+    this._eventBus.on('dragend', this._eventBindings.onDragEnd);
+    this._eventBus.on('click', this._eventBindings.onClick, this.frame, { capture: true });
   }
 
   /**
@@ -424,8 +424,8 @@ export class Virchual {
    *
    * @param event A click event.
    */
-  private onClick(event: MouseEvent) {
-    this.isBusy && stop(event);
+  private _onClick(event: MouseEvent) {
+    this._isBusy && stop(event);
   }
 
   /**
@@ -433,13 +433,13 @@ export class Virchual {
    *
    * @param event
    */
-  private onDrag(event: { offset: { x: number; y: number }; control: 'prev' | 'next' }) {
-    this.isBusy = true;
+  private _onDrag(event: { offset: { x: number; y: number }; control: 'prev' | 'next' }) {
+    this._isBusy = true;
 
     const sign = event.control === 'prev' ? -1 : +1;
     const positionX = -1 * sign * Math.abs(event.offset.x);
 
-    this.move(`${Math.round(positionX)}px`, sign, { easing: false });
+    this._move(`${Math.round(positionX)}px`, sign, { easing: false });
   }
 
   /**
@@ -449,7 +449,7 @@ export class Virchual {
    * @param sign Direction. Either -1 or +1.
    * @param callback Callback function which is called after moving has finished.
    */
-  private move(xPosition: string, sign: Sign, { easing, callback }: { easing?: boolean; callback?: identity } = {}) {
+  private _move(xPosition: string, sign: Sign, { easing, callback }: { easing?: boolean; callback?: identity } = {}) {
     let mountableSlideIndices = slidingWindow(range(0, this.getSlidesLength(true) - 1), this.currentIndex, this.settings['window']);
 
     if (sign > 0) {
@@ -459,7 +459,7 @@ export class Virchual {
     }
 
     mountableSlideIndices.forEach(slideIndex => {
-      const slide = this.slides[slideIndex];
+      const slide = this._slides[slideIndex];
 
       slide.translate(xPosition, {
         easing: easing ?? true,
@@ -479,9 +479,9 @@ export class Virchual {
    *
    * @param event
    */
-  private onDragEnd(event: { control: 'prev' | 'next' }) {
+  private _onDragEnd(event: { control: 'prev' | 'next' }) {
     console.debug('[Drag] Drag end', event);
 
-    this.goTo(event.control);
+    this._goTo(event.control);
   }
 }

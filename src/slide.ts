@@ -1,3 +1,4 @@
+import { ELEMENT_CLASSES } from './constants';
 import { identity } from './types';
 import { addOrRemoveClass, append, prepend as prependFn, remove, createElement } from './utils/dom';
 import { noop } from './utils/utils';
@@ -14,54 +15,54 @@ export class Slide {
   isClone = false;
   position: number;
 
-  private hasChanged = false;
-  private html: string;
-  private isBusyTranslating: boolean;
-  private transitionEndCallback: identity = noop;
-  private asyncAction: identity = noop;
+  private _hasChanged = false;
+  private _html: string;
+  private _isBusyTranslating: boolean;
+  private _transitionEndCallback: identity = noop;
+  private _asyncAction: identity = noop;
 
-  constructor(html: string | HTMLElement, private frame: HTMLElement, private imports: ComponentDependencies) {
+  constructor(html: string | HTMLElement, private _frame: HTMLElement, private _imports: ComponentDependencies) {
     if (typeof html === 'string') {
-      this.html = html;
+      this._html = html;
 
       return;
     }
 
     this.ref = html;
-    this.html = this.ref.innerHTML;
+    this._html = this.ref.innerHTML;
     this.isMounted = true;
 
-    this.bindEvents();
+    this._bindEvents();
   }
 
   set<T extends Extract<keyof this, 'isActive' | 'position'>>(property: T, value: this[T]) {
     this[property] = value;
 
-    this.hasChanged = true;
+    this._hasChanged = true;
   }
 
   mount(prepend = false) {
-    this.doAfterTranslating(() => {
+    this._doAfterTranslating(() => {
       if (this.isMounted) {
         // slide has changed -> update in DOM
-        if (this.hasChanged) {
-          this.update();
+        if (this._hasChanged) {
+          this._update();
         }
 
         return;
       }
 
-      this.render();
+      this._render();
 
       console.debug('[Mount] Slide', this);
 
       this.isMounted = true;
 
-      this.bindEvents();
+      this._bindEvents();
 
       const insert = prepend ? prependFn : append;
 
-      insert(this.frame, this.ref);
+      insert(this._frame, this.ref);
     });
   }
 
@@ -70,7 +71,7 @@ export class Slide {
 
     this.isMounted = false;
 
-    this.doAfterTranslating(() => {
+    this._doAfterTranslating(() => {
       remove(this.ref);
 
       console.debug('[Unmount] Slide - End', this);
@@ -83,7 +84,7 @@ export class Slide {
    * @returns Cloned slide instance.
    */
   clone(): Slide {
-    const slide = new Slide(this.html, this.frame, this.imports);
+    const slide = new Slide(this._html, this._frame, this._imports);
 
     slide.isClone = true;
 
@@ -98,14 +99,14 @@ export class Slide {
    * @param done Callback function after transition has ended.
    */
   translate(xPosition: string, { easing, done }: { easing?: boolean; done?: identity } = {}) {
-    this.transitionEndCallback = done || noop;
+    this._transitionEndCallback = done || noop;
 
     if (easing) {
       console.log('Translate WITH easing', this, xPosition);
 
-      this.isBusyTranslating = true;
+      this._isBusyTranslating = true;
 
-      this.ref.style.transition = `transform ${this.imports.virchual.settings['speed']}ms ${this.imports.virchual.settings['easing']}`;
+      this.ref.style.transition = `transform ${this._imports.virchual.settings['speed']}ms ${this._imports.virchual.settings['easing']}`;
     } else {
       console.log('Translate without easing', this, xPosition);
       this.ref.style.transition = '';
@@ -114,60 +115,60 @@ export class Slide {
     this.ref.style.transform = `translate3d(calc(${this.position}% + ${xPosition}), 0, 0)`;
   }
 
-  private render(): HTMLElement {
-    this.ref = createElement('div', { classNames: 'virchual__slide', html: this.html });
+  private _render(): HTMLElement {
+    this.ref = createElement('div', { classNames: ELEMENT_CLASSES.slide, html: this._html });
 
-    this.setAttributes();
+    this._setAttributes();
 
     return this.ref;
   }
 
-  private bindEvents() {
+  private _bindEvents() {
     this.ref.addEventListener('transitionend', () => {
       console.log('END', this);
-      this.isBusyTranslating = false;
+      this._isBusyTranslating = false;
 
       this.ref.style.transition = '';
 
-      this.asyncAction();
-      this.transitionEndCallback();
+      this._asyncAction();
+      this._transitionEndCallback();
     });
 
-    this.imports.eventBus.on('move', () => {
-      this.isBusyTranslating = false;
+    this._imports.eventBus.on('move', () => {
+      this._isBusyTranslating = false;
     });
   }
 
-  private update() {
+  private _update() {
     console.debug('[Update] Slide', this);
 
-    this.hasChanged = false;
+    this._hasChanged = false;
 
-    this.setAttributes();
+    this._setAttributes();
   }
 
-  private setAttributes() {
-    addOrRemoveClass(this.ref, 'virchual__slide--active', !this.isActive);
+  private _setAttributes() {
+    addOrRemoveClass(this.ref, ELEMENT_CLASSES.slideActive, !this.isActive);
 
     this.ref.setAttribute('data-idx', this.idx + '');
 
     this.translate('0%');
   }
 
-  private doAfterTranslating(callback: identity) {
+  private _doAfterTranslating(callback: identity) {
     // call callback immediately
-    if (!this.isBusyTranslating) {
+    if (!this._isBusyTranslating) {
       callback();
 
       return;
     }
 
     console.log('NEEDS ASYNC', this);
-    this.asyncAction = () => {
+    this._asyncAction = () => {
       console.log('ASYNC ACTION', this);
       callback();
 
-      this.asyncAction = noop;
+      this._asyncAction = noop;
     };
   }
 }

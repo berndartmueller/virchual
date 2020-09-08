@@ -31,7 +31,7 @@ import './../../src/css/styles.css';
       const slides: string[] = [];
 
       // add 9 more slides to a total of 10
-      for (let i = 1; i < 10; i++) {
+      for (let i = 1; i < 2; i++) {
         const imageId = unsplashImageIds[i - 1];
 
         slides.push(`

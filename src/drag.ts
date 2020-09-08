@@ -4,72 +4,72 @@ import { Event, stop } from './utils/event';
 
 export class Drag {
   // Analyzed info on starting drag.
-  private startInfo;
+  private _startInfo;
 
   // Analyzed info being updated while dragging/swiping.
-  private currentInfo;
+  private _currentInfo;
 
   // Determine whether slides are being dragged or not.
-  private isDragging = false;
+  private _isDragging = false;
 
-  private eventBus: Event;
+  private _eventBus: Event;
 
   // bound event handlers (to keep `this` context)
-  private eventBindings: {
+  private _eventBindings: {
     onStart: identity;
     onMove: identity;
     onEnd: identity;
   };
 
-  constructor(private frame: HTMLElement, { event }: { event: Event }) {
-    this.eventBus = event;
+  constructor(private _frame: HTMLElement, { event }: { event: Event }) {
+    this._eventBus = event;
 
-    this.eventBindings = {
-      onStart: this.onStart.bind(this),
-      onMove: debounce(this.onMove.bind(this), 1),
-      onEnd: this.onEnd.bind(this),
+    this._eventBindings = {
+      onStart: this._onStart.bind(this),
+      onMove: debounce(this._onMove.bind(this), 1),
+      onEnd: this._onEnd.bind(this),
     };
   }
 
   mount() {
-    this.eventBus.on('touchstart mousedown', this.eventBindings.onStart, this.frame);
-    this.eventBus.on('touchmove mousemove', this.eventBindings.onMove, this.frame, { passive: false });
-    this.eventBus.on('touchend touchcancel mouseleave mouseup dragend', this.eventBindings.onEnd, this.frame);
+    this._eventBus.on('touchstart mousedown', this._eventBindings.onStart, this._frame);
+    this._eventBus.on('touchmove mousemove', this._eventBindings.onMove, this._frame, { passive: false });
+    this._eventBus.on('touchend touchcancel mouseleave mouseup dragend', this._eventBindings.onEnd, this._frame);
   }
 
   /**
    * Called when the track starts to be dragged.
    */
-  private onStart(event: MouseEvent & TouchEvent) {
+  private _onStart(event: MouseEvent & TouchEvent) {
     stop(event);
 
-    if (!this.isDragging) {
-      this.startInfo = this.analyze(event, {});
+    if (!this._isDragging) {
+      this._startInfo = this._analyze(event, {});
 
-      this.currentInfo = this.startInfo;
+      this._currentInfo = this._startInfo;
 
-      this.eventBus.emit('dragstart', this.currentInfo);
+      this._eventBus.emit('dragstart', this._currentInfo);
     }
   }
 
-  private onMove(event: MouseEvent & TouchEvent) {
+  private _onMove(event: MouseEvent & TouchEvent) {
     stop(event);
 
-    if (!this.startInfo) {
+    if (!this._startInfo) {
       return;
     }
 
-    this.currentInfo = this.analyze(event, this.startInfo);
+    this._currentInfo = this._analyze(event, this._startInfo);
 
-    if (this.isDragging) {
+    if (this._isDragging) {
       stop(event);
 
-      this.eventBus.emit('drag', this.currentInfo);
+      this._eventBus.emit('drag', this._currentInfo);
     } else {
-      if (this.shouldMove(this.currentInfo)) {
-        this.eventBus.emit('drag', this.currentInfo);
+      if (this._shouldMove(this._currentInfo)) {
+        this._eventBus.emit('drag', this._currentInfo);
 
-        this.isDragging = true;
+        this._isDragging = true;
       }
     }
   }
@@ -81,7 +81,7 @@ export class Drag {
    *
    * @return True if the track should be moved or false if not.
    */
-  private shouldMove({ offset }) {
+  private _shouldMove({ offset }) {
     const angle = (Math.atan(Math.abs(offset.y) / Math.abs(offset.x)) * 180) / Math.PI;
 
     const dragAngleThreshold = 45;
@@ -92,13 +92,13 @@ export class Drag {
   /**
    * Called when dragging ends.
    */
-  private onEnd() {
-    this.startInfo = null;
+  private _onEnd() {
+    this._startInfo = null;
 
-    if (this.isDragging) {
-      this.goTo(this.currentInfo);
+    if (this._isDragging) {
+      this._goTo(this._currentInfo);
 
-      this.isDragging = false;
+      this._isDragging = false;
     }
   }
 
@@ -107,12 +107,12 @@ export class Drag {
    *
    * @param info - An info object.
    */
-  private goTo(info) {
+  private _goTo(info) {
     const velocity = info.velocity['x'];
     const absV = Math.abs(velocity);
 
     if (absV > 0) {
-      this.eventBus.emit('dragend', this.currentInfo);
+      this._eventBus.emit('dragend', this._currentInfo);
     }
   }
 
@@ -124,7 +124,7 @@ export class Drag {
    *
    * @return - An object containing analyzed information, such as offset, velocity, etc.
    */
-  private analyze(
+  private _analyze(
     event: MouseEvent & TouchEvent,
     startInfo,
   ): {

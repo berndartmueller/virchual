@@ -43,38 +43,38 @@ function getImage(image: HTMLImageElement | HTMLPictureElement): HTMLImageElemen
 }
 
 export class LazyLoadImage {
-  private lazyload: boolean;
-  private lazyloadSelector: string;
-  private events: {
-    load: LazyLoadImage['onLoad'];
-    error: LazyLoadImage['onError'];
+  private _lazyload: boolean;
+  private _lazyloadSelector: string;
+  private _events: {
+    load: LazyLoadImage['_onLoad'];
+    error: LazyLoadImage['_onError'];
   };
 
-  constructor(private imports: ComponentDependencies, settings: LazyLoadImageSettings) {
+  constructor(private _imports: ComponentDependencies, _settings: LazyLoadImageSettings) {
     const { lazyload, lazyloadSelector } = {
       lazyload: true,
       lazyloadSelector: 'img,picture',
-      ...settings,
+      ..._settings,
     };
 
-    this.lazyload = lazyload;
-    this.lazyloadSelector = lazyloadSelector;
-    this.events = {
-      load: this.onLoad.bind(this),
-      error: this.onError.bind(this),
+    this._lazyload = lazyload;
+    this._lazyloadSelector = lazyloadSelector;
+    this._events = {
+      load: this._onLoad.bind(this),
+      error: this._onError.bind(this),
     };
 
     // exit in case lazy loading is disabled
-    if (!this.lazyload) {
+    if (!this._lazyload) {
       return;
     }
 
-    imports.eventBus.on({
+    _imports.eventBus.on({
       mounted: () => {
-        this.doLazyLoad();
+        this._doLazyLoad();
       },
       move: () => {
-        this.doLazyLoad();
+        this._doLazyLoad();
       },
     });
   }
@@ -82,29 +82,29 @@ export class LazyLoadImage {
   /**
    * Lazy load images.
    */
-  private doLazyLoad(): void {
-    const images = this.getImages();
+  private _doLazyLoad(): void {
+    const images = this._getImages();
 
-    images.forEach(image => this.loadImage(image));
+    images.forEach(image => this._loadImage(image));
   }
 
   /**
    * Get all image tags (<img>, <picture>) to lazy load.
    */
-  private getImages() {
-    const indices = range(0, this.imports.virchual.getSlides(true).length - 1);
-    const slidesWindowIndices = slidingWindow(indices, this.imports.virchual.currentIndex, 1);
+  private _getImages() {
+    const indices = range(0, this._imports.virchual.getSlides(true).length - 1);
+    const slidesWindowIndices = slidingWindow(indices, this._imports.virchual.currentIndex, 1);
 
     const images: Array<HTMLImageElement | HTMLPictureElement> = [];
 
     slidesWindowIndices.forEach(index => {
-      const slide = this.imports.virchual.getSlides(true)[index];
+      const slide = this._imports.virchual.getSlides(true)[index];
 
       if (!slide.isMounted) {
         return;
       }
 
-      [].forEach.call(slide.ref.querySelectorAll(this.lazyloadSelector), (img: HTMLElement) => {
+      [].forEach.call(slide.ref.querySelectorAll(this._lazyloadSelector), (img: HTMLElement) => {
         // skip <img> tags within <picture> tags
         if (isPictureTag(img.parentElement)) {
           return;
@@ -122,7 +122,7 @@ export class LazyLoadImage {
    *
    * @param image Either <img> or <picture> tag.
    */
-  private loadImage(image: HTMLImageElement | HTMLPictureElement) {
+  private _loadImage(image: HTMLImageElement | HTMLPictureElement) {
     let hasLazyImages = false;
 
     [].forEach.call(image.querySelectorAll('img,source'), (source: HTMLImageElement | HTMLSourceElement) => {
@@ -139,7 +139,7 @@ export class LazyLoadImage {
         source.setAttribute('src', source.dataset.src);
         source.removeAttribute('data-src');
 
-        this.imports.eventBus.on(this.events, source);
+        this._imports.eventBus.on(this._events, source);
       }
 
       if (srcSetData || srcData) {
@@ -153,27 +153,27 @@ export class LazyLoadImage {
     }
   }
 
-  private onLoad(event: Event) {
+  private _onLoad(event: Event) {
     const image = event.target as HTMLImageElement;
 
-    this.completeLoading(image);
+    this._completeLoading(image);
   }
 
-  private onError(event: Event) {
+  private _onError(event: Event) {
     const image = event.target as HTMLImageElement;
     const target = getImage(image);
 
     target.classList.add(ERROR_CLASSNAME);
 
-    this.completeLoading(image);
+    this._completeLoading(image);
   }
 
-  private completeLoading(image: HTMLImageElement) {
+  private _completeLoading(image: HTMLImageElement) {
     const target = getImage(image);
 
     target.classList.remove(LOADING_CLASSNAME);
     target.classList.add(COMPLETE_CLASSNAME);
 
-    this.imports.eventBus.off(this.events, image);
+    this._imports.eventBus.off(this._events, image);
   }
 }
