@@ -11,10 +11,10 @@ const PAGINATION_BULLET = `${PAGINATION}-bullet`;
  * They might be modified by options.
  */
 export const ELEMENT_CLASSES = {
-  slide: SLIDE,
-  slideActive: `${SLIDE}--active`,
-  pagination: PAGINATION,
-  paginationBullet: PAGINATION_BULLET,
-  paginationBulletActive: `${PAGINATION_BULLET}--active`,
-  paginationBulletEdge: `${PAGINATION_BULLET}--edge`,
+  _slide: SLIDE,
+  _slideActive: `${SLIDE}--active`,
+  _pagination: PAGINATION,
+  _paginationBullet: PAGINATION_BULLET,
+  _paginationBulletActive: `${PAGINATION_BULLET}--active`,
+  _paginationBulletEdge: `${PAGINATION_BULLET}--edge`,
 };

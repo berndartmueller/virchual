@@ -66,7 +66,7 @@ export class Pagination {
     private _totalSlides: number,
     { diameter, bullets, isActive }: { diameter?: number; bullets?: number; isActive?: boolean } = {},
   ) {
-    this._ref = _container.querySelector(`.${ELEMENT_CLASSES.pagination}`);
+    this._ref = _container.querySelector(`.${ELEMENT_CLASSES._pagination}`);
 
     this._bulletsLength = Math.min(_totalSlides, bullets ?? 5);
     this._diameter = diameter ?? 16;
@@ -83,7 +83,7 @@ export class Pagination {
       return;
     }
 
-    this._ref = createElement('div', { classNames: ELEMENT_CLASSES.pagination });
+    this._ref = createElement('div', { classNames: ELEMENT_CLASSES._pagination });
 
     this._ref.style.width = `${this._bulletsLength * this._diameter}px`;
     this._ref.style.height = `${this._diameter}px`;
@@ -178,7 +178,7 @@ export class Pagination {
   }
 
   private _renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
-    const element = createElement('span', { classNames: ELEMENT_CLASSES.paginationBullet });
+    const element = createElement('span', { classNames: ELEMENT_CLASSES._paginationBullet });
 
     this._setAttributes(element, { isActive, isEdge, position: index * this._diameter });
 
@@ -186,8 +186,8 @@ export class Pagination {
   }
 
   private _setAttributes(bullet: HTMLElement, { isActive, isEdge, position }: { isActive: boolean; isEdge: boolean; position?: number }) {
-    addOrRemoveClass(bullet, ELEMENT_CLASSES.paginationBulletActive, !isActive);
-    addOrRemoveClass(bullet, ELEMENT_CLASSES.paginationBulletEdge, !isEdge);
+    addOrRemoveClass(bullet, ELEMENT_CLASSES._paginationBulletActive, !isActive);
+    addOrRemoveClass(bullet, ELEMENT_CLASSES._paginationBulletEdge, !isEdge);
 
     if (position != null) {
       bullet.style.transform = `translateX(${position}px)`;

@@ -3,7 +3,6 @@ import { Drag } from './drag';
 import { Pagination } from './pagination';
 import { Slide } from './slide';
 import { identity, Sign } from './types';
-import { assert } from './utils/error';
 import { Event, stop } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
@@ -29,9 +28,6 @@ export type VirchualSettings = {
   slides?: string[] | (() => string[]);
   speed?: number;
   easing?: string;
-  swipeDistanceThreshold?: number;
-  flickVelocityThreshold?: number;
-  flickPower?: number;
   pagination?: boolean;
   window?: number;
 };
@@ -54,15 +50,10 @@ export class Virchual {
   constructor(public container: HTMLElement, public settings: VirchualSettings = {}) {
     this.frame = this.container.querySelector('.virchual__frame');
 
-    assert(this.frame, 'Invalid element');
-
     this.currentIndex = 0;
     this.settings = {
       slides: [],
       speed: 200,
-      swipeDistanceThreshold: 150,
-      flickVelocityThreshold: 0.6,
-      flickPower: 600,
       easing: 'ease-out',
       pagination: true,
       window: 1,
@@ -71,19 +62,12 @@ export class Virchual {
 
     this._eventBus = new Event();
 
-    const hydratedSlides = this._hydrate();
-    const initializedSlides = this._initSlides();
-
-    this._slides = [...hydratedSlides, ...initializedSlides];
-
-    const clonedSlides = this._createClones();
-
-    this._slides = [...this._slides, ...clonedSlides];
+    this._slides = [...this._hydrate(), ...this._initSlides()];
+    this._slides = [...this._slides, ...this._createClones()];
 
     this.settings['window'] = Math.min(this.settings['window'], Math.max(this.getSlidesLength() - 1, 0));
 
     this._pagination = new Pagination(this.container, this.getSlidesLength(), { isActive: this.settings.pagination });
-
     this._pagination.render();
   }
 
@@ -305,31 +289,31 @@ export class Virchual {
       const isActive = slideIndex === this.currentIndex;
       let slide = getSlideByIndex(slideIndex, this._slides) || this._slides[slideIndex];
 
-      // mount
-      if (diff.action.type === 'mount') {
-        const prepend = control === 'prev' || diff.action.centerDistance < 0;
-
-        // clone new slide
-        if (slide == null) {
-          slide = this._slides[realSlideIndex].clone();
-
-          this._slides.splice(slideIndex, 0, slide);
-        }
-
-        slide.idx = slideIndex;
-        slide.set('isActive', isActive);
-        slide.set('position', diff.action.centerDistance * 100);
-
-        slide.mount(prepend);
-
-        // unmount
-      } else {
+      // unmount
+      if (diff.action.type === 'unmount') {
         slide.unmount();
 
         if (slide.isClone) {
           this._slides.splice(slideIndex, 1);
         }
+
+        return;
       }
+
+      // mount
+      const prepend = control === 'prev' || diff.action.centerDistance < 0;
+
+      // clone new slide
+      if (slide == null) {
+        slide = this._slides[realSlideIndex].clone();
+
+        this._slides.splice(slideIndex, 0, slide);
+      }
+
+      slide.idx = slideIndex;
+      slide.set('isActive', isActive).set('position', diff.action.centerDistance * 100);
+
+      slide.mount(prepend);
     });
 
     this._virtualSlidesWindow = virtualSlidesWindow;
@@ -381,8 +365,7 @@ export class Virchual {
   }
 
   private _bindEvents() {
-    this._eventBus.on('drag', this._onDrag);
-    this._eventBus.on('dragend', this._onDragEnd);
+    this._eventBus.on({ drag: this._onDrag, dragend: this._onDragEnd });
     this._eventBus.on('click', this._onClick, this.frame, { capture: true });
   }
 

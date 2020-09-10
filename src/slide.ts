@@ -36,10 +36,12 @@ export class Slide {
     this._bindEvents();
   }
 
-  set<T extends Extract<keyof this, 'isActive' | 'position'>>(property: T, value: this[T]) {
+  set<T extends Extract<keyof this, 'isActive' | 'position'>>(property: T, value: this[T]): Slide {
     this[property] = value;
 
     this._hasChanged = true;
+
+    return this;
   }
 
   /**
@@ -125,7 +127,7 @@ export class Slide {
   }
 
   private _render(): HTMLElement {
-    this.ref = createElement('div', { classNames: ELEMENT_CLASSES.slide, html: this._html });
+    this.ref = createElement('div', { classNames: ELEMENT_CLASSES._slide, html: this._html });
 
     this._setAttributes();
 
@@ -151,7 +153,7 @@ export class Slide {
   }
 
   private _setAttributes() {
-    addOrRemoveClass(this.ref, ELEMENT_CLASSES.slideActive, !this.isActive);
+    addOrRemoveClass(this.ref, ELEMENT_CLASSES._slideActive, !this.isActive);
 
     this.translate('0%');
   }
