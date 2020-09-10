@@ -14,7 +14,6 @@
   overflow: hidden;
   height: 100%;
   user-select: none;
-  touch-action: none;
 }
 
 .virchual__slide {
@@ -26,6 +25,8 @@
   position: absolute;
   transform: translate3d(0%, 0px, 0px);
   will-change: transform;
+  touch-action: pan-y;
+  -ms-touch-action: pan-y;
 }
 
 .virchual__slide * {

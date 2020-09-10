@@ -1,9 +1,12 @@
-export function stop(event: MouseEvent | TouchEvent) {
-  if (!event) return;
+export function stop(e: MouseEvent | TouchEvent) {
+  if (!e) return;
 
-  event.stopImmediatePropagation();
-  event.stopPropagation();
-  event.preventDefault();
+  if (e.cancelable) {
+    e.preventDefault();
+  }
+
+  e.stopImmediatePropagation();
+  e.stopPropagation();
 }
 
 export type EventHandler = (...args: unknown[]) => void;
@@ -30,14 +33,14 @@ export class Event {
    * @param element - Optional. Native event will be listened to when this arg is provided.
    * @param opts - Optional. Options for addEventListener.
    */
-  on(events: string, handler: EventHandler, element?: EventTarget, opts?: EventOptions): void;
-  on(events: { [event: string]: EventHandler }, element?: EventTarget, opts?: EventOptions): void;
+  on(events: string, handler: EventHandler, element?: EventTarget, opts?: EventOptions): Event;
+  on(events: { [event: string]: EventHandler }, element?: EventTarget, opts?: EventOptions): Event;
   on(
     events: string | { [event: string]: EventHandler },
     handler?: EventHandler | EventTarget,
     element?: EventTarget | EventOptions,
     opts: EventOptions = {},
-  ): void {
+  ): Event {
     if (typeof events === 'string') {
       events.split(' ').forEach(event => this._addEvent(event, element as EventTarget, handler as EventHandler, opts));
     } else {
@@ -45,6 +48,8 @@ export class Event {
         this._addEvent(event, handler as EventTarget, events[event], opts);
       }
     }
+
+    return this;
   }
 
   /**
@@ -53,9 +58,9 @@ export class Event {
    * @param events - A event name or names split by space.
    * @param element - Optional. removeEventListener() will be called when this arg is provided.
    */
-  off(events: string, element?: EventTarget): void;
-  off(events: { [event: string]: EventHandler }, element?: EventTarget): void;
-  off(events: string | { [event: string]: EventHandler }, element?: EventTarget) {
+  off(events: string, element?: EventTarget): Event;
+  off(events: { [event: string]: EventHandler }, element?: EventTarget): Event;
+  off(events: string | { [event: string]: EventHandler }, element?: EventTarget): Event {
     if (typeof events === 'string') {
       events.split(' ').forEach(event => this._removeEvent(event, element));
     } else {
@@ -63,6 +68,8 @@ export class Event {
         this._removeEvent(event, element);
       }
     }
+
+    return this;
   }
 
   /**

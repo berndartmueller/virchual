@@ -32,7 +32,7 @@ export class Drag {
   }
 
   mount() {
-    this._eventBus.on('touchstart mousedown', this._eventBindings.onStart, this._frame);
+    this._eventBus.on('touchstart mousedown', this._eventBindings.onStart, this._frame, { passive: true });
     this._eventBus.on('touchmove mousemove', this._eventBindings.onMove, this._frame, { passive: false });
     this._eventBus.on('touchend touchcancel mouseleave mouseup dragend', this._eventBindings.onEnd, this._frame);
   }
@@ -41,8 +41,6 @@ export class Drag {
    * Called when the track starts to be dragged.
    */
   private _onStart(event: MouseEvent & TouchEvent) {
-    stop(event);
-
     if (!this._isDragging) {
       this._startInfo = this._analyze(event, {});
 
@@ -53,8 +51,6 @@ export class Drag {
   }
 
   private _onMove(event: MouseEvent & TouchEvent) {
-    stop(event);
-
     if (!this._startInfo) {
       return;
     }
