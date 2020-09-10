@@ -37,6 +37,7 @@
   height: 265px;
   width: 400px;
   margin: 0 auto;
+  border-radius: 4px;
 }
 
 .demoSection .image-slide {
@@ -49,10 +50,6 @@
   width: 20px;
   display: block;
   fill: currentcolor;
-}
-
-.demoSection .image-swiper .virchual__frame {
-  border-radius: 4px;
 }
 
 .nav-footer {

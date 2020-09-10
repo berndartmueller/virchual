@@ -1,5 +1,3 @@
-import { identity } from './types';
-import { debounce } from './utils/debouncer';
 import { Event, stop } from './utils/event';
 
 export class Drag {
@@ -13,34 +11,20 @@ export class Drag {
   private _isDragging = false;
 
   private _eventBus: Event;
-
-  // bound event handlers (to keep `this` context)
-  private _eventBindings: {
-    onStart: identity;
-    onMove: identity;
-    onEnd: identity;
-  };
-
   constructor(private _frame: HTMLElement, { event }: { event: Event }) {
     this._eventBus = event;
-
-    this._eventBindings = {
-      onStart: this._onStart.bind(this),
-      onMove: debounce(this._onMove.bind(this), 1),
-      onEnd: this._onEnd.bind(this),
-    };
   }
 
   mount() {
-    this._eventBus.on('touchstart mousedown', this._eventBindings.onStart, this._frame, { passive: true });
-    this._eventBus.on('touchmove mousemove', this._eventBindings.onMove, this._frame, { passive: false });
-    this._eventBus.on('touchend touchcancel mouseleave mouseup dragend', this._eventBindings.onEnd, this._frame);
+    this._eventBus.on('touchstart mousedown', this._onStart, this._frame, { passive: true });
+    this._eventBus.on('touchmove mousemove', this._onMove, this._frame, { passive: false });
+    this._eventBus.on('touchend touchcancel mouseleave mouseup dragend', this._onEnd, this._frame);
   }
 
   /**
    * Called when the track starts to be dragged.
    */
-  private _onStart(event: MouseEvent & TouchEvent) {
+  private _onStart = (event: MouseEvent & TouchEvent) => {
     if (!this._isDragging) {
       this._startInfo = this._analyze(event, {});
 
@@ -48,9 +32,9 @@ export class Drag {
 
       this._eventBus.emit('dragstart', this._currentInfo);
     }
-  }
+  };
 
-  private _onMove(event: MouseEvent & TouchEvent) {
+  private _onMove = (event: MouseEvent & TouchEvent) => {
     if (!this._startInfo) {
       return;
     }
@@ -68,7 +52,20 @@ export class Drag {
         this._isDragging = true;
       }
     }
-  }
+  };
+
+  /**
+   * Called when dragging ends.
+   */
+  private _onEnd = () => {
+    this._startInfo = null;
+
+    if (this._isDragging) {
+      this._goTo(this._currentInfo);
+
+      this._isDragging = false;
+    }
+  };
 
   /**
    * Determine whether to start moving the track or not by drag angle.
@@ -83,19 +80,6 @@ export class Drag {
     const dragAngleThreshold = 45;
 
     return angle < dragAngleThreshold;
-  }
-
-  /**
-   * Called when dragging ends.
-   */
-  private _onEnd() {
-    this._startInfo = null;
-
-    if (this._isDragging) {
-      this._goTo(this._currentInfo);
-
-      this._isDragging = false;
-    }
   }
 
   /**

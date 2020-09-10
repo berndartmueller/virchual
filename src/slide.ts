@@ -1,4 +1,5 @@
 import { ELEMENT_CLASSES } from './constants';
+
 import { identity } from './types';
 import { addOrRemoveClass, append, prepend as prependFn, remove, createElement } from './utils/dom';
 import { noop } from './utils/utils';
@@ -17,9 +18,9 @@ export class Slide {
 
   private _hasChanged = false;
   private _html: string;
-  private _isBusyTranslating: boolean;
+  private _isIdle = true;
   private _transitionEndCallback: identity = noop;
-  private _asyncAction: identity = noop;
+  private _idleCallback: identity = noop;
 
   constructor(html: string | HTMLElement, private _frame: HTMLElement, private _imports: ComponentDependencies) {
     if (typeof html === 'string') {
@@ -41,8 +42,13 @@ export class Slide {
     this._hasChanged = true;
   }
 
+  /**
+   * Render and mount slide into DOM.
+   *
+   * @param prepend Either prepend slide to frame DOM element or append.
+   */
   mount(prepend = false) {
-    this._doAfterTranslating(() => {
+    this._onIdle(() => {
       if (this.isMounted) {
         // slide has changed -> update in DOM
         if (this._hasChanged) {
@@ -66,12 +72,17 @@ export class Slide {
     });
   }
 
+  /**
+   * Unmount and remove slide from DOM.
+   */
   unmount() {
     console.debug('[Unmount] Slide - Start', this);
 
     this.isMounted = false;
 
-    this._doAfterTranslating(() => {
+    this._onIdle(() => {
+      this._unbindEvents();
+
       remove(this.ref);
 
       console.debug('[Unmount] Slide - End', this);
@@ -101,17 +112,15 @@ export class Slide {
   translate(xPosition: string, { easing, done }: { easing?: boolean; done?: identity } = {}) {
     this._transitionEndCallback = done || noop;
 
+    this._isIdle = easing !== true;
+
+    let value = '';
+
     if (easing) {
-      console.log('Translate WITH easing', this, xPosition);
-
-      this._isBusyTranslating = true;
-
-      this.ref.style.transition = `transform ${this._imports.virchual.settings['speed']}ms ${this._imports.virchual.settings['easing']}`;
-    } else {
-      console.log('Translate without easing', this, xPosition);
-      this.ref.style.transition = '';
+      value = `transform ${this._imports.virchual.settings['speed']}ms ${this._imports.virchual.settings['easing']}`;
     }
 
+    this.ref.style.transition = value;
     this.ref.style.transform = `translate3d(calc(${this.position}% + ${xPosition}), 0, 0)`;
   }
 
@@ -124,19 +133,13 @@ export class Slide {
   }
 
   private _bindEvents() {
-    this.ref.addEventListener('transitionend', () => {
-      console.log('END', this);
-      this._isBusyTranslating = false;
+    this._imports.eventBus.on('transitionend', this._onTransitionEnd, this.ref);
+    this._imports.eventBus.on('move', this._onMove);
+  }
 
-      this.ref.style.transition = '';
-
-      this._asyncAction();
-      this._transitionEndCallback();
-    });
-
-    this._imports.eventBus.on('move', () => {
-      this._isBusyTranslating = false;
-    });
+  private _unbindEvents() {
+    this._imports.eventBus.off('transitionend', this._onTransitionEnd, this.ref);
+    this._imports.eventBus.off('move', this._onMove);
   }
 
   private _update() {
@@ -153,20 +156,41 @@ export class Slide {
     this.translate('0%');
   }
 
-  private _doAfterTranslating(callback: identity) {
+  /**
+   * Execute callback as soon as slide is idle and all transitions finished.
+   *
+   * @param callback Callback function.
+   */
+  private _onIdle(callback: identity) {
     // call callback immediately
-    if (!this._isBusyTranslating) {
+    if (this._isIdle) {
       callback();
 
       return;
     }
 
-    console.log('NEEDS ASYNC', this);
-    this._asyncAction = () => {
-      console.log('ASYNC ACTION', this);
+    this._idleCallback = () => {
       callback();
 
-      this._asyncAction = noop;
+      this._resetIdleCallback();
     };
   }
+
+  private _resetIdleCallback() {
+    this._idleCallback = noop;
+    this._isIdle = true;
+  }
+
+  private _onTransitionEnd = () => {
+    this.ref.style.transition = '';
+
+    this._idleCallback();
+    this._transitionEndCallback();
+
+    this._resetIdleCallback();
+  };
+
+  private _onMove = () => {
+    this._resetIdleCallback();
+  };
 }

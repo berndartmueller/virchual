@@ -58,14 +58,14 @@ export class Event {
    * @param events - A event name or names split by space.
    * @param element - Optional. removeEventListener() will be called when this arg is provided.
    */
-  off(events: string, element?: EventTarget): Event;
+  off(events: string, handler: EventHandler, element?: EventTarget): Event;
   off(events: { [event: string]: EventHandler }, element?: EventTarget): Event;
-  off(events: string | { [event: string]: EventHandler }, element?: EventTarget): Event {
+  off(events: string | { [event: string]: EventHandler }, element?: EventTarget | EventHandler, target?: EventTarget): Event {
     if (typeof events === 'string') {
-      events.split(' ').forEach(event => this._removeEvent(event, element));
+      events.split(' ').forEach(event => this._removeEvent(event, target, element as EventHandler));
     } else {
       for (const event in events) {
-        this._removeEvent(event, element);
+        this._removeEvent(event, element as EventTarget, events[event]);
       }
     }
 
@@ -110,9 +110,9 @@ export class Event {
     this._handlers.push({ event, handler: handler as EventHandler, elm: element as EventTarget, opts: opts });
   }
 
-  private _removeEvent(event: string, element: EventTarget) {
+  private _removeEvent(event: string, element: EventTarget, handler: EventHandler) {
     this._handlers = this._handlers.filter(item => {
-      if (item && item.event === event && item.elm === element) {
+      if (item && item.event === event && item.handler === handler && item.elm === element) {
         this._unroll(item);
 
         return false;

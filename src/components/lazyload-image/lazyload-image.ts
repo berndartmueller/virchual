@@ -1,5 +1,5 @@
+import { range, slidingWindow } from '@virchual/utils/index';
 import { ComponentDependencies } from './../component';
-import { slidingWindow, range } from '@virchual/utils/index';
 
 export type LazyLoadImageSettings = {
   /**
@@ -45,10 +45,6 @@ function getImage(image: HTMLImageElement | HTMLPictureElement): HTMLImageElemen
 export class LazyLoadImage {
   private _lazyload: boolean;
   private _lazyloadSelector: string;
-  private _events: {
-    load: LazyLoadImage['_onLoad'];
-    error: LazyLoadImage['_onError'];
-  };
 
   constructor(private _imports: ComponentDependencies, _settings: LazyLoadImageSettings) {
     const { lazyload, lazyloadSelector } = {
@@ -59,10 +55,6 @@ export class LazyLoadImage {
 
     this._lazyload = lazyload;
     this._lazyloadSelector = lazyloadSelector;
-    this._events = {
-      load: this._onLoad.bind(this),
-      error: this._onError.bind(this),
-    };
 
     // exit in case lazy loading is disabled
     if (!this._lazyload) {
@@ -139,7 +131,7 @@ export class LazyLoadImage {
         source.setAttribute('src', source.dataset.src);
         source.removeAttribute('data-src');
 
-        this._imports.eventBus.on(this._events, source);
+        this._imports.eventBus.on(this._getEvents(), source);
       }
 
       if (srcSetData || srcData) {
@@ -153,19 +145,26 @@ export class LazyLoadImage {
     }
   }
 
-  private _onLoad(event: Event) {
+  private _onLoad = (event: Event) => {
     const image = event.target as HTMLImageElement;
 
     this._completeLoading(image);
-  }
+  };
 
-  private _onError(event: Event) {
+  private _onError = (event: Event) => {
     const image = event.target as HTMLImageElement;
     const target = getImage(image);
 
     target.classList.add(ERROR_CLASSNAME);
 
     this._completeLoading(image);
+  };
+
+  private _getEvents() {
+    return {
+      load: this._onLoad,
+      error: this._onError,
+    };
   }
 
   private _completeLoading(image: HTMLImageElement) {
@@ -174,6 +173,6 @@ export class LazyLoadImage {
     target.classList.remove(LOADING_CLASSNAME);
     target.classList.add(COMPLETE_CLASSNAME);
 
-    this._imports.eventBus.off(this._events, image);
+    this._imports.eventBus.off(this._getEvents(), image);
   }
 }
