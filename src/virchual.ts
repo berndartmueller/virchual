@@ -148,6 +148,10 @@ export class Virchual {
    * Go to previous slide.
    */
   prev() {
+    if (this._isBusy) {
+      return;
+    }
+
     console.debug('[Controls] Previous');
 
     this._goTo(PREV);
@@ -157,6 +161,10 @@ export class Virchual {
    * Go to next slide.
    */
   next() {
+    if (this._isBusy) {
+      return;
+    }
+
     console.debug('[Controls] Next');
 
     this._goTo(NEXT);
@@ -186,14 +194,14 @@ export class Virchual {
       return;
     }
 
+    this._isBusy = true;
+
     const sign: Sign = control === PREV ? -1 : +1;
     const nextIndex = this.index + sign * 1;
     const newIndex = rewind(nextIndex, this._getSlidesLength() - 1);
-    const isRewind = newIndex !== nextIndex;
     const positionX = `${sign * -100}%`;
 
     const handleGoTo = () => {
-      this._isBusy = false;
       this.index = newIndex;
 
       this._mountAndUnmountSlides(control);
@@ -203,16 +211,12 @@ export class Virchual {
       move();
 
       this._eventBus.emit('move', { index: this.index, control });
+
+      this._isBusy = false;
     };
 
-    // if rewind necessary, delay further processing until movement has finished
-    if (isRewind) {
-      this._move(positionX, sign, { callback: handleGoTo });
-    } else {
-      this._move(positionX, sign);
-
-      handleGoTo();
-    }
+    // delay further processing until movement has finished
+    this._move(positionX, sign, { callback: handleGoTo });
   }
 
   /**
@@ -352,11 +356,11 @@ export class Virchual {
   /**
    * Move slides to their new position.
    *
-   * @param xPosition New slide position. Unit (px, %,..) has to be given.
+   * @param positionX New slide position. Unit (px, %,..) has to be given.
    * @param sign Direction. Either -1 or +1.
    * @param callback Callback function which is called after moving has finished.
    */
-  private _move(xPosition: string, sign: Sign, { ease, callback }: { ease?: boolean; callback?: identity } = {}) {
+  private _move(positionX: string, sign: Sign, { ease, callback }: { ease?: boolean; callback?: identity } = {}) {
     const window = this.settings.window;
 
     let mountableSlideIndices = slidingWindow(range(0, this._getSlidesLength(true) - 1), this.index, window);
@@ -371,16 +375,18 @@ export class Virchual {
 
     mountableSlideIndices = mountableSlideIndices.slice(start, end);
 
+    let callbacksCalled = 0;
+
     mountableSlideIndices.forEach(slideIndex => {
       const slide = this._slides[slideIndex];
 
-      slide.translate(xPosition, {
+      slide.translate(positionX, {
         ease: ease ?? true,
         done: () => {
-          if (callback) {
-            callback();
+          callbacksCalled++;
 
-            callback = null;
+          if (callback && callbacksCalled === mountableSlideIndices.length) {
+            callback();
           }
         },
       });

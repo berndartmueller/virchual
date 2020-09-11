@@ -2,6 +2,3 @@
 import { Virchual } from './virchual';
 
 export default Virchual;
-// // For CommonJS default export support
-// exports = Virchual;
-// exports.__esModule = true;
