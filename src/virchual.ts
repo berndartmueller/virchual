@@ -1,21 +1,13 @@
 import { ComponentConstructor } from './components/component';
+import { ELEMENT_CLASSES, NEXT, PREV } from './constants';
 import { Drag } from './drag';
 import { Pagination } from './pagination';
 import { Slide } from './slide';
-import { identity, Sign, Direction } from './types';
+import { Direction, identity, Sign } from './types';
 import { map } from './utils/dom';
 import { Event, stop } from './utils/event';
 import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
-import { ELEMENT_CLASSES, PREV, NEXT } from './constants';
-
-type DiffAction = 'mount' | 'unmount';
-
-type Diff = {
-  _index: number;
-  _slideIndex: number;
-  _centerDistance?: number;
-};
 
 export type VirchualSettings = {
   slides?: () => string[];
@@ -25,7 +17,7 @@ export type VirchualSettings = {
   window?: number;
 };
 
-export function getSlideByIndex(index: number, slides: Slide[]): Slide {
+function getSlideByIndex(index: number, slides: Slide[]): Slide {
   const slide = slides.find(slide => slide.idx === index);
 
   return slide || slides[index];
@@ -40,6 +32,7 @@ export class Virchual {
   private _eventBus: Event;
   private _isMounted = false;
   private _isBusy = false;
+  private _isDragging = false;
   private _isEnabled = true;
   private _pagination: Pagination;
 
@@ -321,7 +314,7 @@ export class Virchual {
    * @param event A click event.
    */
   private _onClick = (event: MouseEvent) => {
-    this._isBusy && stop(event);
+    this._isDragging && stop(event);
   };
 
   /**
@@ -330,11 +323,11 @@ export class Virchual {
    * @param event
    */
   private _onDrag = (event: { offset: { x: number; y: number }; control: Direction }) => {
-    if (!this._isEnabled) {
+    if (!this._isEnabled || this._isBusy) {
       return;
     }
 
-    this._isBusy = true;
+    this._isDragging = true;
 
     const sign = event.control === PREV ? -1 : +1;
     const positionX = -1 * sign * Math.abs(event.offset.x);
@@ -351,6 +344,8 @@ export class Virchual {
     console.debug('[Drag] Drag end', event);
 
     this._goTo(event.control);
+
+    this._isDragging = false;
   };
 
   /**

@@ -18,9 +18,7 @@ export class Slide {
 
   private _hasChanged = false;
   private _html: string;
-  private _isIdle = true;
   private _transitionEndCallback: identity = noop;
-  private _idleCallback: identity = noop;
 
   constructor(html: string | HTMLElement, private _frame: HTMLElement, private _imports: ComponentDependencies) {
     if (typeof html === 'string') {
@@ -50,45 +48,39 @@ export class Slide {
    * @param prepend Either prepend slide to frame DOM element or append.
    */
   mount(prepend = false) {
-    this._onIdle(() => {
-      if (this.isMounted) {
-        // slide has changed -> update in DOM
-        if (this._hasChanged) {
-          this._update();
-        }
-
-        return;
+    if (this.isMounted) {
+      // slide has changed -> update in DOM
+      if (this._hasChanged) {
+        this._update();
       }
 
-      this._render();
+      return;
+    }
 
-      console.debug('[Mount] Slide', this);
+    this._render();
 
-      this.isMounted = true;
+    this.isMounted = true;
 
-      this._bindEvents();
+    console.debug('[Mount] Slide', this);
 
-      const insert = prepend ? prependFn : append;
+    this._bindEvents();
 
-      insert(this._frame, this.ref);
-    });
+    const insert = prepend ? prependFn : append;
+
+    insert(this._frame, this.ref);
   }
 
   /**
    * Unmount and remove slide from DOM.
    */
   unmount() {
-    console.debug('[Unmount] Slide - Start', this);
+    console.debug('[Unmount] Slide', this);
 
     this.isMounted = false;
 
-    this._onIdle(() => {
-      this._unbindEvents();
+    this._unbindEvents();
 
-      remove(this.ref);
-
-      console.debug('[Unmount] Slide - End', this);
-    });
+    remove(this.ref);
   }
 
   /**
@@ -114,8 +106,6 @@ export class Slide {
   translate(xPosition: string, { ease, done }: { ease?: boolean; done?: identity } = {}) {
     this._transitionEndCallback = done || noop;
 
-    this._isIdle = ease !== true;
-
     let value = '';
 
     if (ease) {
@@ -136,12 +126,10 @@ export class Slide {
 
   private _bindEvents() {
     this._imports.eventBus.on('transitionend', this._onTransitionEnd, this.ref);
-    this._imports.eventBus.on('move', this._onMove);
   }
 
   private _unbindEvents() {
     this._imports.eventBus.off('transitionend', this._onTransitionEnd, this.ref);
-    this._imports.eventBus.off('move', this._onMove);
   }
 
   private _update() {
@@ -158,41 +146,9 @@ export class Slide {
     this.translate('0%');
   }
 
-  /**
-   * Execute callback as soon as slide is idle and all transitions finished.
-   *
-   * @param callback Callback function.
-   */
-  private _onIdle(callback: identity) {
-    // call callback immediately
-    if (this._isIdle) {
-      callback();
-
-      return;
-    }
-
-    this._idleCallback = () => {
-      callback();
-
-      this._resetIdleCallback();
-    };
-  }
-
-  private _resetIdleCallback() {
-    this._idleCallback = noop;
-    this._isIdle = true;
-  }
-
   private _onTransitionEnd = () => {
     this.ref.style.transition = '';
 
-    this._idleCallback();
     this._transitionEndCallback();
-
-    this._resetIdleCallback();
-  };
-
-  private _onMove = () => {
-    this._resetIdleCallback();
   };
 }

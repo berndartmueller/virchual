@@ -3,7 +3,7 @@ import { Virchual as VirchualCore, VirchualSettings as VirchualCoreSettings } fr
 
 export type VirchualSettings = VirchualCoreSettings & ControlsSettings;
 
-export default class Virchual extends VirchualCore {
+export class Virchual extends VirchualCore {
   constructor(container: HTMLElement, settings: VirchualSettings = {}) {
     super(container, settings);
   }
