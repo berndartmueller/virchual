@@ -86,7 +86,7 @@ export class LazyLoadImage {
    */
   private _getImages() {
     const indices = range(0, this._imports.virchual.getSlides(true).length - 1);
-    const slidesWindowIndices = slidingWindow(indices, this._imports.virchual.currentIndex, 1);
+    const slidesWindowIndices = slidingWindow(indices, this._imports.virchual.index, 1);
 
     const images: Array<HTMLImageElement | HTMLPictureElement> = [];
 

@@ -91,7 +91,7 @@ export class Pagination {
     range(0, Math.min(this._bulletsLength, this._totalSlides) - 1).forEach(index => {
       const isEdge = isEdgeBullet(index, index, this._bulletsLength, this._totalSlides);
 
-      const bullet = this._renderBullet(index, { isEdge, isActive: index === this._currentIndex });
+      const bullet = this._renderBullet(index, { _isEdge: isEdge, _isActive: index === this._currentIndex });
 
       append(this._ref, bullet);
     });
@@ -126,7 +126,13 @@ export class Pagination {
     }
 
     each(this._ref.querySelectorAll('span'), (bullet, index) => {
-      this._handleBulletMovement({ bullet, index, sign, removeBullet, removeBulletIndex, activeIndex: mappedActiveIndex });
+      this._handleBulletMovement({
+        _bullet: bullet,
+        _index: index,
+        _sign: sign,
+        _removeBulletIndex: removeBulletIndex,
+        _activeIndex: mappedActiveIndex,
+      });
     });
 
     // append or prepend new bullet
@@ -135,60 +141,61 @@ export class Pagination {
       const realIndex = getRealIndex(insertBulletIndex, this._currentIndex, mappedActiveIndex);
       const isEdge = isEdgeBullet(insertBulletIndex, realIndex, this._bulletsLength, this._totalSlides);
 
-      const bullet = this._renderBullet(insertBulletIndex, { isEdge });
+      const bullet = this._renderBullet(insertBulletIndex, { _isEdge: isEdge });
 
       this._insertBullet(sign, bullet);
     }
   }
 
   private _handleBulletMovement({
-    bullet,
-    index,
-    activeIndex,
-    sign,
-    removeBullet,
-    removeBulletIndex,
+    _bullet,
+    _index,
+    _activeIndex,
+    _sign,
+    _removeBulletIndex,
   }: {
-    bullet: HTMLElement;
-    index: number;
-    activeIndex: number;
-    sign: Sign;
-    removeBullet: boolean;
-    removeBulletIndex: number;
+    _bullet: HTMLElement;
+    _index: number;
+    _activeIndex: number;
+    _sign: Sign;
+    _removeBulletIndex: number;
   }) {
-    if (removeBulletIndex === index) {
-      remove(bullet);
+    if (_removeBulletIndex === _index) {
+      remove(_bullet);
 
       return;
     }
 
     // shift index due to remove bullet
-    index = index - (removeBullet ? sign : 0);
+    _index = _index - (_removeBulletIndex > -1 ? _sign : 0);
 
-    const realIndex = getRealIndex(index, this._currentIndex, activeIndex);
-    const isEdge = isEdgeBullet(index, realIndex, this._bulletsLength, this._totalSlides);
+    const realIndex = getRealIndex(_index, this._currentIndex, _activeIndex);
+    const _isEdge = isEdgeBullet(_index, realIndex, this._bulletsLength, this._totalSlides);
 
-    this._setAttributes(bullet, {
-      isEdge,
-      isActive: index === activeIndex,
-      position: removeBullet ? index * this._diameter : undefined,
+    this._setAttributes(_bullet, {
+      _isEdge,
+      _isActive: _index === _activeIndex,
+      _position: _removeBulletIndex > -1 ? _index * this._diameter : undefined,
     });
   }
 
-  private _renderBullet(index: number, { isActive, isEdge }: { isActive?: boolean; isEdge?: boolean } = {}) {
+  private _renderBullet(index: number, { _isActive, _isEdge }: { _isActive?: boolean; _isEdge?: boolean } = {}) {
     const element = createElement('span', { classNames: ELEMENT_CLASSES._paginationBullet });
 
-    this._setAttributes(element, { isActive, isEdge, position: index * this._diameter });
+    this._setAttributes(element, { _isActive, _isEdge, _position: index * this._diameter });
 
     return element;
   }
 
-  private _setAttributes(bullet: HTMLElement, { isActive, isEdge, position }: { isActive: boolean; isEdge: boolean; position?: number }) {
-    addOrRemoveClass(bullet, ELEMENT_CLASSES._paginationBulletActive, !isActive);
-    addOrRemoveClass(bullet, ELEMENT_CLASSES._paginationBulletEdge, !isEdge);
+  private _setAttributes(
+    bullet: HTMLElement,
+    { _isActive, _isEdge, _position }: { _isActive: boolean; _isEdge: boolean; _position?: number },
+  ) {
+    addOrRemoveClass(bullet, ELEMENT_CLASSES._paginationBulletActive, !_isActive);
+    addOrRemoveClass(bullet, ELEMENT_CLASSES._paginationBulletEdge, !_isEdge);
 
-    if (position != null) {
-      bullet.style.transform = `translateX(${position}px)`;
+    if (_position != null) {
+      bullet.style.transform = `translateX(${_position}px)`;
     }
   }
 

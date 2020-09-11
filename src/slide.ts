@@ -111,14 +111,14 @@ export class Slide {
    * @param easing Enable or disable transition easing.
    * @param done Callback function after transition has ended.
    */
-  translate(xPosition: string, { easing, done }: { easing?: boolean; done?: identity } = {}) {
+  translate(xPosition: string, { ease, done }: { ease?: boolean; done?: identity } = {}) {
     this._transitionEndCallback = done || noop;
 
-    this._isIdle = easing !== true;
+    this._isIdle = ease !== true;
 
     let value = '';
 
-    if (easing) {
+    if (ease) {
       value = `transform ${this._imports.virchual.settings.speed}ms ${this._imports.virchual.settings.easing}`;
     }
 

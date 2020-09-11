@@ -1,3 +1,4 @@
+import { Sign } from './types';
 /**
  * A root class name.
  */
@@ -6,8 +7,8 @@ const SLIDE = `${ROOT}__slide`;
 const PAGINATION = `${ROOT}__pagination`;
 const PAGINATION_BULLET = `${PAGINATION}-bullet`;
 
-export const PREV = 'prev';
-export const NEXT = 'next';
+export const PREV: Sign = -1;
+export const NEXT: Sign = 1;
 
 /**
  * The definition table of all classes for elements.

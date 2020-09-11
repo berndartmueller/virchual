@@ -9,21 +9,12 @@ import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
 import { ELEMENT_CLASSES, PREV, NEXT } from './constants';
 
-type DiffActionMount = {
-  type: 'mount';
-  centerDistance: number;
-};
-
-type DiffActionUnmount = {
-  type: 'unmount';
-};
-
-type DiffAction = DiffActionMount | DiffActionUnmount;
+type DiffAction = 'mount' | 'unmount';
 
 type Diff = {
-  index: number;
-  slideIndex: number;
-  action: DiffAction;
+  _index: number;
+  _slideIndex: number;
+  _centerDistance?: number;
 };
 
 export type VirchualSettings = {
@@ -35,15 +26,17 @@ export type VirchualSettings = {
 };
 
 export function getSlideByIndex(index: number, slides: Slide[]): Slide {
-  return slides.find(slide => slide.idx === index);
+  const slide = slides.find(slide => slide.idx === index);
+
+  return slide || slides[index];
 }
 
 export class Virchual {
   frame: HTMLElement;
-  currentIndex = 0;
+  index = 0;
 
   private _slides: Slide[] = [];
-  private _virtualSlidesWindow: number[] = [];
+  private _virtualSlidesWindowPrevious: number[] = [];
   private _eventBus: Event;
   private _isMounted = false;
   private _isBusy = false;
@@ -53,7 +46,7 @@ export class Virchual {
   constructor(public container: HTMLElement, public settings: VirchualSettings = {}) {
     this.frame = this.container.querySelector(`.${ELEMENT_CLASSES._frame}`);
 
-    this.currentIndex = 0;
+    this.index = 0;
     this.settings = {
       slides: null,
       speed: 200,
@@ -68,9 +61,9 @@ export class Virchual {
     this._slides = [...this._hydrate(), ...this._initSlides()];
     this._slides = [...this._slides, ...this._createClones()];
 
-    this.settings.window = Math.min(this.settings.window, Math.max(this.getSlidesLength() - 1, 0));
+    this.settings.window = Math.min(this.settings.window, Math.max(this._getSlidesLength() - 1, 0));
 
-    this._pagination = new Pagination(this.container, this.getSlidesLength(), { isActive: this.settings.pagination });
+    this._pagination = new Pagination(this.container, this._getSlidesLength(), { isActive: this.settings.pagination });
     this._pagination.render();
   }
 
@@ -82,16 +75,6 @@ export class Virchual {
    */
   getSlides(includeClones = false): Slide[] {
     return includeClones ? this._slides : this._slides.filter(slide => !slide.isClone);
-  }
-
-  /**
-   * Return total number of slides.
-   *
-   * @param includeClones Whether to include cloned slides or not.
-   * @return Total number of slides.
-   */
-  getSlidesLength(includeClones = false): number {
-    return this.getSlides(includeClones).length;
   }
 
   /**
@@ -108,7 +91,7 @@ export class Virchual {
    * Mount components.
    */
   mount() {
-    if (this.getSlidesLength() < 2 || this._isMounted) {
+    if (this._getSlidesLength() < 2 || this._isMounted) {
       return;
     }
 
@@ -188,30 +171,38 @@ export class Virchual {
     this._eventBus.emit('destroy');
   }
 
+  /**
+   * Return total number of slides.
+   *
+   * @param includeClones Whether to include cloned slides or not.
+   * @return Total number of slides.
+   */
+  private _getSlidesLength(includeClones = false): number {
+    return this.getSlides(includeClones).length;
+  }
+
   private _goTo(control: Direction) {
     if (!this._isEnabled) {
       return;
     }
 
     const sign: Sign = control === PREV ? -1 : +1;
-    const nextIndex = this.currentIndex + sign * 1;
-    const newIndex = rewind(nextIndex, this.getSlidesLength() - 1);
+    const nextIndex = this.index + sign * 1;
+    const newIndex = rewind(nextIndex, this._getSlidesLength() - 1);
     const isRewind = newIndex !== nextIndex;
     const positionX = `${sign * -100}%`;
 
     const handleGoTo = () => {
       this._isBusy = false;
-      this.currentIndex = newIndex;
+      this.index = newIndex;
 
-      this._mountAndUnmountSlides({
-        control: control,
-      });
+      this._mountAndUnmountSlides(control);
 
       const move = control === PREV ? this._pagination.prev.bind(this._pagination) : this._pagination.next.bind(this._pagination);
 
       move();
 
-      this._eventBus.emit('move', { index: this.currentIndex, control });
+      this._eventBus.emit('move', { index: this.index, control });
     };
 
     // if rewind necessary, delay further processing until movement has finished
@@ -244,7 +235,7 @@ export class Virchual {
    * Create clones of slides in case there are less slides than window size.
    */
   private _createClones(): Slide[] {
-    const slidesLength = this.getSlidesLength();
+    const slidesLength = this._getSlidesLength();
     const totalSlidingWindowLength = this.settings.window * 2 + 1;
     const clones: Slide[] = [];
 
@@ -267,95 +258,52 @@ export class Virchual {
   /**
    * Mount and unmount slides.
    */
-  private _mountAndUnmountSlides({ control }: { control?: Direction } = {}) {
+  private _mountAndUnmountSlides(control?: Direction) {
     const window = this.settings.window;
-    const indicesWithoutClones = range(0, this.getSlidesLength() - 1);
-    const indices = range(0, this.getSlidesLength(true) - 1);
+    const indicesWithoutClones = range(0, this._getSlidesLength() - 1);
+    const indices = range(0, this._getSlidesLength(true) - 1);
 
-    const virtualSlidesWindow = slidingWindow(indices, this.currentIndex, window);
-    const virtualSlidesWindowWithoutClones = slidingWindow(indicesWithoutClones, this.currentIndex, window);
+    const virtualSlidesWindow = slidingWindow(indices, this.index, window);
+    const virtualSlidesWindowWithoutClones = slidingWindow(indicesWithoutClones, this.index, window);
 
-    const diffs = this._diff(virtualSlidesWindow, this._virtualSlidesWindow);
+    const previousWindowLength = this._virtualSlidesWindowPrevious.length;
 
-    diffs.forEach(diff => {
-      const slideIndex = diff.slideIndex;
-      const realSlideIndex = virtualSlidesWindowWithoutClones[diff.index];
-      const isActive = slideIndex === this.currentIndex;
-      let slide = getSlideByIndex(slideIndex, this._slides) || this._slides[slideIndex];
+    // unmount
+    if (previousWindowLength > 0) {
+      const index = control === NEXT ? 0 : previousWindowLength - 1;
+      const slideIndex = this._virtualSlidesWindowPrevious[index];
 
-      // unmount
-      if (diff.action.type === 'unmount') {
-        slide.unmount();
+      const slide = getSlideByIndex(slideIndex, this._slides);
 
-        if (slide.isClone) {
-          this._slides.splice(slideIndex, 1);
-        }
+      slide.unmount();
 
-        return;
+      if (slide.isClone) {
+        this._slides.splice(slideIndex, 1);
       }
+    }
 
-      // mount
-      const prepend = control === PREV || diff.action.centerDistance < 0;
+    // mount
+    virtualSlidesWindow.forEach((slideIndex, index) => {
+      let slide = getSlideByIndex(slideIndex, this._slides);
+      const centerDistance = index - Math.floor(virtualSlidesWindow.length / 2);
+      const prepend = control === PREV || centerDistance < 0;
 
       // clone new slide
       if (slide == null) {
+        const realSlideIndex = virtualSlidesWindowWithoutClones[index];
+
         slide = this._slides[realSlideIndex].clone();
 
         this._slides.splice(slideIndex, 0, slide);
       }
 
       slide.idx = slideIndex;
-      slide.set('isActive', isActive).set('position', diff.action.centerDistance * 100);
+      slide.set('isActive', slideIndex === this.index).set('position', centerDistance * 100);
 
       slide.mount(prepend);
     });
 
-    this._virtualSlidesWindow = virtualSlidesWindow;
-  }
-
-  private _diff(current: number[], previous: number[]): Diff[] {
-    previous = previous || [];
-
-    const diffs: Diff[] = [
-      // unmount
-      ...this._calculateDiff(previous, current, (isFound, diff) => {
-        if (!isFound) {
-          diff.action.type = 'unmount';
-
-          return diff;
-        }
-      }),
-
-      // mount
-      ...this._calculateDiff(current, []),
-    ];
-
-    return diffs;
-  }
-
-  private _calculateDiff(arrayA: number[], arrayB: number[], condition?: (isFound: boolean, diff: Diff) => Diff): Diff[] {
-    const diffs: Diff[] = [];
-
-    arrayA.forEach((slideIndex, index) => {
-      let diff: Diff = {
-        index,
-        slideIndex,
-        action: {
-          type: 'mount',
-          centerDistance: index - Math.floor(arrayA.length / 2),
-        },
-      };
-
-      const left = arrayB[index - 1] - slideIndex;
-      const right = arrayB[index + 1] - slideIndex;
-      const isFound = left === 0 || right === 0;
-
-      diff = condition != null ? condition(isFound, diff) : diff;
-
-      diff && diffs.push(diff);
-    });
-
-    return diffs;
+    this._virtualSlidesWindowPrevious = virtualSlidesWindow;
   }
 
   private _bindEvents() {
@@ -387,7 +335,7 @@ export class Virchual {
     const sign = event.control === PREV ? -1 : +1;
     const positionX = -1 * sign * Math.abs(event.offset.x);
 
-    this._move(`${Math.round(positionX)}px`, sign, { easing: false });
+    this._move(`${Math.round(positionX)}px`, sign, { ease: false });
   };
 
   /**
@@ -408,20 +356,26 @@ export class Virchual {
    * @param sign Direction. Either -1 or +1.
    * @param callback Callback function which is called after moving has finished.
    */
-  private _move(xPosition: string, sign: Sign, { easing, callback }: { easing?: boolean; callback?: identity } = {}) {
-    let mountableSlideIndices = slidingWindow(range(0, this.getSlidesLength(true) - 1), this.currentIndex, this.settings.window);
+  private _move(xPosition: string, sign: Sign, { ease, callback }: { ease?: boolean; callback?: identity } = {}) {
+    const window = this.settings.window;
+
+    let mountableSlideIndices = slidingWindow(range(0, this._getSlidesLength(true) - 1), this.index, window);
+
+    let start = 0;
+    let end = window + 1;
 
     if (sign > 0) {
-      mountableSlideIndices = mountableSlideIndices.slice(-1 * (this.settings.window + 1));
-    } else {
-      mountableSlideIndices = mountableSlideIndices.slice(0, this.settings.window + 1);
+      start = -1 * end;
+      end = undefined;
     }
+
+    mountableSlideIndices = mountableSlideIndices.slice(start, end);
 
     mountableSlideIndices.forEach(slideIndex => {
       const slide = this._slides[slideIndex];
 
       slide.translate(xPosition, {
-        easing: easing ?? true,
+        ease: ease ?? true,
         done: () => {
           if (callback) {
             callback();

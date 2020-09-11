@@ -23,7 +23,7 @@ export class Controls {
     stop(event);
 
     const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
-    const control = button.dataset.controls as Direction;
+    const control = parseInt(button.value) as Direction;
 
     if (control === PREV) {
       this._imports.virchual.prev();
