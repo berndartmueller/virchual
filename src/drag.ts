@@ -1,4 +1,6 @@
+import { NEXT, PREV } from './constants';
 import { Event, stop } from './utils/event';
+import { Direction } from './types';
 
 export class Drag {
   // Analyzed info on starting drag.
@@ -88,7 +90,7 @@ export class Drag {
    * @param info - An info object.
    */
   private _goTo(info) {
-    const velocity = info.velocity['x'];
+    const velocity = info.velocity.x;
     const absV = Math.abs(velocity);
 
     if (absV > 0) {
@@ -112,7 +114,7 @@ export class Drag {
     offset: { x: number; y: number };
     velocity: { x: number; y: number };
     time: number;
-    control: 'prev' | 'next';
+    control: Direction;
   } {
     const { timeStamp, touches } = event;
     const { clientX, clientY } = touches ? touches[0] : event;
@@ -128,7 +130,7 @@ export class Drag {
       velocity,
       to: { x: clientX, y: clientY },
       time: timeStamp,
-      control: velocity.x < 0 ? 'next' : 'prev',
+      control: velocity.x < 0 ? NEXT : PREV,
     };
   }
 }

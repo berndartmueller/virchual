@@ -1,28 +1,31 @@
-import { stop } from '../../utils/event';
-import { ComponentDependencies } from './../component';
+import { ComponentDependencies } from '@virchual/components/component';
+import { PREV } from '@virchual/constants';
+import { each } from '@virchual/utils/dom';
+import { stop } from '@virchual/utils/event';
+import { Direction } from './../../types';
 
 export type ControlsSettings = { isEnabled?: boolean };
 
 export class Controls {
-  private _controls: HTMLButtonElement[];
+  private _controls: NodeListOf<HTMLButtonElement>;
 
   constructor(private _imports: ComponentDependencies, private _settings?: ControlsSettings) {
-    this._controls = [].slice.call(_imports.virchual.container.querySelectorAll('.virchual__control'));
+    this._controls = this._imports.virchual.container.querySelectorAll('.virchual__control');
 
     this.mount();
   }
 
   mount(): void {
-    this._controls.forEach(button => this._imports.eventBus.on('click', this._onClick, button));
+    each(this._controls, button => this._imports.eventBus.on('click', this._onClick, button));
   }
 
   private _onClick = (event: MouseEvent) => {
     stop(event);
 
     const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
-    const control = button.dataset.controls as 'prev' | 'next';
+    const control = button.dataset.controls as Direction;
 
-    if (control === 'prev') {
+    if (control === PREV) {
       this._imports.virchual.prev();
 
       return;

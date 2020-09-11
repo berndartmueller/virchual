@@ -58,3 +58,27 @@ export function addOrRemoveClass(element: HTMLElement, klass: string, remove = f
 
   element.classList.remove(klass);
 }
+
+/**
+ * Iterate over given HTML elements.
+ *
+ * @param elements HTML elements to iterate through.
+ * @param callback Callback function called on each element.
+ */
+export function each(nodes: NodeList | HTMLCollection, callback: (value: HTMLElement, index: number) => void) {
+  const elements = [].slice.call(nodes) as HTMLElement[];
+
+  elements.forEach(callback);
+}
+
+/**
+ * Map over given HTML elements.
+ *
+ * @param elements HTML elements to iterate through.
+ * @param callback Callback function called on each element.
+ */
+export function map(nodes: NodeList | HTMLCollection, callback: (value: HTMLElement, index: number) => unknown) {
+  const elements = [].slice.call(nodes) as HTMLElement[];
+
+  return elements.map(callback);
+}

@@ -119,7 +119,7 @@ export class Slide {
     let value = '';
 
     if (easing) {
-      value = `transform ${this._imports.virchual.settings['speed']}ms ${this._imports.virchual.settings['easing']}`;
+      value = `transform ${this._imports.virchual.settings.speed}ms ${this._imports.virchual.settings.easing}`;
     }
 
     this.ref.style.transition = value;

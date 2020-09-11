@@ -13,10 +13,9 @@ export function slidingWindow(source: number[], start: number, len: number): num
   }
 
   const left = range(start - len, start - 1).map(index => get(source, index));
-  const center = [source[start]];
   const right = range(start + 1, start + len).map(index => get(source, index));
 
-  const window = [...left, ...center, ...right];
+  const window = [...left, source[start], ...right];
 
   return window;
 }
@@ -31,19 +30,20 @@ export function slidingWindow(source: number[], start: number, len: number): num
  * @param index Index of array item to access.
  */
 export function get<T>(source: T[], index: number): T {
-  if (source.length === 0) {
+  const len = source.length;
+
+  if (len === 0) {
     return;
   }
 
   const isOutOfLowerBounds = index < 0;
-  const isOutOfUpperBounds = index > source.length - 1;
+  const isOutOfUpperBounds = index > len - 1;
   const isOutOfBounds = isOutOfLowerBounds || isOutOfUpperBounds;
 
   const sign = isOutOfUpperBounds ? -1 : +1;
-  const multiple = Math.max(Math.floor(Math.abs(index) / source.length), 1);
 
   if (isOutOfBounds) {
-    index += sign * multiple * source.length;
+    return get(source, index + sign * len);
   }
 
   return source[index];

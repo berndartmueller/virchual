@@ -1,3 +1,4 @@
+import { each } from './../../utils/dom';
 import { range, slidingWindow } from '@virchual/utils/index';
 import { ComponentDependencies } from './../component';
 
@@ -96,7 +97,7 @@ export class LazyLoadImage {
         return;
       }
 
-      [].forEach.call(slide.ref.querySelectorAll(this._lazyloadSelector), (img: HTMLElement) => {
+      each(slide.ref.querySelectorAll(this._lazyloadSelector), (img: HTMLElement) => {
         // skip <img> tags within <picture> tags
         if (isPictureTag(img.parentElement)) {
           return;
@@ -117,7 +118,7 @@ export class LazyLoadImage {
   private _loadImage(image: HTMLImageElement | HTMLPictureElement) {
     let hasLazyImages = false;
 
-    [].forEach.call(image.querySelectorAll('img,source'), (source: HTMLImageElement | HTMLSourceElement) => {
+    each(image.querySelectorAll('img,source'), (source: HTMLImageElement | HTMLSourceElement) => {
       const srcSetData = source.dataset.srcset;
       const srcData = source.dataset.src;
 

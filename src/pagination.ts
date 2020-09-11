@@ -1,5 +1,5 @@
 import { Sign } from './types';
-import { addOrRemoveClass, append, createElement, prepend, remove } from './utils/dom';
+import { addOrRemoveClass, append, createElement, prepend, remove, each } from './utils/dom';
 import { range, rewind } from './utils/utils';
 import { ELEMENT_CLASSES } from './constants';
 
@@ -125,9 +125,7 @@ export class Pagination {
       removeBulletIndex = sign === 1 ? 0 : this._bulletsLength - 1;
     }
 
-    const bullets = [].slice.call(this._ref.querySelectorAll('span')) as HTMLElement[];
-
-    bullets.forEach((bullet, index) => {
+    each(this._ref.querySelectorAll('span'), (bullet, index) => {
       this._handleBulletMovement({ bullet, index, sign, removeBullet, removeBulletIndex, activeIndex: mappedActiveIndex });
     });
 
