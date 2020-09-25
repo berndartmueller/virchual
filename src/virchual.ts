@@ -77,7 +77,7 @@ export class Virchual {
    * @param settings Optional settings.
    */
   register<T, U>(cls: ComponentConstructor<T, U>, settings?: U) {
-    new cls({ virchual: this, eventBus: this._eventBus }, settings);
+    new cls(this._getImports(), settings);
   }
 
   /**
@@ -172,6 +172,13 @@ export class Virchual {
     this._eventBus.emit('destroy');
   }
 
+  private _getImports() {
+    return {
+      virchual: this,
+      eventBus: this._eventBus,
+    };
+  }
+
   /**
    * Return total number of slides.
    *
@@ -218,14 +225,14 @@ export class Virchual {
   private _initSlides(): Slide[] {
     const slides = this.settings.slides && this.settings.slides();
 
-    return (slides || []).map(slide => new Slide(slide, this.frame, { virchual: this, eventBus: this._eventBus }));
+    return (slides || []).map(slide => new Slide(slide, this.frame, this._getImports()));
   }
 
   /**
    * Hydrate existing slides from DOM.
    */
   private _hydrate(): Slide[] {
-    return map(this.frame.children, element => new Slide(element, this.frame, { virchual: this, eventBus: this._eventBus })) as Slide[];
+    return map(this.frame.children, element => new Slide(element, this.frame, this._getImports())) as Slide[];
   }
 
   /**

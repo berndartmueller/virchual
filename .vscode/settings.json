@@ -1,7 +1,7 @@
 {
   "auto-close-tag.activationOnLanguage": ["html", "xml"],
   "editor.tabSize": 2,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "/Users/bernd/Projekte/private/virchual/node_modules/typescript/lib",
   "editor.detectIndentation": false,
   "autoimport.spaceBetweenBraces": true,
   "editor.formatOnSave": true,

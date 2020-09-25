@@ -24,7 +24,7 @@
     <img alt="npm (tag)" src="https://img.shields.io/npm/v/virchual/latest">
   </a>
 
-  <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/virchual@next">
+  <img alt="npm bundle size" src="http://img.badgesize.io/cdn.jsdelivr.net/npm/virchual@next/dist/index.bundle.js">
 
   <a href="https://travis-ci.org/berndartmueller/virchual" target="_blank">
     <img alt="Travis (.org)" src="https://img.shields.io/travis/berndartmueller/virchual">
@@ -77,6 +77,24 @@ Then, before your closing `<body>` tag add:
 ```html
 <script type="text/javascript" src="//cdn.jsdelivr.net/npm/virchual@next/dist/index.bundle.js"></script>
 ```
+
+## Basic
+
+dist/virchual.js
+dist/virchual.umd.js
+dist/virchual.modern.js
+
+## Complete
+
+dist/virchual.bundle.js
+dist/virchual.bundle.umd.js
+dist/virchual.bundle.modern.js
+
+## Modular
+
+dist/virchual.modular.js
+dist/virchual.modular.umd.js
+dist/virchual.modular.modern.js
 
 #### NPM & Yarn
 
