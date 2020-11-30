@@ -7,6 +7,7 @@ import { Direction } from './../../types';
 export type ControlsSettings = { isEnabled?: boolean };
 
 export class Controls {
+  // eslint-disable-next-line no-undef
   private _controls: NodeListOf<HTMLButtonElement>;
 
   constructor(private _imports: ComponentDependencies, private _settings?: ControlsSettings) {
@@ -23,7 +24,7 @@ export class Controls {
     stop(event);
 
     const button: HTMLButtonElement = (event.target as Element).closest('button') as HTMLButtonElement;
-    const control = parseInt(button.value) as Direction;
+    const control = parseInt(button.value, 10) as Direction;
 
     if (control === PREV) {
       this._imports.virchual.prev();

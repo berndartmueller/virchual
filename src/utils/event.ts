@@ -107,7 +107,7 @@ export class Event {
   private _addEvent(event: string, element: EventTarget, handler: EventHandler, opts: EventOptions) {
     element && element.addEventListener(event, handler, opts);
 
-    this._handlers.push({ event, handler: handler as EventHandler, elm: element as EventTarget, opts: opts });
+    this._handlers.push({ event, handler: handler as EventHandler, elm: element as EventTarget, opts });
   }
 
   private _removeEvent(event: string, element: EventTarget, handler: EventHandler) {

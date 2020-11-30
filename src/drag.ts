@@ -47,12 +47,10 @@ export class Drag {
       stop(event);
 
       this._eventBus.emit('drag', this._currentInfo);
-    } else {
-      if (this._shouldMove(this._currentInfo)) {
-        this._eventBus.emit('drag', this._currentInfo);
+    } else if (this._shouldMove(this._currentInfo)) {
+      this._eventBus.emit('drag', this._currentInfo);
 
-        this._isDragging = true;
-      }
+      this._isDragging = true;
     }
   };
 
