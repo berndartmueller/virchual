@@ -1,14 +1,14 @@
 import { h } from 'preact';
-import { Virchual, VirchualSlide } from '@virchual/preact/dist';
+import { Virchual, VirchualSlide } from '@virchual/preact';
 
 import '@virchual/preact/dist/index.css';
 
 function App() {
   return (
     <div>
-      <h1>Hello World!</h1>
+      <h1>Virchual - Example with Preact</h1>
 
-      <Virchual id="slider">
+      <Virchual>
         <VirchualSlide
           html={`
             <picture>

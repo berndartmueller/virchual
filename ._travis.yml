@@ -4,13 +4,13 @@ node_js:
   - '12.16.1'
 
 install:
-  - npm install
+  - yarn
 
 script:
-  - npm run lint
-  - npm run typecheck
-  - npm test
-  - npm run build
+  - yarn run lint
+  - yarn run typecheck
+  - yarn test
+  - yarn run build
 
 cache:
   directories:

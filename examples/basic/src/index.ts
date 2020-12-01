@@ -1,8 +1,5 @@
-import { LazyLoadImage } from './../../../src/components/lazyload-image/lazyload-image';
-import Virchual from '@virchual/index';
-import { Controls } from '@virchual/components/controls/controls';
-
-import './../../src/css/styles.css';
+import { Virchual, Controls, LazyLoadImage } from 'virchual';
+import 'virchual/dist/virchual.css';
 
 [].forEach.call(document.querySelectorAll('.image-swiper'), (slider: HTMLElement) => {
   const instance = new Virchual(slider, {

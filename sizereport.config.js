@@ -1,5 +1,5 @@
 module.exports = {
   repo: 'berndartmueller/virchual',
-  path: ['dist/!(*.js.map)'],
+  path: ['packages/virchual/dist/**/!(*.js.map)'],
   branch: 'master',
 };

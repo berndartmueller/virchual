@@ -1,11 +1,10 @@
-import { h, Component, VNode, toChildArray } from 'preact';
-import VirchualLib from './../../../src';
+import { Component, h, toChildArray, VNode } from 'preact';
+import { Virchual as VirchualCore } from 'virchual';
+import 'virchual/dist/virchual.css';
 import { VirchualSlide, VirchualSlideProps } from './slide';
 
-import './../../../src/css/styles.css';
-
 export interface Props {
-  id: string;
+  id?: string;
   children?: VNode<VirchualSlideProps>[] | VNode<VirchualSlideProps>;
 }
 
@@ -36,15 +35,11 @@ export class Virchual extends Component<Props, State> {
   }
 
   componentDidMount() {
-    console.log('componentDidMount', this.base);
-
-    const instance = new VirchualLib(this.base as HTMLElement, {
+    const instance = new VirchualCore(this.base as HTMLElement, {
       slides: () => this.state.slides.slice(1),
     });
 
     instance.mount();
-
-    console.log('Virchual lib instance', instance);
   }
 
   render({ id, children }: Props) {
