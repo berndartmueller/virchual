@@ -33,7 +33,7 @@
 
 <br />
 
-## Highlights
+## ✨ Highlights
 
 - Lightweight. Only **<2.8kB** (gzipped).
 - **Virtual slides** to keep DOM elements at a minimum (Lighthouse ❤️ it)
