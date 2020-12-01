@@ -9,6 +9,10 @@
   "bugs": {
     "url": "https://github.com/berndartmueller/virchual/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berndartmueller/virchual.git"
+  },
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c --watch"
@@ -25,5 +29,6 @@
   },
   "peerDependencies": {
     "preact": "^10.5.7"
-  }
+  },
+  "gitHead": "3aaccfdf764f58222581a8e6e083a08c0a01e2f2"
 }

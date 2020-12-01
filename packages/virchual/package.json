@@ -91,5 +91,6 @@
     "ts-jest": "^26.4.0",
     "typescript": "^4.0.3"
   },
-  "browserslist": "> 0.25%, not dead"
+  "browserslist": "> 0.25%, not dead",
+  "gitHead": "3aaccfdf764f58222581a8e6e083a08c0a01e2f2"
 }
