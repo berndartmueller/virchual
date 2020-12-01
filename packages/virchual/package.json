@@ -1,7 +1,7 @@
 {
   "name": "virchual",
   "amdName": "Virchual",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.",
   "browser": "dist/virchual.bundle.js",
   "types": "dist/modular/entry/entry-modular.d.ts",
