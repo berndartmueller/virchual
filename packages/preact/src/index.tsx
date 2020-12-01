@@ -1,12 +1,10 @@
-import { h, Component, VNode } from 'preact';
+import { h, Component, VNode, toChildArray } from 'preact';
 import { VirchualSlide, VirchualSlideProps } from './slide';
 
 export interface Props {
   id: string;
-  children?: VNode<VirchualSlideProps>[];
+  children?: VNode<VirchualSlideProps>[] | VNode<VirchualSlideProps>;
 }
-
-// http://jsfiddle.net/ndpjexqb/26/
 
 export class Virchual extends Component<Props> {
   constructor(props: Props) {
@@ -15,8 +13,8 @@ export class Virchual extends Component<Props> {
     const children = props.children || [];
     const slides: string[] = [];
 
-    children.map(child => {
-      const html = child.props.html;
+    toChildArray(children).map(child => {
+      const html = (child as VNode<VirchualSlideProps>).props.html;
 
       if (!html) {
         return;
@@ -24,7 +22,7 @@ export class Virchual extends Component<Props> {
 
       slides.push(html);
     });
-    console.log('slides', slides);
+
     this.state = {
       slides,
     };
@@ -38,7 +36,7 @@ export class Virchual extends Component<Props> {
     return (
       <div id={id} class="virchual image-swiper">
         <div class="virchual__frame" style="height: 100%">
-          {children?.map((child, index) => {
+          {toChildArray(children)?.map((child, index) => {
             if (index > 0) {
               return null;
             }
