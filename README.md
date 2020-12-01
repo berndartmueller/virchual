@@ -62,6 +62,16 @@ This image swiper/slider/carousel library, written in TypeScript, aims to provid
 
 Virchual uses virtual slides to only render visible slides. No unnecessary DOM elements.
 
+## Current State of Virchual
+
+- [x] Alpha version: Implementation of basic slider, controls, pagination, lazy loading images
+- [x] Basic vanilla JavaScript example
+- [ ] Preact example (ongoing)
+- [ ] React example
+- [ ] Vue.js example
+- [ ] Stable API
+- [ ] Make it smaller
+
 ## Installation
 
 #### CDN
