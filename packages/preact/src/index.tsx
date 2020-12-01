@@ -1,12 +1,19 @@
 import { h, Component, VNode, toChildArray } from 'preact';
+import VirchualLib from './../../../src';
 import { VirchualSlide, VirchualSlideProps } from './slide';
+
+import './../../../src/css/styles.css';
 
 export interface Props {
   id: string;
   children?: VNode<VirchualSlideProps>[] | VNode<VirchualSlideProps>;
 }
 
-export class Virchual extends Component<Props> {
+export interface State {
+  slides: string[];
+}
+
+export class Virchual extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -29,7 +36,15 @@ export class Virchual extends Component<Props> {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
+    console.log('componentDidMount', this.base);
+
+    const instance = new VirchualLib(this.base as HTMLElement, {
+      slides: () => this.state.slides.slice(1),
+    });
+
+    instance.mount();
+
+    console.log('Virchual lib instance', instance);
   }
 
   render({ id, children }: Props) {

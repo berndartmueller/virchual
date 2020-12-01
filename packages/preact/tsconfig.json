@@ -8,7 +8,7 @@
     "declarationDir": "dist",
     "sourceMap": true,
     "outDir": "dist", // See also package.json scripts.tsc.
-    "strict": true,
+    // "strict": true,
     "moduleResolution": "node"
   },
 

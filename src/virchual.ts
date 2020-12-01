@@ -10,7 +10,7 @@ import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
 
 export type VirchualSettings = {
-  slides?: () => string[];
+  slides?: (() => string[]) | null;
   speed?: number;
   easing?: string;
   pagination?: boolean;
@@ -24,7 +24,7 @@ function getSlideByIndex(index: number, slides: Slide[]): Slide {
 }
 
 export class Virchual {
-  frame: HTMLElement;
+  frame: HTMLElement | null;
   index = 0;
 
   private _slides: Slide[] = [];
