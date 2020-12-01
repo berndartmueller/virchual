@@ -1,5 +1,5 @@
 {
-  "name": "@virchual/preact-examples-basic",
+  "name": "@virchual/examples-basic",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -18,7 +18,5 @@
     "snowpack": "^2.17.1",
     "typescript": "^4.0.3"
   },
-  "dependencies": {
-    "preact": "^10.5.7"
-  }
+  "dependencies": {}
 }

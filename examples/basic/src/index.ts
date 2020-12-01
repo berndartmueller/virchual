@@ -1,4 +1,4 @@
-import { LazyLoadImage } from './../../src/components/lazyload-image/lazyload-image';
+import { LazyLoadImage } from './../../../src/components/lazyload-image/lazyload-image';
 import Virchual from '@virchual/index';
 import { Controls } from '@virchual/components/controls/controls';
 
