@@ -18,8 +18,8 @@ export class Event {
    * Store all event this.data.
    */
   private _handlers: Array<{
-    event: string;
-    handler: EventHandler;
+    evt: string;
+    fn: EventHandler;
     elm: EventTarget;
     opts: EventOptions;
   }> = [];
@@ -81,8 +81,8 @@ export class Event {
    */
   emit(event: string, ...args: unknown[]) {
     this._handlers.forEach(item => {
-      if (!item.elm && item.event.split('.')[0] === event) {
-        item.handler(...args);
+      if (!item.elm && item.evt.split('.')[0] === event) {
+        item.fn(...args);
       }
     });
   }
@@ -101,18 +101,18 @@ export class Event {
    * @param item - An object containing event this.data.
    */
   private _unroll(item: Event['_handlers'][0]) {
-    item.elm && item.elm.removeEventListener(item.event, item.handler, item.opts);
+    item.elm && item.elm.removeEventListener(item.evt, item.fn, item.opts);
   }
 
   private _addEvent(event: string, element: EventTarget, handler: EventHandler, opts: EventOptions) {
     element && element.addEventListener(event, handler, opts);
 
-    this._handlers.push({ event, handler: handler as EventHandler, elm: element as EventTarget, opts });
+    this._handlers.push({ evt: event, fn: handler as EventHandler, elm: element as EventTarget, opts });
   }
 
   private _removeEvent(event: string, element: EventTarget, handler: EventHandler) {
     this._handlers = this._handlers.filter(item => {
-      if (item && item.event === event && item.handler === handler && item.elm === element) {
+      if (item && item.evt === event && item.fn === handler && item.elm === element) {
         this._unroll(item);
 
         return false;

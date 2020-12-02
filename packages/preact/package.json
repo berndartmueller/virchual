@@ -14,6 +14,7 @@
     "url": "git+https://github.com/berndartmueller/virchual.git"
   },
   "scripts": {
+    "test": "echo \"Error: no test specified\"",
     "build": "rollup -c",
     "dev": "rollup -c --watch"
   },

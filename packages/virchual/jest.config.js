@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   globals: {
     'ts-jest': {
-      tsConfig: 'tsconfig.test.json',
+      tsconfig: path.join(__dirname, '/tsconfig.test.json'),
     },
   },
   moduleNameMapper: {},

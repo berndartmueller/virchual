@@ -1,7 +1,10 @@
-export function createElement(tagName: string, { classNames, html }: { classNames?: string; html?: string }) {
+export function createElement(tagName: string, { classNames, html }: { classNames?: string; html?: string } = {}) {
   const element = document.createElement(tagName);
 
-  element.className = classNames;
+  if (classNames) {
+    element.className = classNames;
+  }
+
   element.innerHTML = html || '';
 
   return element;
@@ -12,7 +15,7 @@ export function createElement(tagName: string, { classNames, html }: { className
  *
  * @param elms - Element(s) to be removed.
  */
-export function remove(element: HTMLElement) {
+export function remove(element: Element) {
   if (element && element.parentElement) {
     element.parentElement.removeChild(element);
   }

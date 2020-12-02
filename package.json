@@ -5,6 +5,7 @@
     "virchual": "yarn workspace virchual",
     "preact": "yarn workspace @virchual/preact",
     "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test",
     "publish-website": "cd website && GIT_USER=berndartmueller CURRENT_BRANCH=master yarn run publish-gh-pages"
   },
   "workspaces": [
