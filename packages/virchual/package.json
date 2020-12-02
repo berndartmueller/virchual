@@ -1,0 +1,95 @@
+{
+  "name": "virchual",
+  "amdName": "Virchual",
+  "version": "1.0.0-alpha.12",
+  "description": "Super-fast, lightweight slider and carousel, written in TypeScript without any dependencies.",
+  "browser": "dist/virchual.bundle.js",
+  "types": "dist/modular/entry/entry-modular.d.ts",
+  "source": "entry/entry-complete.ts",
+  "main": "dist/virchual.js",
+  "module": "dist/modular/virchual.esm.js",
+  "unpkg": "dist/virchual.umd.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "keywords": [
+    "slider",
+    "carousel",
+    "slideshow",
+    "lightweight",
+    "touch",
+    "responsive",
+    "image-slider",
+    "image-swiper",
+    "swiper",
+    "virchual"
+  ],
+  "scripts": {
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "NODE_ENV=test jest --bail",
+    "microbundle": "microbundle && yarn run copy-dts",
+    "copy-dts": "copyfiles -u 2 \"./dist/src/**/*.d.ts\" ./dist && rm -rf ./dist/src",
+    "build": "yarn run build:css && yarn run build:basic && yarn run build:complete && yarn run build:modular",
+    "build:prod": "NODE_ENV=production yarn run build",
+    "build:basic": "microbundle build --entry entry/entry-basic.ts --tsconfig ./config/typescript/tsconfig.basic.json -o dist/basic -f modern,cjs,umd",
+    "build:complete": "microbundle build --entry entry/entry-complete.ts --tsconfig ./config/typescript/tsconfig.complete.json -o dist/complete",
+    "build:modular": "microbundle build --entry entry/entry-modular.ts --tsconfig ./config/typescript/tsconfig.modular.json -o dist/modular -f es",
+    "build:css": "postcss src/css/styles.css --output dist/virchual.css",
+    "dev": "NODE_ENV=development",
+    "lint-staged": "lint-staged",
+    "typecheck": "tsc --noUnusedParameters false --noUnusedLocals false --outDir ./tmpDist --declarationDir ./tmpDist && rm -rf tmpDist",
+    "prepublishOnly": "yarn run build:prod"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "yarn run lint",
+      "yarn run test -- --findRelatedTests"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint-staged && yarn run typecheck"
+    }
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berndartmueller/virchual.git"
+  },
+  "author": "Bernd Artmüller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/berndartmueller/virchual/issues"
+  },
+  "homepage": "https://www.virchual.xyz",
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-typescript": "^7.10.4",
+    "@types/jest": "^26.0.14",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
+    "concurrently": "^5.3.0",
+    "copyfiles": "^2.3.0",
+    "cssnano": "^4.1.10",
+    "eslint": "^7.9.0",
+    "eslint-config-preact": "^1.1.3",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-jest": "^24.0.2",
+    "husky": "^4.3.0",
+    "jest": "^26.4.2",
+    "lint-staged": "^10.4.0",
+    "microbundle": "^0.12.3",
+    "postcss-cli": "^8.0.0",
+    "postcss-copy": "^7.1.0",
+    "postcss-import": "^12.0.1",
+    "travis-size-report": "^1.1.0",
+    "ts-jest": "^26.4.0",
+    "typescript": "^4.0.3"
+  },
+  "browserslist": "> 0.25%, not dead",
+  "gitHead": "bcdd64176214dbfb11412a43f177f574d7b7bf46"
+}

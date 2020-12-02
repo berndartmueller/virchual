@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "module": "es6",
+    "noImplicitAny": false,
+    "target": "es2016",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "types": ["node", "jest"],
+    "lib": ["es6", "dom"],
+    "baseUrl": ".",
+    "sourceMap": true,
+    "paths": {
+      "@virchual/*": ["src/*"]
+    }
+  },
+  // "include": ["./src/**/*"],
+  "exclude": ["node_modules", "./entry"]
+}
