@@ -4,7 +4,8 @@
   "scripts": {
     "virchual": "yarn workspace virchual",
     "preact": "yarn workspace @virchual/preact",
-    "build": "yarn workspaces run build"
+    "build": "yarn workspaces run build",
+    "publish-website": "cd website && GIT_USER=berndartmueller CURRENT_BRANCH=master yarn run publish-gh-pages"
   },
   "workspaces": [
     "packages/*"

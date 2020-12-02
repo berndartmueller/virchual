@@ -39,8 +39,7 @@
     "dev": "NODE_ENV=development",
     "lint-staged": "lint-staged",
     "typecheck": "tsc --noUnusedParameters false --noUnusedLocals false --outDir ./tmpDist --declarationDir ./tmpDist && rm -rf tmpDist",
-    "prepublishOnly": "yarn run build:prod",
-    "publish-docs": "cd website && GIT_USER=berndartmueller CURRENT_BRANCH=master yarn run publish-gh-pages"
+    "prepublishOnly": "yarn run build:prod"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
