@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/berndartmueller/virchual">
-    <img src="images/logo.png" alt="Logo" width="400px" height="96px">
+    <img src="https://virchual.xyz/img/logo.png" alt="Logo" width="400px" height="96px">
   </a>
   <br />
   <br />
