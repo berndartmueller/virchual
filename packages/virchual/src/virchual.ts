@@ -10,7 +10,7 @@ import { slidingWindow } from './utils/sliding-window';
 import { range, rewind } from './utils/utils';
 
 export type VirchualSettings = {
-  slides?: (() => string[]) | null;
+  slides?: (() => Array<string | ((slideContainer: HTMLElement) => string | void)>) | null;
   speed?: number;
   easing?: string;
   pagination?: boolean;

@@ -1618,10 +1618,9 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-virchual@*:
-  version "1.0.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/virchual/-/virchual-1.0.0-alpha.9.tgz#0ab8c0ca49201e058130c0c5f8344e3b0b21d4e0"
-  integrity sha512-5GKlwOgzSAspmj927b84JvfAt7+jLv2qjedbjVz1xCveI/omFUlRghBiA+m/OPDVF3VJxZyOs9MODTLOyfwIQA==
+"virchual@link:../../packages/virchual":
+  version "0.0.0"
+  uid ""
 
 which@^2.0.1:
   version "2.0.2"

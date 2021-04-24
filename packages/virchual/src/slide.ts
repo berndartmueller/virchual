@@ -1,5 +1,4 @@
 import { ELEMENT_CLASSES } from './constants';
-
 import { identity } from './types';
 import { addOrRemoveClass, append, prepend as prependFn, remove, createElement } from './utils/dom';
 import { noop } from './utils/utils';
@@ -17,11 +16,15 @@ export class Slide {
   position: number;
 
   private _hasChanged = false;
-  private _html: string;
+  private _html: string | ((slideContainer: HTMLElement) => string | void);
   private _transitionEndCallback: identity = noop;
 
-  constructor(html: string | HTMLElement, private _frame: HTMLElement, private _imports: ComponentDependencies) {
-    if (typeof html === 'string') {
+  constructor(
+    html: string | HTMLElement | ((slideContainer: HTMLElement) => string | void),
+    private _frame: HTMLElement,
+    private _imports: ComponentDependencies,
+  ) {
+    if (typeof html === 'string' || typeof html === 'function') {
       this._html = html;
 
       return;
@@ -117,7 +120,19 @@ export class Slide {
   }
 
   private _render(): HTMLElement {
-    this.ref = createElement('div', { classNames: ELEMENT_CLASSES._slide, html: this._html });
+    this.ref = createElement('div', {
+      classNames: ELEMENT_CLASSES._slide,
+    });
+
+    if (typeof this._html === 'function') {
+      const rendered = this._html(this.ref);
+
+      if (typeof rendered === 'string') {
+        this.ref.innerHTML = rendered;
+      }
+    } else {
+      this.ref.innerHTML = this._html;
+    }
 
     this._setAttributes();
 

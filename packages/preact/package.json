@@ -19,7 +19,7 @@
     "dev": "rollup -c --watch"
   },
   "dependencies": {
-    "virchual": "^1.0.0-alpha.12"
+    "virchual": "link:../virchual"
   },
   "devDependencies": {
     "preact": "^10.5.7",

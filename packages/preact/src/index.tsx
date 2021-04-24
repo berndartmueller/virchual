@@ -1,59 +1,35 @@
-import { Component, h, toChildArray, VNode } from 'preact';
-import { Virchual as VirchualCore } from 'virchual';
-import 'virchual/dist/virchual.css';
+import { Component, h, render, toChildArray, VNode, createRef } from 'preact';
+import { Controls, LazyLoadImage, Virchual as VirchualCore } from 'virchual';
 import { VirchualSlide, VirchualSlideProps } from './slide';
+
+import 'virchual/dist/virchual.css';
 
 export interface Props {
   id?: string;
   children?: VNode<VirchualSlideProps>[] | VNode<VirchualSlideProps>;
 }
 
-export interface State {
-  slides: string[];
-}
-
-export class Virchual extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    const children = props.children || [];
-    const slides: string[] = [];
-
-    toChildArray(children).map(child => {
-      const html = (child as VNode<VirchualSlideProps>).props.html;
-
-      if (!html) {
-        return;
-      }
-
-      slides.push(html);
-    });
-
-    this.state = {
-      slides,
-    };
-  }
+export class Virchual extends Component<Props> {
+  ref = createRef<HTMLDivElement>();
 
   componentDidMount() {
-    const instance = new VirchualCore(this.base as HTMLElement, {
-      slides: () => this.state.slides.slice(1),
+    const instance = new VirchualCore(this.ref.current, {
+      slides: () =>
+        toChildArray(this.props.children).map(slide => ref => {
+          return render(slide, ref);
+        }),
     });
+
+    instance.register(Controls, { isEnabled: true });
+    instance.register(LazyLoadImage, { lazyload: true });
 
     instance.mount();
   }
 
-  render({ id, children }: Props) {
+  render({ id }: Props) {
     return (
-      <div id={id} class="virchual image-swiper">
-        <div class="virchual__frame" style="height: 100%">
-          {toChildArray(children)?.map((child, index) => {
-            if (index > 0) {
-              return null;
-            }
-
-            return child;
-          })}
-        </div>
+      <div ref={this.ref} id={id} class="virchual image-swiper">
+        <div class="virchual__frame" style="height: 100%" />
 
         <button type="button" value="-1" tabIndex={-1} aria-controls="" class="virchual__control virchual__control--prev">
           <svg

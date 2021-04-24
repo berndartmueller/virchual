@@ -343,6 +343,10 @@
   resolved "https://registry.yarnpkg.com/@types/snowpack-env/-/snowpack-env-2.3.2.tgz#2b7f586ba1de82d1866ecdf9b6792341a7e8d4f4"
   integrity sha512-lBChKW/gK0bI5tC+00BqMgOVwJkr+da7+DJasCxgscKgzfJVm7aZgOl84UCDz6tE5bNgo6c8jqQyqW5uxT3KEw==
 
+"@virchual/preact@link:../../packages/preact":
+  version "0.0.0"
+  uid ""
+
 address@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/address/-/address-1.1.2.tgz#bf1116c9c758c51b7a933d296b72c221ed9428b6"
@@ -1622,6 +1626,10 @@ validate-npm-package-name@^3.0.0:
   integrity sha1-X6kS2B630MdK/BQN5zF/DKffQ34=
   dependencies:
     builtins "^1.0.3"
+
+"virchual@link:../../packages/virchual":
+  version "0.0.0"
+  uid ""
 
 which@^2.0.1:
   version "2.0.2"
